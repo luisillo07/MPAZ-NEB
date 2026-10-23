@@ -18,7 +18,7 @@ class ActividadViewModel : ViewModel() {
             respuestas = actividad.preguntas.map {null}
         )
     }
-    
+
     fun onAlternativaSeleccionada(posicion: Int) {
         _estado.update {
             val nuevas = it.respuestas.mapIndexed {indice,respuesta ->
@@ -37,5 +37,15 @@ class ActividadViewModel : ViewModel() {
             it.copy(errorRespuesta = "Debes elegir una alternativa para continuar.")
         }
         return false
+    }
+
+    fun onSiguiente() {
+        _estado.update {
+            if (it.esUltimaPregunta) {
+                it.copy(mostrarConfirmacion = true, errorRespuesta = null)
+            } else{
+                it.copy(indicePregunta = it.indicePregunta + 1, errorRespuesta = null)
+            }
+        }
     }
 }

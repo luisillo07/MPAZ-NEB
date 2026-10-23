@@ -9,6 +9,9 @@ data class ActividadUiState(
     val intentosUsados: Int = 0,
     val indiceRetroalimentacion: Int = 0,
     val mensajeRetroalimentacion: String = ""
-)
+) {
+    val esUltimaPregunta: Boolean
+        get() = indicePregunta == respuestas.size - 1
+}
 
 
