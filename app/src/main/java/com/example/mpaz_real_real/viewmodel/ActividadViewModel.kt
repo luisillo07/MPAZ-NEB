@@ -12,16 +12,16 @@ class ActividadViewModel : ViewModel() {
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     fun cargarActividad(codigo: String) {
-        val actividad = actividadesDePrueba.find {it.codigo == codigo}?: return
+        val actividad = actividadesDePrueba.find { it.codigo == codigo } ?: return
         _estado.value = ActividadUiState(
             actividad = actividad,
-            respuestas = actividad.preguntas.map {null}
+            respuestas = actividad.preguntas.map { null }
         )
     }
 
     fun onAlternativaSeleccionada(posicion: Int) {
         _estado.update {
-            val nuevas = it.respuestas.mapIndexed {indice,respuesta ->
+            val nuevas = it.respuestas.mapIndexed { indice, respuesta ->
                 if (indice == it.indicePregunta) posicion else respuesta
             }
             it.copy(respuestas = nuevas, errorRespuesta = null)
@@ -43,7 +43,7 @@ class ActividadViewModel : ViewModel() {
         _estado.update {
             if (it.esUltimaPregunta) {
                 it.copy(mostrarConfirmacion = true, errorRespuesta = null)
-            } else{
+            } else {
                 it.copy(indicePregunta = it.indicePregunta + 1, errorRespuesta = null)
             }
         }
@@ -51,8 +51,17 @@ class ActividadViewModel : ViewModel() {
 
 
     fun onCambiarRespuestas() {
-        _estado.update {it.copy(mostrarConfirmacion = false, indicePregunta = 0) }
+        _estado.update { it.copy(mostrarConfirmacion = false, indicePregunta = 0) }
     }
 
+    fun onEnviar() {
+        _estado.update {
+            it.copy(
+                mostrarConfirmacion = false,
+                intentosUsados = it.intentosUsados + 1,
+                indiceRetroalimentacion = 0
+            )
+        }
+    }
 
 }

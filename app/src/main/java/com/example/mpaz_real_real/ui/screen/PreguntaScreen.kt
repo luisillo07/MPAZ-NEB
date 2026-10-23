@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Button
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
@@ -40,6 +42,8 @@ fun PreguntaScreen(
                 viewModel.onSiguiente()
             }
         },
+        onEnviar = viewModel::onEnviar,
+        onCambiar = viewModel::onCambiarRespuestas,
         modifier = modifier
     )
 }
@@ -49,6 +53,8 @@ fun PreguntaContenido(
     estado: ActividadUiState,
     onAlternativa: (Int) -> Unit,
     onSiguiente: () -> Unit,
+    onEnviar: () -> Unit,
+    onCambiar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -97,6 +103,20 @@ fun PreguntaContenido(
                 }
             }
         }
+
+        if (estado.mostrarConfirmacion) {
+            AlertDialog(
+                onDismissRequest = onCambiar,
+                title = {Text(text = "¿Enviar tus respuestas?")},
+                text = {Text(text = "Si quieres revisarlas antes, toca Cambiar.")},
+                confirmButton = {
+                    TextButton(onClick = onEnviar){Text(text = "Enviar")}
+                },
+                dismissButton = {
+                    TextButton(onClick = onCambiar){Text(text = "Cambiar")}
+                }
+            )
+        }
     }
 }
 
@@ -112,7 +132,9 @@ fun PreguntaContenidoPreview() {
                 errorRespuesta = "Debes elegir una alternativa para continuar."
             ),
             onAlternativa = {},
-            onSiguiente = {}
+            onSiguiente = {},
+            onEnviar = {},
+            onCambiar = {}
         )
     }
 }
