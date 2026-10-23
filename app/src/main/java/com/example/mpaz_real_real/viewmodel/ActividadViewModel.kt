@@ -54,14 +54,26 @@ class ActividadViewModel : ViewModel() {
         _estado.update { it.copy(mostrarConfirmacion = false, indicePregunta = 0) }
     }
 
+
     fun onEnviar() {
         _estado.update {
             it.copy(
                 mostrarConfirmacion = false,
                 intentosUsados = it.intentosUsados + 1,
-                indiceRetroalimentacion = 0
+                indiceRetroalimentacion = 0,
+                mensajeRetroalimentacion = armarMensaje(it, 0)
             )
         }
     }
 
+    private fun esCorrecta(estado: ActividadUiState, indice: Int): Boolean {
+        return estado.respuestas[indice] == estado.actividad?.preguntas?.get(indice)?.correcta
+    }
+
+    private fun armarMensaje(estado: ActividadUiState, indice: Int): String {
+        val pregunta = estado.actividad?.preguntas?.get(indice) ?: return ""
+        val inicio = if (esCorrecta(estado, indice)) "¡Muy bien!" else "¡Casi! Revisemos juntos."
+        return "$inicio ${pregunta.retroalimentacion}"
+    }
 }
+

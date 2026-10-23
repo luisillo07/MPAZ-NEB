@@ -13,6 +13,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mpaz_real_real.ui.screen.PreguntaScreen
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import com.example.mpaz_real_real.ui.screen.RetroalimentacionScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,13 +25,16 @@ class MainActivity : ComponentActivity() {
             Mpaz_real_realTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel: ActividadViewModel = viewModel()
-                    LaunchedEffect(Unit) {
+                    val estado by viewModel.estado.collectAsState()
+                    LaunchedEffect(Unit){
                         viewModel.cargarActividad("LEC-001")
                     }
-                    PreguntaScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel
-                    )
+                    if (estado.intentosUsados == 0){
+                        PreguntaScreen(modifier = Modifier.padding(innerPadding),viewModel = viewModel)
+                    }else{
+                        RetroalimentacionScreen(modifier = Modifier.padding(innerPadding),viewModel = viewModel)
+                    }
+
                 }
             }
         }
