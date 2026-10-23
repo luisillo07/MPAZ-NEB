@@ -79,7 +79,7 @@ fun RetroalimentacionContenido(
                 Button(onClick = onSiguiente) {
                     Text(text = "Siguiente")
                 }
-            } else {
+            } else if (estado.quedanIntentos) {
                 Button(onClick = onReintentar) {
                     Text(text = "Reintentar")
                 }

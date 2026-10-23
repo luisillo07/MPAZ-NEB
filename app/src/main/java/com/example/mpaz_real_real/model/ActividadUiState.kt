@@ -14,6 +14,9 @@ data class ActividadUiState(
         get() = indicePregunta == respuestas.size - 1
     val esUltimaRetroalimentacion: Boolean
         get() = indiceRetroalimentacion == respuestas.size - 1
+
+    val quedanIntentos: Boolean
+        get() = intentosUsados < (actividad?.intentosPermitidos ?: 0)
 }
 
 

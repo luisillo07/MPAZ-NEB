@@ -78,6 +78,7 @@ class ActividadViewModel : ViewModel() {
     }
 
     fun onReintentar() {
+        if (!_estado.value.quedanIntentos) return
         _estado.update {
             it.copy(
                 indicePregunta = 0,
