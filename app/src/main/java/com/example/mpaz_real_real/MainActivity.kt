@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mpaz_real_real.ui.screen.InstruccionesScreen
+import com.example.mpaz_real_real.ui.screen.PreguntaScreen
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
 
@@ -28,9 +29,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         viewModel.cargarActividad("LEC-001")
                     }
-                    InstruccionesScreen(
-                        onComenzar = { },
-
+                    PreguntaScreen(
                         modifier = Modifier.padding(innerPadding),
                         viewModel = viewModel
                     )
