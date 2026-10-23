@@ -77,6 +77,17 @@ class ActividadViewModel : ViewModel() {
         }
     }
 
+    fun onReintentar() {
+        _estado.update {
+            it.copy(
+                indicePregunta = 0,
+                respuestas = it.respuestas.map { null },
+                errorRespuesta = null,
+                indiceRetroalimentacion = 0
+            )
+        }
+    }
+
     private fun esCorrecta(estado: ActividadUiState, indice: Int): Boolean {
         return estado.respuestas[indice] == estado.actividad?.preguntas?.get(indice)?.correcta
     }

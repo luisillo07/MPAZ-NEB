@@ -31,7 +31,7 @@ fun AppNavigation() {
             PreguntaScreen(navController = navController, viewModel = actividadViewModel)
         }
         composable(Screen.Retroalimentacion.route) {
-            RetroalimentacionScreen(viewModel = actividadViewModel)
+            RetroalimentacionScreen(navController = navController, viewModel = actividadViewModel)
         }
     }
 }

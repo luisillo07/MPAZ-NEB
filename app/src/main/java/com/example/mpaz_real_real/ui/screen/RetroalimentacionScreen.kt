@@ -3,7 +3,8 @@ package com.example.mpaz_real_real.ui.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.mpaz_real_real.navigation.Screen
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.mpaz_real_real.model.ActividadUiState
@@ -27,20 +28,27 @@ import androidx.compose.material3.Button
 
 @Composable
 fun RetroalimentacionScreen(
-    modifier: Modifier = Modifier,
-    viewModel: ActividadViewModel = viewModel()
+    navController: NavController,
+    viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
     RetroalimentacionContenido(
         estado = estado,
         onSiguiente = viewModel::onSiguienteRetroalimentacion,
-        modifier = modifier)
+        onReintentar = {
+            viewModel.onReintentar()
+            navController.navigate(Screen.Pregunta.route) {
+                popUpTo(Screen.Instrucciones.route)
+            }
+        }
+    )
 }
 
 @Composable
 fun RetroalimentacionContenido(
     estado: ActividadUiState,
     onSiguiente: () -> Unit,
+    onReintentar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -85,7 +93,8 @@ fun RetroalimentacionContenidoPreview() {
                 actividad = actividadesDePrueba.first(),
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
             ),
-            onSiguiente = {}
+            onSiguiente = {},
+            onReintentar = {}
         )
     }
 }
