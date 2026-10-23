@@ -4,7 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.mpaz_real_real.navigation.Screen
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.mpaz_real_real.model.ActividadUiState
@@ -30,21 +31,25 @@ import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
 @Composable
 fun PreguntaScreen(
-    modifier: Modifier = Modifier,
-    viewModel: ActividadViewModel = viewModel()
+    navController: NavController,
+    viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
     PreguntaContenido(
         estado = estado,
         onAlternativa = viewModel::onAlternativaSeleccionada,
         onSiguiente = {
-            if (viewModel.validarRespuesta()){
+            if (viewModel.validarRespuesta()) {
                 viewModel.onSiguiente()
             }
         },
-        onEnviar = viewModel::onEnviar,
-        onCambiar = viewModel::onCambiarRespuestas,
-        modifier = modifier
+        onEnviar = {
+            viewModel.onEnviar()
+            navController.navigate(Screen.Retroalimentacion.route) {
+                popUpTo(Screen.Pregunta.route) { inclusive = true }
+            }
+        },
+        onCambiar = viewModel::onCambiarRespuestas
     )
 }
 
