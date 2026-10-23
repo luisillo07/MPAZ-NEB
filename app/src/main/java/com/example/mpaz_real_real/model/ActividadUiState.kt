@@ -12,6 +12,8 @@ data class ActividadUiState(
 ) {
     val esUltimaPregunta: Boolean
         get() = indicePregunta == respuestas.size - 1
+    val esUltimaRetroalimentacion: Boolean
+        get() = indiceRetroalimentacion == respuestas.size - 1
 }
 
 

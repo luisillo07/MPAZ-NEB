@@ -22,18 +22,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 
+import androidx.compose.material3.Button
+
+
 @Composable
 fun RetroalimentacionScreen(
     modifier: Modifier = Modifier,
     viewModel: ActividadViewModel = viewModel()
 ) {
     val estado by viewModel.estado.collectAsState()
-    RetroalimentacionContenido(estado = estado, modifier = modifier)
+    RetroalimentacionContenido(
+        estado = estado,
+        onSiguiente = viewModel::onSiguienteRetroalimentacion,
+        modifier = modifier)
 }
 
 @Composable
 fun RetroalimentacionContenido(
     estado: ActividadUiState,
+    onSiguiente: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -47,7 +54,6 @@ fun RetroalimentacionContenido(
         }
     } else {
         val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
-
         Column(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = modifier
@@ -60,6 +66,12 @@ fun RetroalimentacionContenido(
             )
             Text(text = pregunta.enunciado)
             Text(text = estado.mensajeRetroalimentacion)
+
+            if (!estado.esUltimaRetroalimentacion){
+                Button(onClick = onSiguiente){
+                    Text(text = "Siguiente")
+                }
+            }
         }
     }
 }
@@ -72,7 +84,8 @@ fun RetroalimentacionContenidoPreview() {
             estado = ActividadUiState(
                 actividad = actividadesDePrueba.first(),
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
-            )
+            ),
+            onSiguiente = {}
         )
     }
 }

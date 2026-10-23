@@ -66,6 +66,17 @@ class ActividadViewModel : ViewModel() {
         }
     }
 
+    fun onSiguienteRetroalimentacion() {
+        if (_estado.value.esUltimaRetroalimentacion) return
+        _estado.update {
+            val siguiente = it.indiceRetroalimentacion + 1
+            it.copy(
+                indiceRetroalimentacion = siguiente,
+                mensajeRetroalimentacion = armarMensaje(it, siguiente)
+            )
+        }
+    }
+
     private fun esCorrecta(estado: ActividadUiState, indice: Int): Boolean {
         return estado.respuestas[indice] == estado.actividad?.preguntas?.get(indice)?.correcta
     }
