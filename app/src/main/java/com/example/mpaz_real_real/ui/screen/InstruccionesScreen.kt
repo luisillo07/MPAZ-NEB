@@ -17,7 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
-
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.mpaz_real_real.model.ActividadUiState
+import com.example.mpaz_real_real.repository.actividadesDePrueba
+import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
 @Composable
 fun InstruccionesScreen(
@@ -26,16 +29,23 @@ fun InstruccionesScreen(
     viewModel: ActividadViewModel = viewModel()
 ){
     val estado by viewModel.estado.collectAsState()
+    InstruccionesContenido(estado = estado, onComenzar = onComenzar, modifier = modifier)
+}
+@Composable
+fun InstruccionesContenido(
+    estado: ActividadUiState,
+    onComenzar: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val actividad = estado.actividad
-
-    if (actividad == null) {
+    if (actividad == null){
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier.fillMaxSize()
-        ) {
+        ){
             CircularProgressIndicator()
         }
-    } else {
+    }else{
         Column(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = modifier
@@ -49,5 +59,15 @@ fun InstruccionesScreen(
             }
         }
     }
+}
 
+@Preview(showBackground = true)
+@Composable
+fun InstruccionesContenidoPreview() {
+    Mpaz_real_realTheme {
+        InstruccionesContenido(
+            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            onComenzar = {}
+        )
+    }
 }
