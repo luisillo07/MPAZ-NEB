@@ -75,9 +75,13 @@ fun RetroalimentacionContenido(
             Text(text = pregunta.enunciado)
             Text(text = estado.mensajeRetroalimentacion)
 
-            if (!estado.esUltimaRetroalimentacion){
-                Button(onClick = onSiguiente){
+            if (!estado.esUltimaRetroalimentacion) {
+                Button(onClick = onSiguiente) {
                     Text(text = "Siguiente")
+                }
+            } else {
+                Button(onClick = onReintentar) {
+                    Text(text = "Reintentar")
                 }
             }
         }
