@@ -1,4 +1,4 @@
-package com.example.mpaz_real_real.ui.theme.screen
+package com.example.mpaz_real_real.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
