@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,15 +20,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.model.ActividadUiState
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
+import androidx.navigation.NavController
+import com.example.mpaz_real_real.navigation.Screen
+
 
 @Composable
 fun InstruccionesScreen(
-    onComenzar: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: ActividadViewModel = viewModel()
-){
+    navController: NavController,
+    viewModel: ActividadViewModel
+) {
     val estado by viewModel.estado.collectAsState()
-    InstruccionesContenido(estado = estado, onComenzar = onComenzar, modifier = modifier)
+    InstruccionesContenido(
+        estado = estado,
+        onComenzar = { navController.navigate(Screen.Pregunta.route) }
+    )
 }
 @Composable
 fun InstruccionesContenido(
