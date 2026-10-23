@@ -48,4 +48,11 @@ class ActividadViewModel : ViewModel() {
             }
         }
     }
+
+
+    fun onCambiarRespuestas() {
+        _estado.update {it.copy(mostrarConfirmacion = false, indicePregunta = 0) }
+    }
+
+
 }
