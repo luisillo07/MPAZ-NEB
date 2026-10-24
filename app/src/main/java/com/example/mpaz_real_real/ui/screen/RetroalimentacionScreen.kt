@@ -40,6 +40,11 @@ fun RetroalimentacionScreen(
             navController.navigate(Screen.Pregunta.route) {
                 popUpTo(Screen.Instrucciones.route)
             }
+        },
+        onVolver = {
+            navController.navigate(Screen.Instrucciones.route) {
+                popUpTo(Screen.Instrucciones.route) { inclusive = true }
+            }
         }
     )
 }
@@ -49,6 +54,7 @@ fun RetroalimentacionContenido(
     estado: ActividadUiState,
     onSiguiente: () -> Unit,
     onReintentar: () -> Unit,
+    onVolver: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -83,6 +89,10 @@ fun RetroalimentacionContenido(
                 Button(onClick = onReintentar) {
                     Text(text = "Reintentar")
                 }
+            } else {
+                Button(onClick = onVolver) {
+                    Text(text = "Volver a Actividades")
+                }
             }
         }
     }
@@ -98,7 +108,8 @@ fun RetroalimentacionContenidoPreview() {
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
             ),
             onSiguiente = {},
-            onReintentar = {}
+            onReintentar = {},
+            onVolver = {}
         )
     }
 }
