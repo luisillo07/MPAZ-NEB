@@ -17,7 +17,9 @@ fun AppNavigation() {
     val actividadViewModel: ActividadViewModel = viewModel()
 
     LaunchedEffect(Unit) {
-        actividadViewModel.cargarActividad("LEC-001")
+        if (actividadViewModel.estado.value.actividad == null) {
+            actividadViewModel.cargarActividad("LEC-001")
+        }
     }
 
     NavHost(
