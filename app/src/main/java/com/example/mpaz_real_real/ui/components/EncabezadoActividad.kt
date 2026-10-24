@@ -1,6 +1,5 @@
 package com.example.mpaz_real_real.ui.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.ui.theme.RojoCabecera
 import com.example.mpaz_real_real.ui.theme.SalmonBoton
+import androidx.compose.foundation.border
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +35,7 @@ fun EncabezadoActividad(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ){
-                Text(text = "$modulo·$curso",style = MaterialTheme.typography.bodyMedium)
+                Text(text = "$modulo · $curso", style = MaterialTheme.typography.bodyMedium)
                 Text(
                     text = nombre,
                     style = MaterialTheme.typography.titleLarge,
@@ -46,9 +46,10 @@ fun EncabezadoActividad(
         actions = {
             if (mostrarSalir){
                 Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = SalmonBoton,contentColor = Color.Black),
-                    border = BorderStroke(2.dp,Color.Black)
+                    onClick = {}, // TEMPORAL: se conecta al login de Luis al unir las ramas
+                    colors = ButtonDefaults.buttonColors(containerColor = SalmonBoton, contentColor = Color.Black),
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.border(2.dp, Color.Black, MaterialTheme.shapes.medium)
                 ) {
                     Text(text = "Salir sesión",fontWeight = FontWeight.Bold)
                 }
