@@ -25,6 +25,8 @@ import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
+import com.example.mpaz_real_real.ui.components.ContenedorTexto
+
 @Composable
 fun InstruccionesScreen(
     navController: NavController,
@@ -73,7 +75,9 @@ fun InstruccionesContenido(
                     .padding(innerPadding)
                     .padding(16.dp)
             ){
-                Text(text = actividad.instrucciones)
+                ContenedorTexto {
+                    Text(text = actividad.instrucciones)
+                }
                 if (estado.quedanIntentos) {
                     BotonActividad(texto = "Comenzar", onClick = onComenzar)
                 } else {
