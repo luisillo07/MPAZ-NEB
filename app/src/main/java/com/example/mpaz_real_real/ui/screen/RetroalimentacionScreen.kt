@@ -35,6 +35,9 @@ import com.example.mpaz_real_real.ui.theme.RosaFondo
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
+import com.example.mpaz_real_real.ui.components.ContenedorTexto
+import androidx.compose.ui.text.font.FontWeight
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -102,8 +105,10 @@ fun RetroalimentacionContenido(
                     text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(text = pregunta.enunciado)
-                Text(text = estado.mensajeRetroalimentacion)
+                ContenedorTexto {
+                    Text(text = pregunta.enunciado, fontWeight = FontWeight.Bold)
+                    Text(text = estado.mensajeRetroalimentacion)
+                }
 
                 if (estado.esUltimaRetroalimentacion) {
                     if (estado.pantallazoPregunta == null) {

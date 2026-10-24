@@ -26,7 +26,11 @@ import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
-
+import com.example.mpaz_real_real.ui.components.ContenedorTexto
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun QuedanIntentosScreen(
     navController: NavController,
@@ -84,8 +88,20 @@ fun QuedanIntentosContenido(
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
-                Text(text = "Enviaste tus respuestas.")
-                Text(text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.")
+                ContenedorTexto {
+                    Text(
+                        text = "Enviaste tus respuestas.",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 BotonActividad(texto = "Reintentar", onClick = onReintentar)
                 BotonActividad(texto = "Siguiente", onClick = onSiguiente)
             }
