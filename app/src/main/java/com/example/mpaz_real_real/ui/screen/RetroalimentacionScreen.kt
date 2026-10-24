@@ -105,12 +105,12 @@ fun RetroalimentacionContenido(
                     Text(text = "¡Ya subiste la imagen!")
                 }
                 PantallazoPregunta(uri = estado.pantallazoPregunta)
-            }
-            if (estado.resumenGuardado) {
-                Text(text = "¡Ya guardaste el resumen!")
-            }else{
-                OutlinedButton(onClick = onGuardarResumen){
-                    Text(text = "Guardar resumen del intento")
+                if (estado.resumenGuardado){
+                    Text(text = "¡Ya guardaste el resumen!")
+                }else{
+                    OutlinedButton(onClick = onGuardarResumen){
+                        Text(text = "Guardar resumen del intento")
+                    }
                 }
             }
             if (!estado.esUltimaRetroalimentacion) {
