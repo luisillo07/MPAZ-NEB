@@ -1,4 +1,5 @@
 package com.example.mpaz_real_real.model
+import android.net.Uri
 
 data class ActividadUiState(
     val actividad: Actividad? = null,
@@ -8,7 +9,8 @@ data class ActividadUiState(
     val mostrarConfirmacion: Boolean = false,
     val intentosUsados: Int = 0,
     val indiceRetroalimentacion: Int = 0,
-    val mensajeRetroalimentacion: String = ""
+    val mensajeRetroalimentacion: String = "",
+    val pantallazoPregunta: Uri? = null
 ) {
     val esUltimaPregunta: Boolean
         get() = indicePregunta == respuestas.size - 1

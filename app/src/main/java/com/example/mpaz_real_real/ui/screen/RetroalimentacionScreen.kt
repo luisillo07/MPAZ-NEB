@@ -25,6 +25,9 @@ import com.example.mpaz_real_real.repository.actividadesDePrueba
 
 import androidx.compose.material3.Button
 
+import androidx.compose.material3.OutlinedButton
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
 
 @Composable
 fun RetroalimentacionScreen(
@@ -32,6 +35,9 @@ fun RetroalimentacionScreen(
     viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
+    val lanzadorGaleria = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ){uri -> viewModel.onPantallazoSeleccionado(uri)}
     RetroalimentacionContenido(
         estado = estado,
         onSiguiente = viewModel::onSiguienteRetroalimentacion,
@@ -45,7 +51,8 @@ fun RetroalimentacionScreen(
             navController.navigate(Screen.Instrucciones.route) {
                 popUpTo(Screen.Instrucciones.route) { inclusive = true }
             }
-        }
+        },
+        onAdjuntarPantallazo = { lanzadorGaleria.launch("image/*") }
     )
 }
 
@@ -55,6 +62,7 @@ fun RetroalimentacionContenido(
     onSiguiente: () -> Unit,
     onReintentar: () -> Unit,
     onVolver: () -> Unit,
+    onAdjuntarPantallazo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -81,6 +89,14 @@ fun RetroalimentacionContenido(
             Text(text = pregunta.enunciado)
             Text(text = estado.mensajeRetroalimentacion)
 
+            if (estado.esUltimaRetroalimentacion) {
+                OutlinedButton(onClick = onAdjuntarPantallazo) {
+                    Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
+                }
+                if (estado.pantallazoPregunta != null) {
+                    Text(text = "Pantallazo adjunto")
+                }
+            }
             if (!estado.esUltimaRetroalimentacion) {
                 Button(onClick = onSiguiente) {
                     Text(text = "Siguiente")
@@ -109,7 +125,8 @@ fun RetroalimentacionContenidoPreview() {
             ),
             onSiguiente = {},
             onReintentar = {},
-            onVolver = {}
+            onVolver = {},
+            onAdjuntarPantallazo = {}
         )
     }
 }

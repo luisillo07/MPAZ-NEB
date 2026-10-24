@@ -13,6 +13,7 @@ import com.example.mpaz_real_real.data.local.AppDatabase
 import androidx.lifecycle.viewModelScope
 import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 class ActividadViewModel(
     application: Application
@@ -115,10 +116,18 @@ class ActividadViewModel(
                 indicePregunta = 0,
                 respuestas = it.respuestas.map { null },
                 errorRespuesta = null,
-                indiceRetroalimentacion = 0
+                indiceRetroalimentacion = 0,
+                pantallazoPregunta = null
             )
         }
     }
+
+
+    fun onPantallazoSeleccionado(uri: Uri?) {
+        if (uri == null) return
+        _estado.update { it.copy(pantallazoPregunta = uri) }
+    }
+
 
     private fun esCorrecta(estado: ActividadUiState, indice: Int): Boolean {
         return estado.respuestas[indice] == estado.actividad?.preguntas?.get(indice)?.correcta
