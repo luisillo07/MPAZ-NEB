@@ -28,10 +28,14 @@ class ActividadViewModel(
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     fun cargarActividad(codigo: String) {
         val actividad = actividadesDePrueba.find { it.codigo == codigo } ?: return
-        _estado.value = ActividadUiState(
-            actividad = actividad,
-            respuestas = actividad.preguntas.map { null }
-        )
+        viewModelScope.launch {
+            val usados = resultadoDao.contarIntentos(codigo)
+            _estado.value = ActividadUiState(
+                actividad = actividad,
+                respuestas = actividad.preguntas.map { null },
+                intentosUsados = usados
+            )
+        }
     }
 
     fun onAlternativaSeleccionada(posicion: Int) {
