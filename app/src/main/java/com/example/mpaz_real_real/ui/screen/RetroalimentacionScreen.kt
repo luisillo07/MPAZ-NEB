@@ -91,11 +91,15 @@ fun RetroalimentacionContenido(
             Text(text = pregunta.enunciado)
             Text(text = estado.mensajeRetroalimentacion)
 
-            if (estado.esUltimaRetroalimentacion) {
-                PantallazoPregunta(uri = estado.pantallazoPregunta)
-                OutlinedButton(onClick = onAdjuntarPantallazo) {
-                    Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
+            if (estado.esUltimaRetroalimentacion){
+                if (estado.pantallazoPregunta == null){
+                    OutlinedButton(onClick = onAdjuntarPantallazo){
+                        Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
+                    }
+                }else{
+                    Text(text = "¡Ya subiste la imagen!")
                 }
+                PantallazoPregunta(uri = estado.pantallazoPregunta)
             }
             if (!estado.esUltimaRetroalimentacion) {
                 Button(onClick = onSiguiente) {
