@@ -32,7 +32,10 @@ fun InstruccionesScreen(
     val estado by viewModel.estado.collectAsState()
     InstruccionesContenido(
         estado = estado,
-        onComenzar = { navController.navigate(Screen.Pregunta.route) }
+        onComenzar = {
+            if (estado.intentosUsados > 0) viewModel.onReintentar()
+            navController.navigate(Screen.Pregunta.route)
+        }
     )
 }
 @Composable
