@@ -29,6 +29,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
 
+import com.example.mpaz_real_real.ui.components.PantallazoPregunta
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -90,11 +92,9 @@ fun RetroalimentacionContenido(
             Text(text = estado.mensajeRetroalimentacion)
 
             if (estado.esUltimaRetroalimentacion) {
+                PantallazoPregunta(uri = estado.pantallazoPregunta)
                 OutlinedButton(onClick = onAdjuntarPantallazo) {
                     Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
-                }
-                if (estado.pantallazoPregunta != null) {
-                    Text(text = "Pantallazo adjunto")
                 }
             }
             if (!estado.esUltimaRetroalimentacion) {
