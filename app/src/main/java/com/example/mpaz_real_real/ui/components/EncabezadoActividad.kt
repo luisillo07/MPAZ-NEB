@@ -20,6 +20,7 @@ import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.ui.theme.RojoCabecera
 import com.example.mpaz_real_real.ui.theme.SalmonBoton
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.height
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +50,7 @@ fun EncabezadoActividad(
                     onClick = {}, // TEMPORAL: se conecta al login de Luis al unir las ramas
                     colors = ButtonDefaults.buttonColors(containerColor = SalmonBoton, contentColor = Color.Black),
                     shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.border(2.dp, Color.Black, MaterialTheme.shapes.medium)
+                    modifier = Modifier.height(48.dp).border(2.dp, Color.Black, MaterialTheme.shapes.medium)
                 ) {
                     Text(text = "Salir sesión",fontWeight = FontWeight.Bold)
                 }
