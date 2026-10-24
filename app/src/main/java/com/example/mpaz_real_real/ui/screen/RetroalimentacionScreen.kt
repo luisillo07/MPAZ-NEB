@@ -23,8 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 
-import androidx.compose.material3.Button
-
 import androidx.compose.material3.OutlinedButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,6 +32,8 @@ import com.example.mpaz_real_real.ui.components.PantallazoPregunta
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
+
+import com.example.mpaz_real_real.ui.components.BotonActividad
 
 @Composable
 fun RetroalimentacionScreen(
@@ -123,13 +123,9 @@ fun RetroalimentacionContenido(
                     }
                 }
                 if (!estado.esUltimaRetroalimentacion) {
-                    Button(onClick = onSiguiente) {
-                        Text(text = "Siguiente")
-                    }
+                    BotonActividad(texto = "Siguiente", onClick = onSiguiente)
                 } else {
-                    Button(onClick = onVolver) {
-                        Text(text = "Volver a Actividades")
-                    }
+                    BotonActividad(texto = "Volver a Actividades", onClick = onVolver)
                 }
             }
         }
