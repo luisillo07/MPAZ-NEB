@@ -22,6 +22,11 @@ import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
 
+import androidx.compose.material3.Scaffold
+import com.example.mpaz_real_real.ui.components.EncabezadoActividad
+import com.example.mpaz_real_real.ui.theme.RosaFondo
+
+
 @Composable
 fun QuedanIntentosScreen(
     navController: NavController,
@@ -61,19 +66,32 @@ fun QuedanIntentosContenido(
         }
     } else {
         val restantes = actividad.intentosPermitidos - estado.intentosUsados
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(text = "Enviaste tus respuestas.")
-            Text(text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.")
-            Button(onClick = onReintentar) {
-                Text(text = "Reintentar")
-            }
-            Button(onClick = onSiguiente) {
-                Text(text = "Siguiente")
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                Text(text = "Enviaste tus respuestas.")
+                Text(text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.")
+                Button(onClick = onReintentar) {
+                    Text(text = "Reintentar")
+                }
+                Button(onClick = onSiguiente) {
+                    Text(text = "Siguiente")
+                }
             }
         }
     }
