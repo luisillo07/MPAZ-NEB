@@ -20,9 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
@@ -45,6 +42,11 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.example.mpaz_real_real.ui.theme.RojoCabecera
+
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import com.example.mpaz_real_real.ui.theme.Beige
 
 @Composable
 fun PreguntaScreen(
@@ -165,18 +167,38 @@ fun PreguntaContenido(
                 }
             }
         }
-        if (estado.mostrarConfirmacion) {
-            AlertDialog(
-                onDismissRequest = onCambiar,
-                title = { Text(text = "¿Enviar tus respuestas?") },
-                text = { Text(text = "Si quieres revisarlas antes, toca Cambiar.") },
-                confirmButton = {
-                    TextButton(onClick = onEnviar) { Text(text = "Enviar") }
-                },
-                dismissButton = {
-                    TextButton(onClick = onCambiar) { Text(text = "Cambiar") }
+        if (estado.mostrarConfirmacion){
+            val total = actividad.preguntas.size
+            Dialog(onDismissRequest = onCambiar){
+                ContenedorTexto{
+                    Text(
+                        text = "¿Enviar tus respuestas?",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "${estado.respondidas} de $total preguntas respondidas",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = "${total - estado.respondidas} de $total sin responder",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        BotonActividad(texto = "Enviar", onClick = onEnviar,colorFondo = Beige,modifier = Modifier.weight(1f))
+                        BotonActividad(texto = "Cambiar", onClick = onCambiar,colorFondo = Beige,modifier = Modifier.weight(1f))
+                    }
                 }
-            )
+            }
         }
     }
 }

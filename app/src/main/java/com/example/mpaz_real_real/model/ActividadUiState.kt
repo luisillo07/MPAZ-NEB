@@ -20,6 +20,10 @@ data class ActividadUiState(
 
     val quedanIntentos: Boolean
         get() = intentosUsados < (actividad?.intentosPermitidos ?: 0)
+
+    val respondidas: Int
+        get() = respuestas.count { it != null }
 }
+
 
 

@@ -20,11 +20,12 @@ import com.example.mpaz_real_real.ui.theme.SalmonBoton
 fun BotonActividad(
     texto: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFondo: Color = SalmonBoton
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = SalmonBoton, contentColor = Color.Black),
+        colors = ButtonDefaults.buttonColors(containerColor = colorFondo, contentColor = Color.Black),
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
             .fillMaxWidth()
