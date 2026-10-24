@@ -48,6 +48,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import com.example.mpaz_real_real.ui.theme.Beige
 
+import com.example.mpaz_real_real.ui.components.AvisoError
+
 @Composable
 fun PreguntaScreen(
     navController: NavController,
@@ -160,7 +162,7 @@ fun PreguntaContenido(
                     }
                 }
                 estado.errorRespuesta?.let { mensaje ->
-                    item { Text(text = mensaje, color = MaterialTheme.colorScheme.error) }
+                    item {AvisoError(mensaje = mensaje)}
                 }
                 item {
                     BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente)
