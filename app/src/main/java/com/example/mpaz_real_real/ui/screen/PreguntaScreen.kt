@@ -45,8 +45,13 @@ fun PreguntaScreen(
         },
         onEnviar = {
             viewModel.onEnviar()
-            navController.navigate(Screen.Retroalimentacion.route) {
-                popUpTo(Screen.Pregunta.route) { inclusive = true }
+            val destino = if(viewModel.estado.value.quedanIntentos){
+                Screen.QuedanIntentos.route
+            }else{
+                Screen.Retroalimentacion.route
+            }
+            navController.navigate(destino){
+                popUpTo(Screen.Pregunta.route){inclusive = true}
             }
         },
         onCambiar = viewModel::onCambiarRespuestas

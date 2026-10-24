@@ -46,12 +46,6 @@ fun RetroalimentacionScreen(
     RetroalimentacionContenido(
         estado = estado,
         onSiguiente = viewModel::onSiguienteRetroalimentacion,
-        onReintentar = {
-            viewModel.onReintentar()
-            navController.navigate(Screen.Pregunta.route) {
-                popUpTo(Screen.Instrucciones.route)
-            }
-        },
         onVolver = {
             navController.navigate(Screen.Instrucciones.route) {
                 popUpTo(Screen.Instrucciones.route) { inclusive = true }
@@ -66,7 +60,6 @@ fun RetroalimentacionScreen(
 fun RetroalimentacionContenido(
     estado: ActividadUiState,
     onSiguiente: () -> Unit,
-    onReintentar: () -> Unit,
     onVolver: () -> Unit,
     onAdjuntarPantallazo: () -> Unit,
     onGuardarResumen: () -> Unit,
@@ -117,10 +110,6 @@ fun RetroalimentacionContenido(
                 Button(onClick = onSiguiente) {
                     Text(text = "Siguiente")
                 }
-            } else if (estado.quedanIntentos) {
-                Button(onClick = onReintentar) {
-                    Text(text = "Reintentar")
-                }
             } else {
                 Button(onClick = onVolver) {
                     Text(text = "Volver a Actividades")
@@ -140,7 +129,6 @@ fun RetroalimentacionContenidoPreview() {
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
             ),
             onSiguiente = {},
-            onReintentar = {},
             onVolver = {},
             onAdjuntarPantallazo = {},
             onGuardarResumen = {}

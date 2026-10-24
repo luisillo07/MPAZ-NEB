@@ -10,6 +10,7 @@ import com.example.mpaz_real_real.ui.screen.InstruccionesScreen
 import com.example.mpaz_real_real.ui.screen.PreguntaScreen
 import com.example.mpaz_real_real.ui.screen.RetroalimentacionScreen
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
+import com.example.mpaz_real_real.ui.screen.QuedanIntentosScreen
 
 @Composable
 fun AppNavigation() {
@@ -31,6 +32,9 @@ fun AppNavigation() {
         }
         composable(Screen.Pregunta.route) {
             PreguntaScreen(navController = navController, viewModel = actividadViewModel)
+        }
+        composable(Screen.QuedanIntentos.route) {
+            QuedanIntentosScreen(navController = navController, viewModel = actividadViewModel)
         }
         composable(Screen.Retroalimentacion.route) {
             RetroalimentacionScreen(navController = navController, viewModel = actividadViewModel)
