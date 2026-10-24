@@ -34,6 +34,11 @@ import com.example.mpaz_real_real.ui.theme.RosaFondo
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
+import com.example.mpaz_real_real.ui.components.ContenedorTexto
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+
 @Composable
 fun PreguntaScreen(
     navController: NavController,
@@ -102,19 +107,24 @@ fun PreguntaContenido(
                     .padding(16.dp)
             ) {
                 item {
-                    Text(
-                        text = actividad.tituloTexto,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    ContenedorTexto {
+                        Text(
+                            text = actividad.tituloTexto,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(text = actividad.contenidoTexto)
+                    }
                 }
-                item { Text(text = actividad.contenidoTexto) }
                 item {
                     Text(
                         text = "Pregunta ${estado.indicePregunta + 1} de ${actividad.preguntas.size}",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
-                item { Text(text = pregunta.enunciado) }
+                item {ContenedorTexto{Text(text = pregunta.enunciado)}}
                 item {
                     pregunta.alternativas.forEachIndexed { posicion, texto ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
