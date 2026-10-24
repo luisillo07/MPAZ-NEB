@@ -31,6 +31,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 
 import com.example.mpaz_real_real.ui.components.PantallazoPregunta
 
+import androidx.compose.material3.Scaffold
+import com.example.mpaz_real_real.ui.components.EncabezadoActividad
+import com.example.mpaz_real_real.ui.theme.RosaFondo
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -76,43 +80,56 @@ fun RetroalimentacionContenido(
         }
     } else {
         val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(text = pregunta.enunciado)
-            Text(text = estado.mensajeRetroalimentacion)
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(text = pregunta.enunciado)
+                Text(text = estado.mensajeRetroalimentacion)
 
-            if (estado.esUltimaRetroalimentacion){
-                if (estado.pantallazoPregunta == null){
-                    OutlinedButton(onClick = onAdjuntarPantallazo){
-                        Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
+                if (estado.esUltimaRetroalimentacion) {
+                    if (estado.pantallazoPregunta == null) {
+                        OutlinedButton(onClick = onAdjuntarPantallazo) {
+                            Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
+                        }
+                    } else {
+                        Text(text = "¡Ya subiste la imagen!")
                     }
-                }else{
-                    Text(text = "¡Ya subiste la imagen!")
-                }
-                PantallazoPregunta(uri = estado.pantallazoPregunta)
-                if (estado.resumenGuardado){
-                    Text(text = "¡Ya guardaste el resumen!")
-                }else{
-                    OutlinedButton(onClick = onGuardarResumen){
-                        Text(text = "Guardar resumen del intento")
+                    PantallazoPregunta(uri = estado.pantallazoPregunta)
+                    if (estado.resumenGuardado) {
+                        Text(text = "¡Ya guardaste el resumen!")
+                    } else {
+                        OutlinedButton(onClick = onGuardarResumen) {
+                            Text(text = "Guardar resumen del intento")
+                        }
                     }
                 }
-            }
-            if (!estado.esUltimaRetroalimentacion) {
-                Button(onClick = onSiguiente) {
-                    Text(text = "Siguiente")
-                }
-            } else {
-                Button(onClick = onVolver) {
-                    Text(text = "Volver a Actividades")
+                if (!estado.esUltimaRetroalimentacion) {
+                    Button(onClick = onSiguiente) {
+                        Text(text = "Siguiente")
+                    }
+                } else {
+                    Button(onClick = onVolver) {
+                        Text(text = "Volver a Actividades")
+                    }
                 }
             }
         }
