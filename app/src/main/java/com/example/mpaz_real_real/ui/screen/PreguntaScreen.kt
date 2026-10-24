@@ -29,6 +29,10 @@ import androidx.compose.material3.TextButton
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
+import androidx.compose.material3.Scaffold
+import com.example.mpaz_real_real.ui.components.EncabezadoActividad
+import com.example.mpaz_real_real.ui.theme.RosaFondo
+
 @Composable
 fun PreguntaScreen(
     navController: NavController,
@@ -78,52 +82,69 @@ fun PreguntaContenido(
     } else {
         val pregunta = actividad.preguntas[estado.indicePregunta]
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            item { Text(text = actividad.tituloTexto, style = MaterialTheme.typography.titleLarge) }
-            item { Text(text = actividad.contenidoTexto) }
-            item {
-                Text(
-                    text = "Pregunta ${estado.indicePregunta + 1} de ${actividad.preguntas.size}",
-                    style = MaterialTheme.typography.titleMedium
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
                 )
-            }
-            item { Text(text = pregunta.enunciado) }
-            item {
-                pregunta.alternativas.forEachIndexed { posicion, texto ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = estado.respuestas[estado.indicePregunta] == posicion,
-                            onClick = { onAlternativa(posicion) }
-                        )
-                        Text(text = texto)
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                item {
+                    Text(
+                        text = actividad.tituloTexto,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                item { Text(text = actividad.contenidoTexto) }
+                item {
+                    Text(
+                        text = "Pregunta ${estado.indicePregunta + 1} de ${actividad.preguntas.size}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                item { Text(text = pregunta.enunciado) }
+                item {
+                    pregunta.alternativas.forEachIndexed { posicion, texto ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = estado.respuestas[estado.indicePregunta] == posicion,
+                                onClick = { onAlternativa(posicion) }
+                            )
+                            Text(text = texto)
+                        }
+                    }
+                }
+                estado.errorRespuesta?.let { mensaje ->
+                    item { Text(text = mensaje, color = MaterialTheme.colorScheme.error) }
+                }
+                item {
+                    Button(onClick = onSiguiente) {
+                        Text(text = if (estado.esUltimaPregunta) "Enviar" else "Siguiente")
                     }
                 }
             }
-            estado.errorRespuesta?.let { mensaje ->
-                item { Text(text = mensaje, color = MaterialTheme.colorScheme.error) }
-            }
-            item {
-                Button(onClick = onSiguiente) {
-                    Text(text = if (estado.esUltimaPregunta) "Enviar" else "Siguiente")
-                }
-            }
         }
-
         if (estado.mostrarConfirmacion) {
             AlertDialog(
                 onDismissRequest = onCambiar,
-                title = {Text(text = "¿Enviar tus respuestas?")},
-                text = {Text(text = "Si quieres revisarlas antes, toca Cambiar.")},
+                title = { Text(text = "¿Enviar tus respuestas?") },
+                text = { Text(text = "Si quieres revisarlas antes, toca Cambiar.") },
                 confirmButton = {
-                    TextButton(onClick = onEnviar){Text(text = "Enviar")}
+                    TextButton(onClick = onEnviar) { Text(text = "Enviar") }
                 },
                 dismissButton = {
-                    TextButton(onClick = onCambiar){Text(text = "Cambiar")}
+                    TextButton(onClick = onCambiar) { Text(text = "Cambiar") }
                 }
             )
         }
