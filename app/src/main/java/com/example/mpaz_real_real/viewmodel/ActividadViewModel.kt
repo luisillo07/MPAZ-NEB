@@ -1,14 +1,29 @@
 package com.example.mpaz_real_real.viewmodel
 
-import androidx.lifecycle.ViewModel
 import com.example.mpaz_real_real.model.ActividadUiState
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.room.Room
+import com.example.mpaz_real_real.data.local.AppDatabase
+import androidx.lifecycle.viewModelScope
+import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
+import kotlinx.coroutines.launch
 
-class ActividadViewModel : ViewModel() {
+class ActividadViewModel(
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val database = Room.databaseBuilder(
+        context = application,
+        klass = AppDatabase::class.java,
+        name = "mpazneb_database"
+    ).build()
+    private val resultadoDao = database.resultadoDao
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     fun cargarActividad(codigo: String) {
@@ -56,12 +71,24 @@ class ActividadViewModel : ViewModel() {
 
 
     fun onEnviar() {
-        _estado.update {
+        val actual = _estado.value
+        val actividad = actual.actividad?: return
+        viewModelScope.launch{
+            resultadoDao.insertar(
+                ResultadoEntity(
+                    codigoActividad = actividad.codigo,
+                    respuestas = actual.respuestas.toString(),
+                    aciertos = (0 until actual.respuestas.size).count{esCorrecta(actual,it)},
+                    totalPreguntas = actual.respuestas.size
+                )
+            )
+        }
+        _estado.update{
             it.copy(
                 mostrarConfirmacion = false,
                 intentosUsados = it.intentosUsados + 1,
                 indiceRetroalimentacion = 0,
-                mensajeRetroalimentacion = armarMensaje(it, 0)
+                mensajeRetroalimentacion = armarMensaje(it,0)
             )
         }
     }
