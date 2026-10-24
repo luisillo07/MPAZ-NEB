@@ -10,7 +10,8 @@ data class ActividadUiState(
     val intentosUsados: Int = 0,
     val indiceRetroalimentacion: Int = 0,
     val mensajeRetroalimentacion: String = "",
-    val pantallazoPregunta: Uri? = null
+    val pantallazoPregunta: Uri? = null,
+    val resumenGuardado: Boolean = false
 ) {
     val esUltimaPregunta: Boolean
         get() = indicePregunta == respuestas.size - 1

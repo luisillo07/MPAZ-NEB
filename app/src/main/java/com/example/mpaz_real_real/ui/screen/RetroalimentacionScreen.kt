@@ -40,6 +40,9 @@ fun RetroalimentacionScreen(
     val lanzadorGaleria = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ){uri -> viewModel.onPantallazoSeleccionado(uri)}
+    val lanzadorArchivo = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri -> viewModel.guardarResumen(uri) }
     RetroalimentacionContenido(
         estado = estado,
         onSiguiente = viewModel::onSiguienteRetroalimentacion,
@@ -54,7 +57,8 @@ fun RetroalimentacionScreen(
                 popUpTo(Screen.Instrucciones.route) { inclusive = true }
             }
         },
-        onAdjuntarPantallazo = { lanzadorGaleria.launch("image/*") }
+        onAdjuntarPantallazo = {lanzadorGaleria.launch("image/*")},
+        onGuardarResumen = {lanzadorArchivo.launch("resumen_${estado.actividad?.codigo}.txt")}
     )
 }
 
@@ -65,6 +69,7 @@ fun RetroalimentacionContenido(
     onReintentar: () -> Unit,
     onVolver: () -> Unit,
     onAdjuntarPantallazo: () -> Unit,
+    onGuardarResumen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val actividad = estado.actividad
@@ -101,6 +106,13 @@ fun RetroalimentacionContenido(
                 }
                 PantallazoPregunta(uri = estado.pantallazoPregunta)
             }
+            if (estado.resumenGuardado) {
+                Text(text = "¡Ya guardaste el resumen!")
+            }else{
+                OutlinedButton(onClick = onGuardarResumen){
+                    Text(text = "Guardar resumen del intento")
+                }
+            }
             if (!estado.esUltimaRetroalimentacion) {
                 Button(onClick = onSiguiente) {
                     Text(text = "Siguiente")
@@ -130,7 +142,8 @@ fun RetroalimentacionContenidoPreview() {
             onSiguiente = {},
             onReintentar = {},
             onVolver = {},
-            onAdjuntarPantallazo = {}
+            onAdjuntarPantallazo = {},
+            onGuardarResumen = {}
         )
     }
 }

@@ -15,6 +15,10 @@ import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
 import kotlinx.coroutines.launch
 import android.net.Uri
 
+import java.io.FileOutputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 class ActividadViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -25,6 +29,7 @@ class ActividadViewModel(
         name = "mpazneb_database"
     ).build()
     private val resultadoDao = database.resultadoDao
+    private val contentResolver = application.contentResolver
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     fun cargarActividad(codigo: String) {
@@ -117,7 +122,8 @@ class ActividadViewModel(
                 respuestas = it.respuestas.map { null },
                 errorRespuesta = null,
                 indiceRetroalimentacion = 0,
-                pantallazoPregunta = null
+                pantallazoPregunta = null,
+                resumenGuardado = false
             )
         }
     }
@@ -126,6 +132,35 @@ class ActividadViewModel(
     fun onPantallazoSeleccionado(uri: Uri?) {
         if (uri == null) return
         _estado.update { it.copy(pantallazoPregunta = uri) }
+    }
+
+    fun guardarResumen(uri: Uri?) {
+        if (uri == null) return
+        val texto = textoResumen()
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    contentResolver.openFileDescriptor(uri, "w")?.use { descriptor ->
+                        FileOutputStream(descriptor.fileDescriptor).use { salida ->
+                            salida.write(texto.toByteArray())
+                        }
+                    }
+                }
+                _estado.update { it.copy(resumenGuardado = true) }
+            } catch (e: Exception) {
+                // Si no se pudo escribir, la app no se cae
+            }
+        }
+    }
+
+    private fun textoResumen(): String {
+        val actual = _estado.value
+        val actividad = actual.actividad ?: return ""
+        val aciertos = (0 until actual.respuestas.size).count { esCorrecta(actual, it) }
+        return "MPAZ NEB - resumen del intento (datos ficticios)\n" +
+                "Actividad: ${actividad.nombre} (${actividad.modulo}, ${actividad.curso})\n" +
+                "Aciertos: $aciertos de ${actual.respuestas.size}\n" +
+                "Intentos usados: ${actual.intentosUsados} de ${actividad.intentosPermitidos}\n"
     }
 
 
