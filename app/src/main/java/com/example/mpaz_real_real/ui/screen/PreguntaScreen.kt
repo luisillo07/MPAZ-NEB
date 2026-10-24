@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Button
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
@@ -32,6 +31,8 @@ import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
+
+import com.example.mpaz_real_real.ui.components.BotonActividad
 
 @Composable
 fun PreguntaScreen(
@@ -129,9 +130,7 @@ fun PreguntaContenido(
                     item { Text(text = mensaje, color = MaterialTheme.colorScheme.error) }
                 }
                 item {
-                    Button(onClick = onSiguiente) {
-                        Text(text = if (estado.esUltimaPregunta) "Enviar" else "Siguiente")
-                    }
+                    BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente)
                 }
             }
         }
