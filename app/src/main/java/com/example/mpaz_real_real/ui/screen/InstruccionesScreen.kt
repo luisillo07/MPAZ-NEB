@@ -12,10 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.model.ActividadUiState
 import com.example.mpaz_real_real.repository.actividadesDePrueba
@@ -25,6 +23,7 @@ import com.example.mpaz_real_real.navigation.Screen
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.components.BotonActividad
 
 @Composable
 fun InstruccionesScreen(
@@ -76,9 +75,7 @@ fun InstruccionesContenido(
             ){
                 Text(text = actividad.instrucciones)
                 if (estado.quedanIntentos) {
-                    Button(onClick = onComenzar) {
-                        Text(text = "Comenzar")
-                    }
+                    BotonActividad(texto = "Comenzar", onClick = onComenzar)
                 } else {
                     Text(text = "Ya usaste todos los intentos de esta actividad")
                 }
