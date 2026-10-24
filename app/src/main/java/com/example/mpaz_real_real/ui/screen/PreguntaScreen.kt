@@ -39,6 +39,12 @@ import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.foundation.layout.Column
 import com.example.mpaz_real_real.ui.components.AlternativaPregunta
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.border
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import com.example.mpaz_real_real.ui.theme.RojoCabecera
 
 @Composable
 fun PreguntaScreen(
@@ -108,6 +114,25 @@ fun PreguntaContenido(
                     .padding(16.dp)
             ) {
                 item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = "Pregunta ${estado.indicePregunta + 1} de ${actividad.preguntas.size}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        LinearProgressIndicator(
+                            progress = { (estado.indicePregunta + 1).toFloat() / actividad.preguntas.size },
+                            color = RojoCabecera,
+                            trackColor = Color.White,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(12.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .border(2.dp, Color.Black, MaterialTheme.shapes.medium)
+                        )
+                    }
+                }
+                item {
                     ContenedorTexto {
                         Text(
                             text = actividad.tituloTexto,
@@ -118,12 +143,6 @@ fun PreguntaContenido(
                         )
                         Text(text = actividad.contenidoTexto)
                     }
-                }
-                item {
-                    Text(
-                        text = "Pregunta ${estado.indicePregunta + 1} de ${actividad.preguntas.size}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
                 }
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
                 item {
@@ -180,6 +199,3 @@ fun PreguntaContenidoPreview() {
         )
     }
 }
-
-
-
