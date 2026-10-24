@@ -22,7 +22,9 @@ import com.example.mpaz_real_real.repository.actividadesDePrueba
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import androidx.navigation.NavController
 import com.example.mpaz_real_real.navigation.Screen
-
+import androidx.compose.material3.Scaffold
+import com.example.mpaz_real_real.ui.components.EncabezadoActividad
+import com.example.mpaz_real_real.ui.theme.RosaFondo
 
 @Composable
 fun InstruccionesScreen(
@@ -53,20 +55,33 @@ fun InstruccionesContenido(
             CircularProgressIndicator()
         }
     }else{
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ){
-            Text(text = actividad.nombre,style = MaterialTheme.typography.titleLarge)
-            Text(text = actividad.instrucciones)
-            if (estado.quedanIntentos) {
-                Button(onClick = onComenzar) {
-                    Text(text = "Comenzar")
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre,
+                    mostrarSalir = true
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ){
+                Text(text = actividad.instrucciones)
+                if (estado.quedanIntentos) {
+                    Button(onClick = onComenzar) {
+                        Text(text = "Comenzar")
+                    }
+                } else {
+                    Text(text = "Ya usaste todos los intentos de esta actividad")
                 }
-            } else {
-                Text(text = "Ya usaste todos los intentos de esta actividad")
             }
         }
     }
