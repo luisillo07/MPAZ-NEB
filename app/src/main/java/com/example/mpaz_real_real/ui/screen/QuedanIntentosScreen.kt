@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.RosaFondo
 
+import com.example.mpaz_real_real.ui.components.BotonActividad
 
 @Composable
 fun QuedanIntentosScreen(
@@ -86,12 +86,8 @@ fun QuedanIntentosContenido(
             ) {
                 Text(text = "Enviaste tus respuestas.")
                 Text(text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.")
-                Button(onClick = onReintentar) {
-                    Text(text = "Reintentar")
-                }
-                Button(onClick = onSiguiente) {
-                    Text(text = "Siguiente")
-                }
+                BotonActividad(texto = "Reintentar", onClick = onReintentar)
+                BotonActividad(texto = "Siguiente", onClick = onSiguiente)
             }
         }
     }
