@@ -58,8 +58,12 @@ fun InstruccionesContenido(
         ){
             Text(text = actividad.nombre,style = MaterialTheme.typography.titleLarge)
             Text(text = actividad.instrucciones)
-            Button(onClick = onComenzar){
-                Text(text = "Comenzar")
+            if (estado.quedanIntentos) {
+                Button(onClick = onComenzar) {
+                    Text(text = "Comenzar")
+                }
+            } else {
+                Text(text = "Ya usaste todos los intentos de esta actividad")
             }
         }
     }
