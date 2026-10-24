@@ -19,8 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.RadioButton
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
@@ -38,6 +36,9 @@ import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+
+import androidx.compose.foundation.layout.Column
+import com.example.mpaz_real_real.ui.components.AlternativaPregunta
 
 @Composable
 fun PreguntaScreen(
@@ -126,13 +127,14 @@ fun PreguntaContenido(
                 }
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
                 item {
-                    pregunta.alternativas.forEachIndexed { posicion, texto ->
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            RadioButton(
-                                selected = estado.respuestas[estado.indicePregunta] == posicion,
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        pregunta.alternativas.forEachIndexed { posicion, texto ->
+                            AlternativaPregunta(
+                                letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
+                                texto = texto,
+                                seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
                                 onClick = { onAlternativa(posicion) }
                             )
-                            Text(text = texto)
                         }
                     }
                 }
