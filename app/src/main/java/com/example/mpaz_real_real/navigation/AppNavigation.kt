@@ -9,6 +9,7 @@ import com.example.mpaz_real_real.ui.screen.CatalogoScreen
 import com.example.mpaz_real_real.ui.screen.EnConstruccionScreen
 import com.example.mpaz_real_real.ui.screen.FormularioActividadScreen
 import com.example.mpaz_real_real.ui.screen.InicioScreen
+import com.example.mpaz_real_real.ui.screen.RevisarActividadScreen
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
 @Composable
@@ -29,5 +30,6 @@ fun AppNavigation() {
         composable("catalogo") { CatalogoScreen(navController, catalogoViewModel) }
         composable("construccion") { EnConstruccionScreen(navController) }
         composable("formulario") { FormularioActividadScreen(navController, catalogoViewModel) }
+        composable("revisar") { RevisarActividadScreen(navController, catalogoViewModel) }
     }
 }
