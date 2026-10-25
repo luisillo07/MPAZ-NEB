@@ -245,13 +245,15 @@ fun RetroalimentacionMediana(
                                         onClick = onAdjuntarPantallazo,
                                         colorFondo = Beige
                                     )
-                                }else{
+                                }
+                                AnimatedVisibility(visible = estado.pantallazoPregunta != null) {
                                     Text(text = "¡Ya subiste la imagen!")
                                 }
                                 PantallazoPregunta(uri = estado.pantallazoPregunta)
-                                if (estado.resumenGuardado) {
+                                AnimatedVisibility(visible = estado.resumenGuardado) {
                                     Text(text = "¡Ya guardaste el resumen!")
-                                }else{
+                                }
+                                if (!estado.resumenGuardado){
                                     BotonActividad(
                                         texto = "Guardar resumen del intento",
                                         onClick = onGuardarResumen,
