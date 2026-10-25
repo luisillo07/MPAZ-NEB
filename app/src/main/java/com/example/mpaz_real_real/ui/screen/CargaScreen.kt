@@ -34,7 +34,7 @@ fun CargaScreen(
     val cargando by viewModel.cargando.collectAsState()
     if (!cargando) {
         LaunchedEffect(Unit) {
-            navController.navigate(Screen.Login.route) {
+            navController.navigate(Screen.Perfil.route) {
                 popUpTo(Screen.Carga.route) { inclusive = true }
             }
         }

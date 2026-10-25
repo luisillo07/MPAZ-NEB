@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mpaz_real_real.viewmodel.LoginViewModel
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
@@ -24,13 +23,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import kotlinx.coroutines.launch
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.example.mpaz_real_real.R
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,11 +47,13 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.Alignment
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel()
+    navController: NavController,
+    viewModel: LoginViewModel
 ) {
 
     val estado by viewModel.state.collectAsState()
@@ -123,123 +120,80 @@ fun LoginScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (estado.tipoUsuario.isBlank()) {
+            val estudiante = estado.tipoUsuario == "estudiante"
 
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Logo de la Escuela Escritora Marcela Paz",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                )
+            val nombrePerfil = when (estado.tipoUsuario) {
+                "docente" -> "Docente / UTP"
+                "asistente" -> "Asistente de aula"
+                "estudiante" -> "Estudiante"
+                else -> ""
+            }
 
-                Text(
-                    text = "Elige el perfil de usuario",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Text(
+                text = nombrePerfil,
+                color = Color.Black,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(CabeceraLogin)
+                    .padding(vertical = 20.dp)
+            )
 
-                Button(
-                    onClick = {
-                        viewModel.seleccionarTipoUsuario("docente")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BotonLogin,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                ) {
-                    Text(
-                        text = "Administración pedagógica",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
+            OutlinedTextField(
+                value = estado.usuario,
+                onValueChange = viewModel::usuarioChanged,
+                label = {
+                    Text(text = "Usuario")
+                },
+                isError = estado.errores.usuario != null,
+                supportingText = {
+                    estado.errores.usuario?.let {
+                        Text(
+                            text = it,
+                            color = TextoErrorLogin
+                        )
+                    }
+                },
+                singleLine = true,
+                colors = coloresCampos,
+                shape = RectangleShape,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                Button(
-                    onClick = {
-                        viewModel.seleccionarTipoUsuario("asistente")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BotonLogin,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                ) {
-                    Text(
-                        text = "Asistente de aula",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
+            OutlinedTextField(
+                value = estado.contrasenia,
+                onValueChange = viewModel::contraseniaChanged,
+                label = {
+                    Text(text = "Contraseña")
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                isError = estado.errores.contrasenia != null,
+                supportingText = {
+                    estado.errores.contrasenia?.let {
+                        Text(
+                            text = it,
+                            color = TextoErrorLogin
+                        )
+                    }
+                },
+                singleLine = true,
+                colors = coloresCampos,
+                shape = RectangleShape,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                Button(
-                    onClick = {
-                        viewModel.seleccionarTipoUsuario("estudiante")
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BotonLogin,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                ) {
-                    Text(
-                        text = "Estudiante",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-            } else {
-
-                val estudiante = estado.tipoUsuario == "estudiante"
-
-                val nombrePerfil = when (estado.tipoUsuario) {
-                    "docente" -> "Docente / UTP"
-                    "asistente" -> "Asistente de aula"
-                    "estudiante" -> "Estudiante"
-                    else -> ""
-                }
-
-                Text(
-                    text = nombrePerfil,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(CabeceraLogin)
-                        .padding(vertical = 20.dp)
-                )
-
+            if (estudiante) {
                 OutlinedTextField(
-                    value = estado.usuario,
-                    onValueChange = viewModel::usuarioChanged,
+                    value = estado.codigoTemporal,
+                    onValueChange = viewModel::codigoTemporalChanged,
                     label = {
-                        Text(text = "Usuario")
+                        Text(text = "Código temporal (opcional)")
                     },
-                    isError = estado.errores.usuario != null,
+                    isError = estado.errores.codigoTemporal != null,
                     supportingText = {
-                        estado.errores.usuario?.let {
+                        estado.errores.codigoTemporal?.let {
                             Text(
                                 text = it,
                                 color = TextoErrorLogin
@@ -251,104 +205,59 @@ fun LoginScreen(
                     shape = RectangleShape,
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
 
-                OutlinedTextField(
-                    value = estado.contrasenia,
-                    onValueChange = viewModel::contraseniaChanged,
-                    label = {
-                        Text(text = "Contraseña")
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    isError = estado.errores.contrasenia != null,
-                    supportingText = {
-                        estado.errores.contrasenia?.let {
-                            Text(
-                                text = it,
-                                color = TextoErrorLogin
-                            )
-                        }
-                    },
-                    singleLine = true,
-                    colors = coloresCampos,
-                    shape = RectangleShape,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            Button(
+                onClick = {
+                    val valido = viewModel.validar()
 
-                if (estudiante) {
-                    OutlinedTextField(
-                        value = estado.codigoTemporal,
-                        onValueChange = viewModel::codigoTemporalChanged,
-                        label = {
-                            Text(text = "Código temporal (opcional)")
-                        },
-                        isError = estado.errores.codigoTemporal != null,
-                        supportingText = {
-                            estado.errores.codigoTemporal?.let {
-                                Text(
-                                    text = it,
-                                    color = TextoErrorLogin
-                                )
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = if (valido) {
+                                "Campos completos"
+                            } else {
+                                "Revisa los campos indicados"
                             }
-                        },
-                        singleLine = true,
-                        colors = coloresCampos,
-                        shape = RectangleShape,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                        )
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BotonLogin,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+            ) {
+                Text(
+                    text = "Ingresar",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
 
-                Button(
-                    onClick = {
-                        val valido = viewModel.validar()
-
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = if (valido) {
-                                    "Campos completos"
-                                } else {
-                                    "Revisa los campos indicados"
-                                }
-                            )
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BotonLogin,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                ) {
-                    Text(
-                        text = "Ingresar",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        viewModel.volverASeleccion()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = BotonLogin,
-                        contentColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(2.dp, Color.Black),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                ) {
-                    Text(
-                        text = "Volver",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            Button(
+                onClick = {
+                    navController.popBackStack()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BotonLogin,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+            ) {
+                Text(
+                    text = "Volver",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
