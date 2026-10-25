@@ -11,17 +11,13 @@ data class CatalogoUiState(
     val dificultadAplicado: String = "Todos",
     val opcionesModulo: List<String> = listOf("Todos", "Lectura", "Matemática"),
     val opcionesCurso: List<String> = listOf("Todos", "1.º básico", "2.º básico", "3.º básico", "4.º básico"),
-    val opcionesContenido: List<String> = listOf(
-        "Todos",
-        "[CONTENIDO LECTURA 1]",
-        "[CONTENIDO LECTURA 2]",
-        "[CONTENIDO MATEMÁTICA 1]",
-        "[CONTENIDO MATEMÁTICA 2]"
-    ),
+    val opcionesContenido: List<String> = listOf("Todos", "Comprensión lectora", "Adición y sustracción hasta 100"),
     val opcionesDificultad: List<String> = listOf("Todos", "Fácil", "Medio", "Difícil"),
     val opcionesEstado: List<String> = listOf("Disponible", "Desactivada"),
     val opcionesFecha: List<String> = listOf("[FECHA 1]", "[FECHA 2]"),
     val actividades: List<Actividad> = emptyList(),
+    val preguntas: List<Pregunta> = emptyList(),
+    val codigoRevision: String = "",
     val mensajeError: String? = null,
     val mensajeExito: String? = null,
     val formulario: FormularioActividadUiState = FormularioActividadUiState()
@@ -33,4 +29,10 @@ data class CatalogoUiState(
                     (contenidoAplicado == "Todos" || actividad.contenido == contenidoAplicado) &&
                     (dificultadAplicado == "Todos" || actividad.dificultad == dificultadAplicado)
         }
+
+    val actividadRevisada: Actividad?
+        get() = actividades.firstOrNull { it.codigo == codigoRevision }
+
+    val preguntasRevisadas: List<Pregunta>
+        get() = preguntas.filter { it.actividadCodigo == codigoRevision }
 }

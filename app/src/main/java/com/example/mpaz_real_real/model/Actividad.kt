@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "actividades")
 data class Actividad(
     @PrimaryKey
-    val id: String,
+    val codigo: String,
     val nombre: String,
     val modulo: String,
     val curso: String,
@@ -17,5 +17,9 @@ data class Actividad(
     val cantidadPreguntas: Int?,
     val intentosPermitidos: Int?,
     val estado: String,
-    val fecha: String
+    val fecha: String,
+    val tituloTexto: String,
+    val tipoTexto: String,
+    val contenidoTexto: String,
+    val nivelVocabulario: String
 )

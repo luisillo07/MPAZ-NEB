@@ -37,7 +37,6 @@ fun CatalogoScreen(
     viewModel: CatalogoViewModel
 ) {
     val estado by viewModel.state.collectAsState()
-    val irAConstruccion: () -> Unit = { navController.navigate("construccion") }
     val mensajeError = estado.mensajeError
     val mensajeExito = estado.mensajeExito
     val visibles = estado.actividadesVisibles
@@ -97,12 +96,15 @@ fun CatalogoScreen(
                     items(visibles) { actividad ->
                         TarjetaActividad(
                             actividad = actividad,
-                            onRevisar = irAConstruccion,
+                            onRevisar = {
+                                viewModel.onRevisarClick(actividad)
+                                navController.navigate("revisar")
+                            },
                             onEditar = {
                                 viewModel.onEditarClick(actividad)
                                 navController.navigate("formulario")
                             },
-                            onCambiarEstado = { viewModel.onCambiarEstado(actividad.id) }
+                            onCambiarEstado = { viewModel.onCambiarEstado(actividad.codigo) }
                         )
                     }
                 } else {

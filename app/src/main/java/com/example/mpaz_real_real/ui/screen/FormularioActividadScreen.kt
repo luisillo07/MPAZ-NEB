@@ -1,13 +1,16 @@
 package com.example.mpaz_real_real.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,11 +20,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mpaz_real_real.ui.components.BotonCatalogo
 import com.example.mpaz_real_real.ui.components.CampoFormulario
+import com.example.mpaz_real_real.ui.components.FilaAlternativa
+import com.example.mpaz_real_real.ui.components.MensajeError
 import com.example.mpaz_real_real.ui.components.SelectorFiltro
 import com.example.mpaz_real_real.ui.theme.GrisBarra
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
@@ -34,6 +41,7 @@ fun FormularioActividadScreen(
 ) {
     val estado by viewModel.state.collectAsState()
     val formulario = estado.formulario
+    val errorPregunta = formulario.errores.nuevaPregunta
 
     Scaffold(
         topBar = {
@@ -62,9 +70,9 @@ fun FormularioActividadScreen(
         ) {
             CampoFormulario(
                 etiqueta = "Identificador",
-                valor = formulario.id,
-                onValorChange = viewModel::onFormIdChange,
-                error = formulario.errores.id,
+                valor = formulario.codigo,
+                onValorChange = viewModel::onFormCodigoChange,
+                error = formulario.errores.codigo,
                 soloLectura = !formulario.esNuevo
             )
             CampoFormulario(
@@ -126,6 +134,57 @@ fun FormularioActividadScreen(
                 "Fecha", formulario.fecha, estado.opcionesFecha,
                 viewModel::onFormFechaChange, Modifier.fillMaxWidth()
             )
+
+            Text("Preguntas", style = MaterialTheme.typography.titleLarge)
+
+            for (i in 0..formulario.preguntas.size - 1) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "${i + 1}. ${formulario.preguntas[i].enunciado}",
+                            modifier = Modifier.weight(1f)
+                        )
+                        BotonCatalogo("Quitar", { viewModel.onQuitarPregunta(i) })
+                    }
+                }
+            }
+
+            CampoFormulario(
+                etiqueta = "Pregunta",
+                valor = formulario.nuevaPregunta,
+                onValorChange = viewModel::onNuevaPreguntaChange,
+                lineasMinimas = 2
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Alternativas")
+                Text("Correcta")
+            }
+            FilaAlternativa("A", formulario.nuevaAlternativaA, viewModel::onNuevaAlternativaAChange, formulario.nuevaCorrecta == 0) {
+                viewModel.onNuevaCorrectaChange(0)
+            }
+            FilaAlternativa("B", formulario.nuevaAlternativaB, viewModel::onNuevaAlternativaBChange, formulario.nuevaCorrecta == 1) {
+                viewModel.onNuevaCorrectaChange(1)
+            }
+            FilaAlternativa("C", formulario.nuevaAlternativaC, viewModel::onNuevaAlternativaCChange, formulario.nuevaCorrecta == 2) {
+                viewModel.onNuevaCorrectaChange(2)
+            }
+            if (errorPregunta != null) {
+                MensajeError(errorPregunta)
+            }
+            BotonCatalogo("+ Agregar pregunta", viewModel::onAgregarPregunta, Modifier.fillMaxWidth())
+
             BotonCatalogo(
                 texto = if (formulario.esNuevo) "Crear" else "Guardar",
                 onClick = {

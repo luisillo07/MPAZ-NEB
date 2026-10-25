@@ -5,10 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.mpaz_real_real.data.local.AppDatabase
+import com.example.mpaz_real_real.data.local.actividadesIniciales
+import com.example.mpaz_real_real.data.local.preguntasIniciales
 import com.example.mpaz_real_real.model.Actividad
 import com.example.mpaz_real_real.model.CatalogoUiState
 import com.example.mpaz_real_real.model.FormularioActividadErrores
 import com.example.mpaz_real_real.model.FormularioActividadUiState
+import com.example.mpaz_real_real.model.Pregunta
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,19 +25,13 @@ class CatalogoViewModel(
     private val database = Room.databaseBuilder(
         context = application,
         klass = AppDatabase::class.java,
-        name = "mpaz_database"
+        name = "mpaz_database_v2"
     ).build()
 
     private val dao = database.actividadDao
 
-    private val actividadesIniciales = listOf(
-        Actividad("IDENTIFICADOR1", "Actividad 1", "Lectura", "1.º básico", "[CONTENIDO LECTURA 1]", "[OBJETIVO PEDAGÓGICO 1]", "Fácil", "[INSTRUCCIONES 1]", 2, 2, "disponible", "[FECHA 1]"),
-        Actividad("IDENTIFICADOR2", "Actividad 2", "Lectura", "2.º básico", "[CONTENIDO LECTURA 2]", "[OBJETIVO PEDAGÓGICO 2]", "Medio", "[INSTRUCCIONES 2]", 2, 2, "desactivada", "[FECHA 2]"),
-        Actividad("IDENTIFICADOR3", "Actividad 3", "Matemática", "1.º básico", "[CONTENIDO MATEMÁTICA 1]", "[OBJETIVO PEDAGÓGICO 3]", "Difícil", "[INSTRUCCIONES 3]", 2, 2, "disponible", "[FECHA 1]"),
-        Actividad("IDENTIFICADOR4", "Actividad 4", "Matemática", "3.º básico", "[CONTENIDO MATEMÁTICA 2]", "[OBJETIVO PEDAGÓGICO 4]", "Fácil", "[INSTRUCCIONES 4]", 2, 2, "disponible", "[FECHA 2]"),
-        Actividad("IDENTIFICADOR5", "Actividad 5", "Lectura", "4.º básico", "[CONTENIDO LECTURA 2]", "[OBJETIVO PEDAGÓGICO 5]", "Medio", "[INSTRUCCIONES 5]", 2, 2, "disponible", "[FECHA 1]"),
-        Actividad("IDENTIFICADOR6", "Actividad 6", "Lectura", "", "", "", "", "", null, null, "borrador", "")
-    )
+    private val patronLectura = Regex("^LEC-[0-9]{3}$")
+    private val patronMatematica = Regex("^MAT-[0-9]{3}$")
 
     private val _state = MutableStateFlow(CatalogoUiState())
     val state: StateFlow<CatalogoUiState> = _state.asStateFlow()
@@ -43,11 +40,17 @@ class CatalogoViewModel(
         viewModelScope.launch {
             if (dao.contar() == 0) {
                 actividadesIniciales.forEach { dao.insertar(it) }
+                preguntasIniciales.forEach { dao.insertarPregunta(it) }
             }
         }
         viewModelScope.launch {
             dao.observarTodas().collect { lista ->
                 _state.update { estado -> estado.copy(actividades = lista) }
+            }
+        }
+        viewModelScope.launch {
+            dao.observarPreguntas().collect { lista ->
+                _state.update { estado -> estado.copy(preguntas = lista) }
             }
         }
     }
@@ -83,8 +86,12 @@ class CatalogoViewModel(
         }
     }
 
-    fun onCambiarEstado(id: String) {
-        val actividad = _state.value.actividades.firstOrNull { it.id == id } ?: return
+    fun onRevisarClick(actividad: Actividad) {
+        _state.update { it.copy(codigoRevision = actividad.codigo) }
+    }
+
+    fun onCambiarEstado(codigo: String) {
+        val actividad = _state.value.actividades.firstOrNull { it.codigo == codigo } ?: return
         when (actividad.estado) {
             "disponible" -> actualizarEnBd(actividad.copy(estado = "desactivada"))
             "desactivada" -> actualizarEnBd(actividad.copy(estado = "disponible"))
@@ -116,7 +123,7 @@ class CatalogoViewModel(
             it.copy(
                 formulario = FormularioActividadUiState(
                     esNuevo = false,
-                    id = actividad.id,
+                    codigo = actividad.codigo,
                     nombre = actividad.nombre,
                     modulo = actividad.modulo,
                     curso = actividad.curso,
@@ -127,14 +134,19 @@ class CatalogoViewModel(
                     cantidadPreguntas = actividad.cantidadPreguntas?.toString() ?: "",
                     intentosPermitidos = actividad.intentosPermitidos?.toString() ?: "",
                     estado = nombreEstadoFormulario(actividad.estado),
-                    fecha = actividad.fecha
+                    fecha = actividad.fecha,
+                    tituloTexto = actividad.tituloTexto,
+                    tipoTexto = actividad.tipoTexto,
+                    contenidoTexto = actividad.contenidoTexto,
+                    nivelVocabulario = actividad.nivelVocabulario,
+                    preguntas = it.preguntas.filter { pregunta -> pregunta.actividadCodigo == actividad.codigo }
                 )
             )
         }
     }
 
-    fun onFormIdChange(valor: String) {
-        actualizarFormulario { it.copy(id = valor, errores = it.errores.copy(id = null)) }
+    fun onFormCodigoChange(valor: String) {
+        actualizarFormulario { it.copy(codigo = valor, errores = it.errores.copy(codigo = null)) }
     }
 
     fun onFormNombreChange(valor: String) { actualizarFormulario { it.copy(nombre = valor) } }
@@ -156,17 +168,96 @@ class CatalogoViewModel(
     fun onFormEstadoChange(valor: String) { actualizarFormulario { it.copy(estado = valor) } }
     fun onFormFechaChange(valor: String) { actualizarFormulario { it.copy(fecha = valor) } }
 
+    fun onNuevaPreguntaChange(valor: String) {
+        actualizarFormulario { it.copy(nuevaPregunta = valor, errores = it.errores.copy(nuevaPregunta = null)) }
+    }
+
+    fun onNuevaAlternativaAChange(valor: String) {
+        actualizarFormulario { it.copy(nuevaAlternativaA = valor, errores = it.errores.copy(nuevaPregunta = null)) }
+    }
+
+    fun onNuevaAlternativaBChange(valor: String) {
+        actualizarFormulario { it.copy(nuevaAlternativaB = valor, errores = it.errores.copy(nuevaPregunta = null)) }
+    }
+
+    fun onNuevaAlternativaCChange(valor: String) {
+        actualizarFormulario { it.copy(nuevaAlternativaC = valor, errores = it.errores.copy(nuevaPregunta = null)) }
+    }
+
+    fun onNuevaCorrectaChange(indice: Int) {
+        actualizarFormulario { it.copy(nuevaCorrecta = indice, errores = it.errores.copy(nuevaPregunta = null)) }
+    }
+
+    fun onAgregarPregunta() {
+        val formulario = _state.value.formulario
+        val cantidad = formulario.cantidadPreguntas.toIntOrNull()
+
+        if (formulario.nuevaPregunta.isBlank() ||
+            formulario.nuevaAlternativaA.isBlank() ||
+            formulario.nuevaAlternativaB.isBlank() ||
+            formulario.nuevaAlternativaC.isBlank() ||
+            formulario.nuevaCorrecta !in 0..2
+        ) {
+            actualizarFormulario {
+                it.copy(errores = it.errores.copy(nuevaPregunta = "Completa la pregunta, las tres alternativas y marca la correcta."))
+            }
+            return
+        }
+
+        if (cantidad != null && cantidad > 0 && formulario.preguntas.size >= cantidad) {
+            actualizarFormulario {
+                it.copy(errores = it.errores.copy(cantidadPreguntas = "Ya agregaste las $cantidad preguntas indicadas. Aumenta la cantidad para agregar más."))
+            }
+            return
+        }
+
+        val nueva = Pregunta(
+            enunciado = formulario.nuevaPregunta.trim(),
+            alternativaA = formulario.nuevaAlternativaA.trim(),
+            alternativaB = formulario.nuevaAlternativaB.trim(),
+            alternativaC = formulario.nuevaAlternativaC.trim(),
+            correcta = formulario.nuevaCorrecta
+        )
+
+        val lista = mutableListOf<Pregunta>()
+        formulario.preguntas.forEach { lista.add(it) }
+        lista.add(nueva)
+
+        actualizarFormulario {
+            it.copy(
+                preguntas = lista,
+                nuevaPregunta = "",
+                nuevaAlternativaA = "",
+                nuevaAlternativaB = "",
+                nuevaAlternativaC = "",
+                nuevaCorrecta = -1,
+                errores = it.errores.copy(nuevaPregunta = null, cantidadPreguntas = null)
+            )
+        }
+    }
+
+    fun onQuitarPregunta(indice: Int) {
+        val formulario = _state.value.formulario
+        val lista = mutableListOf<Pregunta>()
+        for (i in 0..formulario.preguntas.size - 1) {
+            if (i != indice) {
+                lista.add(formulario.preguntas[i])
+            }
+        }
+        actualizarFormulario { it.copy(preguntas = lista, errores = it.errores.copy(cantidadPreguntas = null)) }
+    }
+
     fun onGuardarFormulario(): Boolean {
         val formulario = _state.value.formulario
         val errores = validarFormulario(formulario)
 
-        if (errores.id != null || errores.cantidadPreguntas != null || errores.intentosPermitidos != null) {
+        if (errores.codigo != null || errores.cantidadPreguntas != null || errores.intentosPermitidos != null) {
             _state.update { it.copy(formulario = it.formulario.copy(errores = errores)) }
             return false
         }
 
         val actividadBase = Actividad(
-            id = formulario.id.trim(),
+            codigo = formulario.codigo.trim(),
             nombre = formulario.nombre.trim(),
             modulo = formulario.modulo,
             curso = formulario.curso,
@@ -177,7 +268,11 @@ class CatalogoViewModel(
             cantidadPreguntas = formulario.cantidadPreguntas.toIntOrNull(),
             intentosPermitidos = formulario.intentosPermitidos.toIntOrNull(),
             estado = "borrador",
-            fecha = formulario.fecha
+            fecha = formulario.fecha,
+            tituloTexto = formulario.tituloTexto,
+            tipoTexto = formulario.tipoTexto,
+            contenidoTexto = formulario.contenidoTexto,
+            nivelVocabulario = formulario.nivelVocabulario
         )
 
         val esBorrador = datosFaltantes(actividadBase).isNotEmpty() || formulario.estado.isBlank()
@@ -190,11 +285,7 @@ class CatalogoViewModel(
         }
         val actividad = actividadBase.copy(estado = estadoFinal)
 
-        if (formulario.esNuevo) {
-            insertarEnBd(actividad)
-        } else {
-            actualizarEnBd(actividad)
-        }
+        guardarEnBd(actividad, formulario.preguntas, formulario.esNuevo)
 
         val textoBase = if (formulario.esNuevo) "Actividad creada" else "Actividad guardada"
         val mensaje = if (esBorrador) textoBase + " como borrador porque faltan datos" else textoBase
@@ -215,21 +306,40 @@ class CatalogoViewModel(
     }
 
     private fun validarFormulario(formulario: FormularioActividadUiState): FormularioActividadErrores {
-        val errorId = if (!formulario.esNuevo) {
-            null
-        } else if (formulario.id.isBlank()) {
-            "Completa este campo."
-        } else if (_state.value.actividades.firstOrNull { it.id.uppercase() == formulario.id.trim().uppercase() } != null) {
-            "Este identificador ya existe."
+        val cantidad = formulario.cantidadPreguntas.toIntOrNull()
+        val errorNumeroPreguntas = errorNumero(formulario.cantidadPreguntas)
+        val errorCantidad = if (errorNumeroPreguntas != null) {
+            errorNumeroPreguntas
+        } else if (cantidad != null && cantidad != formulario.preguntas.size) {
+            "Indicaste $cantidad preguntas, pero hay ${formulario.preguntas.size}. Agrega o quita preguntas."
         } else {
             null
         }
 
         return FormularioActividadErrores(
-            id = errorId,
-            cantidadPreguntas = errorNumero(formulario.cantidadPreguntas),
+            codigo = errorCodigo(formulario),
+            cantidadPreguntas = errorCantidad,
             intentosPermitidos = errorNumero(formulario.intentosPermitidos)
         )
+    }
+
+    private fun errorCodigo(formulario: FormularioActividadUiState): String? {
+        if (!formulario.esNuevo) return null
+        val codigo = formulario.codigo.trim()
+        val esLectura = patronLectura.matches(codigo)
+        val esMatematica = patronMatematica.matches(codigo)
+
+        return if (codigo.isBlank()) {
+            "Completa este campo."
+        } else if (!esLectura && !esMatematica) {
+            "Usa el formato LEC-### o MAT-### (por ejemplo, LEC-001)."
+        } else if ((formulario.modulo == "Lectura" && !esLectura) || (formulario.modulo == "Matemática" && !esMatematica)) {
+            "Para Lectura usa LEC-### y para Matemática usa MAT-###."
+        } else if (_state.value.actividades.firstOrNull { it.codigo.uppercase() == codigo.uppercase() } != null) {
+            "Este identificador ya existe."
+        } else {
+            null
+        }
     }
 
     private fun errorNumero(texto: String): String? {
@@ -247,10 +357,16 @@ class CatalogoViewModel(
         }
     }
 
-    private fun insertarEnBd(actividad: Actividad) {
+    private fun guardarEnBd(actividad: Actividad, preguntas: List<Pregunta>, esNueva: Boolean) {
         viewModelScope.launch {
             try {
-                dao.insertar(actividad)
+                if (esNueva) {
+                    dao.insertar(actividad)
+                } else {
+                    dao.actualizar(actividad)
+                }
+                dao.borrarPreguntasDe(actividad.codigo)
+                preguntas.forEach { dao.insertarPregunta(it.copy(id = 0, actividadCodigo = actividad.codigo)) }
             } catch (e: Exception) {
             }
         }
