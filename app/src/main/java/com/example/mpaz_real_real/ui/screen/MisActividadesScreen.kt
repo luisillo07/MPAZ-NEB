@@ -48,21 +48,27 @@ fun MisActividadesScreen(
         viewModel.cargarActividad(codigo)
         navController.navigate(Screen.Instrucciones.route)
     }
+    val onSalir: () -> Unit = {
+        navController.popBackStack()
+    }
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> MisActividadesCompacta(
             actividades = actividadesDePrueba,
             resultados = resultados,
-            onEntrar = onEntrar
+            onEntrar = onEntrar,
+            onSalir = onSalir
         )
         WindowWidthSizeClass.Medium -> MisActividadesMediana(
             actividades = actividadesDePrueba,
             resultados = resultados,
-            onEntrar = onEntrar
+            onEntrar = onEntrar,
+            onSalir = onSalir
         )
         WindowWidthSizeClass.Expanded -> MisActividadesExpandida(
             actividades = actividadesDePrueba,
             resultados = resultados,
-            onEntrar = onEntrar
+            onEntrar = onEntrar,
+            onSalir = onSalir
         )
     }
 }
@@ -72,6 +78,7 @@ fun MisActividadesCompacta(
     actividades: List<Actividad>,
     resultados: List<ResultadoEntity>,
     onEntrar: (String) -> Unit,
+    onSalir: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -80,7 +87,8 @@ fun MisActividadesCompacta(
                 modulo = "Estudiante",
                 curso = "2.º básico",
                 nombre = "Mis actividades",
-                mostrarSalir = true
+                mostrarSalir = true,
+                onSalir = onSalir
             )
         },
         containerColor = Color.White,
@@ -130,6 +138,7 @@ fun MisActividadesMediana(
     actividades: List<Actividad>,
     resultados: List<ResultadoEntity>,
     onEntrar: (String) -> Unit,
+    onSalir: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -138,7 +147,8 @@ fun MisActividadesMediana(
                 modulo = "Estudiante",
                 curso = "2.º básico",
                 nombre = "Mis actividades",
-                mostrarSalir = true
+                mostrarSalir = true,
+                onSalir = onSalir
             )
         },
         containerColor = Color.White,
@@ -198,6 +208,7 @@ fun MisActividadesExpandida(
     actividades: List<Actividad>,
     resultados: List<ResultadoEntity>,
     onEntrar: (String) -> Unit,
+    onSalir: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -206,7 +217,8 @@ fun MisActividadesExpandida(
                 modulo = "Estudiante",
                 curso = "2.º básico",
                 nombre = "Mis actividades",
-                mostrarSalir = true
+                mostrarSalir = true,
+                onSalir = onSalir
             )
         },
         containerColor = Color.White,
@@ -285,7 +297,8 @@ fun MisActividadesCompactaPreview() {
         MisActividadesCompacta(
             actividades = actividadesDePrueba,
             resultados = emptyList(),
-            onEntrar = {}
+            onEntrar = {},
+            onSalir = {}
         )
     }
 }
@@ -297,7 +310,8 @@ fun MisActividadesMedianaPreview() {
         MisActividadesMediana(
             actividades = actividadesDePrueba,
             resultados = emptyList(),
-            onEntrar = {}
+            onEntrar = {},
+            onSalir = {}
         )
     }
 }
@@ -309,7 +323,8 @@ fun MisActividadesExpandidaPreview() {
         MisActividadesExpandida(
             actividades = actividadesDePrueba,
             resultados = emptyList(),
-            onEntrar = {}
+            onEntrar = {},
+            onSalir = {}
         )
     }
 }

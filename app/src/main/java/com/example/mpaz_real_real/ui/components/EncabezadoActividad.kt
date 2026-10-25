@@ -28,7 +28,8 @@ fun EncabezadoActividad(
     modulo: String,
     curso: String,
     nombre: String,
-    mostrarSalir: Boolean = false
+    mostrarSalir: Boolean = false,
+    onSalir: () -> Unit = {}
 ) {
     TopAppBar(
         title = {
@@ -47,7 +48,7 @@ fun EncabezadoActividad(
         actions = {
             if (mostrarSalir){
                 Button(
-                    onClick = {}, // TEMPORAL: se conecta al login de Luis al unir las ramas
+                    onClick = onSalir,
                     colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Color.Black),
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier.height(48.dp).border(2.dp, Color.Black, MaterialTheme.shapes.medium)
