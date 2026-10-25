@@ -20,7 +20,8 @@ data class CatalogoUiState(
     val codigoRevision: String = "",
     val mensajeError: String? = null,
     val mensajeExito: String? = null,
-    val formulario: FormularioActividadUiState = FormularioActividadUiState()
+    val formulario: FormularioActividadUiState = FormularioActividadUiState(),
+    val asistente: AsistenteUiState = AsistenteUiState()
 ) {
     val actividadesVisibles: List<Actividad>
         get() = actividades.filter { actividad ->
@@ -35,4 +36,28 @@ data class CatalogoUiState(
 
     val preguntasRevisadas: List<Pregunta>
         get() = preguntas.filter { it.actividadCodigo == codigoRevision }
+
+    val actividadesParaAsignar: List<Actividad>
+        get() = actividades.filter { actividad ->
+            actividad.estado == "disponible" &&
+                    (asistente.moduloAplicado == "Todos" || actividad.modulo == asistente.moduloAplicado) &&
+                    (asistente.cursoAplicado == "Todos" || actividad.curso == asistente.cursoAplicado) &&
+                    (asistente.contenidoAplicado == "Todos" || actividad.contenido == asistente.contenidoAplicado) &&
+                    (asistente.dificultadAplicado == "Todos" || actividad.dificultad == asistente.dificultadAplicado)
+        }
+
+    val opcionesEstudiante: List<String>
+        get() = asistente.estudiantes.map { it.codigo + " · " + it.nombre }
+
+    val asignacionRevisada: Asignacion?
+        get() = asistente.asignaciones.firstOrNull { it.codigoTemporal == asistente.codigoAsignacionRevision }
+
+    fun actividadPorCodigo(codigo: String): Actividad? =
+        actividades.firstOrNull { it.codigo == codigo }
+
+    fun nombreActividad(codigo: String): String =
+        actividadPorCodigo(codigo)?.nombre ?: codigo
+
+    fun preguntasDe(codigo: String): List<Pregunta> =
+        preguntas.filter { it.actividadCodigo == codigo }
 }
