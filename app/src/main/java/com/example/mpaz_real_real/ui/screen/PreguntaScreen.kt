@@ -312,6 +312,7 @@ fun PreguntaExpandida(
         }
     } else {
         val pregunta = actividad.preguntas[estado.indicePregunta]
+        val tieneTexto = actividad.contenidoTexto.isNotBlank()
 
         Scaffold(
             topBar = {
@@ -344,17 +345,24 @@ fun PreguntaExpandida(
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         item {
                             ContenedorTexto {
-                                Text(
-                                    text = actividad.tituloTexto,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Text(
-                                    text = actividad.contenidoTexto,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                if (tieneTexto) {
+                                    Text(
+                                        text = actividad.tituloTexto,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    Text(
+                                        text = actividad.contenidoTexto,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                } else {
+                                    Text(
+                                        text = pregunta.enunciado,
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                }
                             }
                         }
                     }
@@ -362,12 +370,14 @@ fun PreguntaExpandida(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        item {
-                            ContenedorTexto {
-                                Text(
-                                    text = pregunta.enunciado,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                        if (tieneTexto) {
+                            item {
+                                ContenedorTexto {
+                                    Text(
+                                        text = pregunta.enunciado,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
                             }
                         }
                         item {
