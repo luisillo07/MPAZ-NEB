@@ -41,6 +41,7 @@ class ActividadViewModel(
     )
     fun cargarActividad(codigo: String) {
         val actividad = actividadesDePrueba.find { it.codigo == codigo } ?: return
+        _estado.value = ActividadUiState()
         viewModelScope.launch {
             val usados = resultadoDao.contarIntentos(codigo)
             _estado.value = ActividadUiState(

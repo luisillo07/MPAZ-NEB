@@ -47,6 +47,49 @@ val actividadesDePrueba = listOf(
                 retroalimentacion = "Un patio es un espacio abierto dentro de una casa."
             )
         )
+    ),
+    Actividad(
+        codigo = "LEC-002",
+        nombre = "La casa de Ana",
+        modulo = "Lectura",
+        curso = "2.º básico",
+        contenido = "Comprensión lectora",
+        objetivo = "Identificar personajes, lugares y acciones en un texto descriptivo breve",
+        dificultad = "Inicial",
+        estado = "disponible",
+        instrucciones = "Lee el texto con calma y responde las preguntas. Puedes volver a leer el texto cuando quieras.",
+        tituloTexto = "La casa de Ana",
+        contenidoTexto = "Ana vive con su abuela en una casa amarilla. En la cocina hay una mesa de madera. Los domingos, Ana y su abuela preparan pan para el desayuno.",
+        intentosPermitidos = 2,
+        preguntas = listOf(
+            Pregunta(
+                tipo = "explícita",
+                enunciado = "¿De qué color es la casa de Ana?",
+                alternativas = listOf("Azul", "Amarilla", "Verde"),
+                correcta = 1,
+                retroalimentacion = "El texto dice: «Ana vive con su abuela en una casa amarilla»."
+            ),
+            Pregunta(
+                tipo = "explícita",
+                enunciado = "¿Con quién vive Ana?",
+                alternativas = listOf("Con su abuela", "Con su hermano", "Con su perro"),
+                correcta = 0,
+                retroalimentacion = "El texto dice: «Ana vive con su abuela en una casa amarilla»."
+            ),
+            Pregunta(
+                tipo = "implícita",
+                enunciado = "¿En qué parte de la casa preparan el pan?",
+                alternativas = listOf("En el patio", "En la cocina", "En el dormitorio"),
+                correcta = 1,
+                retroalimentacion = "El texto no lo dice directo, pero el pan se prepara en la cocina, y el texto dice que su casa tiene una cocina con una mesa de madera."
+            ),
+            Pregunta(
+                tipo = "vocabulario",
+                enunciado = "¿Qué significa la palabra «madera»?",
+                alternativas = listOf("Un tipo de comida", "Material de los árboles", "Un color"),
+                correcta = 1,
+                retroalimentacion = "La madera es el material que sale del tronco de los árboles."
+            )
+        )
     )
 )
-

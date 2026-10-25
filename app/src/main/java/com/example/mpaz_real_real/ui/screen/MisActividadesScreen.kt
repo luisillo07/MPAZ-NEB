@@ -57,7 +57,8 @@ fun MisActividadesContenido(
             EncabezadoActividad(
                 modulo = "Estudiante",
                 curso = "2.º básico",
-                nombre = "Mis actividades"
+                nombre = "Mis actividades",
+                mostrarSalir = true
             )
         },
         containerColor = RosaFondo,

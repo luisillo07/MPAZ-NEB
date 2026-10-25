@@ -61,8 +61,7 @@ fun InstruccionesContenido(
                 EncabezadoActividad(
                     modulo = actividad.modulo,
                     curso = actividad.curso,
-                    nombre = actividad.nombre,
-                    mostrarSalir = true
+                    nombre = actividad.nombre
                 )
             },
             containerColor = RosaFondo,
