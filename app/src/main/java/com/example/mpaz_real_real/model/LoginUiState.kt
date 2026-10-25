@@ -5,5 +5,6 @@ data class LoginUiState(
     val usuario: String = "",
     val contrasenia: String = "",
     val codigoTemporal: String = "",
-    val errores: LoginErrores = LoginErrores()
+    val errores: LoginErrores = LoginErrores(),
+    val ingresoCorrecto: Boolean = false
 )

@@ -19,9 +19,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import kotlinx.coroutines.launch
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.text.font.FontWeight
@@ -79,7 +78,12 @@ fun LoginScreen(
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
+
+    if (estado.ingresoCorrecto) {
+        LaunchedEffect(Unit) {
+            snackbarHostState.showSnackbar(message = "Ingreso correcto")
+        }
+    }
 
     val coloresCampos = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = CampoLogin,
@@ -232,17 +236,7 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    val valido = viewModel.validar()
-
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = if (valido) {
-                                "Campos completos"
-                            } else {
-                                "Revisa los campos indicados"
-                            }
-                        )
-                    }
+                    viewModel.ingresar()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = BotonLogin,

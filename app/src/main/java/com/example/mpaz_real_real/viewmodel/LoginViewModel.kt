@@ -1,18 +1,40 @@
 package com.example.mpaz_real_real.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import com.example.mpaz_real_real.data.local.AppDatabase
 import com.example.mpaz_real_real.model.LoginErrores
 import com.example.mpaz_real_real.model.LoginUiState
+import com.example.mpaz_real_real.repository.usuariosDePrueba
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val database = Room.databaseBuilder(
+        context = application,
+        klass = AppDatabase::class.java,
+        name = "mpazneb_database"
+    ).fallbackToDestructiveMigration(true).build()
+
+    private val usuarioDao = database.usuarioDao
 
     private val _state = MutableStateFlow(LoginUiState())
 
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            usuariosDePrueba.forEach { usuarioDao.insertar(it) }
+        }
+    }
 
     fun seleccionarTipoUsuario(tipoUsuario: String) {
         _state.update {
@@ -21,7 +43,8 @@ class LoginViewModel : ViewModel() {
                 usuario = "",
                 contrasenia = "",
                 codigoTemporal = "",
-                errores = LoginErrores()
+                errores = LoginErrores(),
+                ingresoCorrecto = false
             )
         }
     }
@@ -73,6 +96,33 @@ class LoginViewModel : ViewModel() {
 
         return errores.usuario == null &&
                 errores.contrasenia == null
+    }
+
+    fun ingresar() {
+        if (!validar()) return
+
+        val estadoActual = _state.value
+
+        viewModelScope.launch {
+            val usuarioEncontrado = usuarioDao.buscar(
+                usuario = estadoActual.usuario,
+                contrasenia = estadoActual.contrasenia,
+                tipoUsuario = estadoActual.tipoUsuario
+            )
+
+            if (usuarioEncontrado == null) {
+                _state.update {
+                    it.copy(
+                        errores = it.errores.copy(contrasenia = "Usuario o contraseña incorrectos"),
+                        ingresoCorrecto = false
+                    )
+                }
+            } else {
+                _state.update {
+                    it.copy(ingresoCorrecto = true)
+                }
+            }
+        }
     }
 
     fun codigoTemporalChanged(codigoTemporal: String) {
