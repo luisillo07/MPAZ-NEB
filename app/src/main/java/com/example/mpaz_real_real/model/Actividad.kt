@@ -9,9 +9,13 @@ data class Actividad(
     val objetivo: String,
     val dificultad: String,
     val estado: String,
+    val fecha: String,
     val instrucciones: String,
     val tituloTexto: String,
     val contenidoTexto: String,
     val intentosPermitidos: Int,
     val preguntas: List<Pregunta>
-)
+) {
+    val cantidadPreguntas: Int
+        get() = preguntas.size
+}
