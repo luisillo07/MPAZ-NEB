@@ -31,30 +31,49 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 @Composable
 fun QuedanIntentosScreen(
     navController: NavController,
     viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
-    QuedanIntentosContenido(
-        estado = estado,
-        onReintentar = {
-            viewModel.onReintentar()
-            navController.navigate(Screen.Pregunta.route) {
-                popUpTo(Screen.Instrucciones.route)
-            }
-        },
-        onSiguiente = {
-            navController.navigate(Screen.Retroalimentacion.route) {
-                popUpTo(Screen.Instrucciones.route)
-            }
+    val windowSizeClass = obtenerWindowSizeClass()
+    val onReintentar: () -> Unit = {
+        viewModel.onReintentar()
+        navController.navigate(Screen.Pregunta.route) {
+            popUpTo(Screen.Instrucciones.route)
         }
-    )
+    }
+    val onSiguiente: () -> Unit = {
+        navController.navigate(Screen.Retroalimentacion.route) {
+            popUpTo(Screen.Instrucciones.route)
+        }
+    }
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> QuedanIntentosCompacta(
+            estado = estado,
+            onReintentar = onReintentar,
+            onSiguiente = onSiguiente
+        )
+        WindowWidthSizeClass.Medium -> QuedanIntentosMediana(
+            estado = estado,
+            onReintentar = onReintentar,
+            onSiguiente = onSiguiente
+        )
+        WindowWidthSizeClass.Expanded -> QuedanIntentosExpandida(
+            estado = estado,
+            onReintentar = onReintentar,
+            onSiguiente = onSiguiente
+        )
+    }
 }
 
 @Composable
-fun QuedanIntentosContenido(
+fun QuedanIntentosCompacta(
     estado: ActividadUiState,
     onReintentar: () -> Unit,
     onSiguiente: () -> Unit,
@@ -109,11 +128,172 @@ fun QuedanIntentosContenido(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun QuedanIntentosContenidoPreview() {
+fun QuedanIntentosMediana(
+    estado: ActividadUiState,
+    onReintentar: () -> Unit,
+    onSiguiente: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+    if (actividad == null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val restantes = actividad.intentosPermitidos - estado.intentosUsados
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                ContenedorTexto {
+                    Text(
+                        text = "Enviaste tus respuestas.",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
+                        modifier = Modifier.weight(3f)
+                    ) {
+                        BotonActividad(texto = "Reintentar", onClick = onReintentar)
+                        BotonActividad(texto = "Siguiente", onClick = onSiguiente)
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun QuedanIntentosExpandida(
+    estado: ActividadUiState,
+    onReintentar: () -> Unit,
+    onSiguiente: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+    if (actividad == null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val restantes = actividad.intentosPermitidos - estado.intentosUsados
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(32.dp)
+            ) {
+                ContenedorTexto {
+                    Text(
+                        text = "Enviaste tus respuestas.",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Text(
+                        text = if (restantes == 1) "Te queda 1 intento." else "Te quedan $restantes intentos.",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Row {
+                    Spacer(modifier = Modifier.weight(2f))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
+                        modifier = Modifier.weight(5f)
+                    ) {
+                        BotonActividad(texto = "Reintentar", onClick = onReintentar)
+                        BotonActividad(texto = "Siguiente", onClick = onSiguiente)
+                    }
+                    Spacer(modifier = Modifier.weight(2f))
+                }
+            }
+        }
+    }
+}
+
+@Preview(name = "Compact", widthDp = 360, heightDp = 800)
+@Composable
+fun QuedanIntentosCompactaPreview() {
     Mpaz_real_realTheme {
-        QuedanIntentosContenido(
+        QuedanIntentosCompacta(
+            estado = ActividadUiState(
+                actividad = actividadesDePrueba.first(),
+                intentosUsados = 1
+            ),
+            onReintentar = {},
+            onSiguiente = {}
+        )
+    }
+}
+
+@Preview(name = "Medium", widthDp = 700, heightDp = 1000)
+@Composable
+fun QuedanIntentosMedianaPreview() {
+    Mpaz_real_realTheme {
+        QuedanIntentosMediana(
+            estado = ActividadUiState(
+                actividad = actividadesDePrueba.first(),
+                intentosUsados = 1
+            ),
+            onReintentar = {},
+            onSiguiente = {}
+        )
+    }
+}
+
+@Preview(name = "Expanded", widthDp = 1000, heightDp = 700)
+@Composable
+fun QuedanIntentosExpandidaPreview() {
+    Mpaz_real_realTheme {
+        QuedanIntentosExpandida(
             estado = ActividadUiState(
                 actividad = actividadesDePrueba.first(),
                 intentosUsados = 1

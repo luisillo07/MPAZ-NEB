@@ -26,6 +26,11 @@ import com.example.mpaz_real_real.ui.theme.RosaFondo
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 
 @Composable
 fun InstruccionesScreen(
@@ -33,16 +38,28 @@ fun InstruccionesScreen(
     viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
-    InstruccionesContenido(
-        estado = estado,
-        onComenzar = {
-            if (estado.intentosUsados > 0) viewModel.onReintentar()
-            navController.navigate(Screen.Pregunta.route)
-        }
-    )
+    val windowSizeClass = obtenerWindowSizeClass()
+    val onComenzar: () -> Unit = {
+        if (estado.intentosUsados > 0) viewModel.onReintentar()
+        navController.navigate(Screen.Pregunta.route)
+    }
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> InstruccionesCompacta(
+            estado = estado,
+            onComenzar = onComenzar
+        )
+        WindowWidthSizeClass.Medium -> InstruccionesMediana(
+            estado = estado,
+            onComenzar = onComenzar
+        )
+        WindowWidthSizeClass.Expanded -> InstruccionesExpandida(
+            estado = estado,
+            onComenzar = onComenzar
+        )
+    }
 }
 @Composable
-fun InstruccionesContenido(
+fun InstruccionesCompacta(
     estado: ActividadUiState,
     onComenzar: () -> Unit,
     modifier: Modifier = Modifier
@@ -87,11 +104,147 @@ fun InstruccionesContenido(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun InstruccionesContenidoPreview() {
+fun InstruccionesMediana(
+    estado: ActividadUiState,
+    onComenzar: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+    if (actividad == null){
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ){
+            CircularProgressIndicator()
+        }
+    }else{
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ){
+                ContenedorTexto {
+                    Text(text = actividad.instrucciones)
+                }
+                if (estado.quedanIntentos) {
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+                        BotonActividad(
+                            texto = "Comenzar",
+                            onClick = onComenzar,
+                            modifier = Modifier.weight(3f)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                } else {
+                    Text(text = "Ya usaste todos los intentos de esta actividad")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InstruccionesExpandida(
+    estado: ActividadUiState,
+    onComenzar: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+    if (actividad == null){
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ){
+            CircularProgressIndicator()
+        }
+    }else{
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column(
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(32.dp)
+            ){
+                ContenedorTexto {
+                    Text(
+                        text = actividad.instrucciones,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                if (estado.quedanIntentos) {
+                    Row {
+                        Spacer(modifier = Modifier.weight(2f))
+                        BotonActividad(
+                            texto = "Comenzar",
+                            onClick = onComenzar,
+                            modifier = Modifier.weight(5f)
+                        )
+                        Spacer(modifier = Modifier.weight(2f))
+                    }
+                } else {
+                    Text(
+                        text = "Ya usaste todos los intentos de esta actividad",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(name = "Compact", widthDp = 360, heightDp = 800)
+@Composable
+fun InstruccionesCompactaPreview() {
     Mpaz_real_realTheme {
-        InstruccionesContenido(
+        InstruccionesCompacta(
+            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            onComenzar = {}
+        )
+    }
+}
+
+@Preview(name = "Medium", widthDp = 700, heightDp = 1000)
+@Composable
+fun InstruccionesMedianaPreview() {
+    Mpaz_real_realTheme {
+        InstruccionesMediana(
+            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            onComenzar = {}
+        )
+    }
+}
+
+@Preview(name = "Expanded", widthDp = 1000, heightDp = 700)
+@Composable
+fun InstruccionesExpandidaPreview() {
+    Mpaz_real_realTheme {
+        InstruccionesExpandida(
             estado = ActividadUiState(actividad = actividadesDePrueba.first()),
             onComenzar = {}
         )

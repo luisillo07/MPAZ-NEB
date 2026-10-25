@@ -39,6 +39,10 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.mpaz_real_real.ui.theme.Beige
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 
 @Composable
 fun RetroalimentacionScreen(
@@ -46,27 +50,48 @@ fun RetroalimentacionScreen(
     viewModel: ActividadViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
+    val windowSizeClass = obtenerWindowSizeClass()
     val lanzadorGaleria = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ){uri -> viewModel.onPantallazoSeleccionado(uri)}
     val lanzadorArchivo = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/plain")
     ) { uri -> viewModel.guardarResumen(uri) }
-    RetroalimentacionContenido(
-        estado = estado,
-        onSiguiente = viewModel::onSiguienteRetroalimentacion,
-        onVolver = {
-            navController.navigate(Screen.MisActividades.route) {
-                popUpTo(Screen.MisActividades.route) { inclusive = true }
-            }
-        },
-        onAdjuntarPantallazo = {lanzadorGaleria.launch("image/*")},
-        onGuardarResumen = {lanzadorArchivo.launch("resumen_${estado.actividad?.codigo}.txt")}
-    )
+    val onSiguiente: () -> Unit = viewModel::onSiguienteRetroalimentacion
+    val onVolver: () -> Unit = {
+        navController.navigate(Screen.MisActividades.route) {
+            popUpTo(Screen.MisActividades.route) { inclusive = true }
+        }
+    }
+    val onAdjuntarPantallazo: () -> Unit = {lanzadorGaleria.launch("image/*")}
+    val onGuardarResumen: () -> Unit = {lanzadorArchivo.launch("resumen_${estado.actividad?.codigo}.txt")}
+    when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> RetroalimentacionCompacta(
+            estado = estado,
+            onSiguiente = onSiguiente,
+            onVolver = onVolver,
+            onAdjuntarPantallazo = onAdjuntarPantallazo,
+            onGuardarResumen = onGuardarResumen
+        )
+        WindowWidthSizeClass.Medium -> RetroalimentacionMediana(
+            estado = estado,
+            onSiguiente = onSiguiente,
+            onVolver = onVolver,
+            onAdjuntarPantallazo = onAdjuntarPantallazo,
+            onGuardarResumen = onGuardarResumen
+        )
+        WindowWidthSizeClass.Expanded -> RetroalimentacionExpandida(
+            estado = estado,
+            onSiguiente = onSiguiente,
+            onVolver = onVolver,
+            onAdjuntarPantallazo = onAdjuntarPantallazo,
+            onGuardarResumen = onGuardarResumen
+        )
+    }
 }
 
 @Composable
-fun RetroalimentacionContenido(
+fun RetroalimentacionCompacta(
     estado: ActividadUiState,
     onSiguiente: () -> Unit,
     onVolver: () -> Unit,
@@ -153,14 +178,244 @@ fun RetroalimentacionContenido(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun RetroalimentacionContenidoPreview() {
+fun RetroalimentacionMediana(
+    estado: ActividadUiState,
+    onSiguiente: () -> Unit,
+    onVolver: () -> Unit,
+    onAdjuntarPantallazo: () -> Unit,
+    onGuardarResumen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+
+    if (actividad == null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                item{
+                    Text(
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                item{
+                    ContenedorTexto{
+                        Text(text = pregunta.enunciado,fontWeight = FontWeight.Bold)
+                        Text(text = estado.mensajeRetroalimentacion)
+                    }
+                }
+                item{
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            modifier = Modifier.weight(3f)
+                        ){
+                            if (estado.esUltimaRetroalimentacion){
+                                if (estado.pantallazoPregunta == null){
+                                    Text(text = "Adjunta un pantallazo de la pregunta que más te costó")
+                                    BotonActividad(
+                                        texto = "Adjuntar pantallazo",
+                                        onClick = onAdjuntarPantallazo,
+                                        colorFondo = Beige
+                                    )
+                                }else{
+                                    Text(text = "¡Ya subiste la imagen!")
+                                }
+                                PantallazoPregunta(uri = estado.pantallazoPregunta)
+                                if (estado.resumenGuardado) {
+                                    Text(text = "¡Ya guardaste el resumen!")
+                                }else{
+                                    BotonActividad(
+                                        texto = "Guardar resumen del intento",
+                                        onClick = onGuardarResumen,
+                                        colorFondo = Beige
+                                    )
+                                }
+                            }
+                            if (!estado.esUltimaRetroalimentacion){
+                                BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                            }else{
+                                BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RetroalimentacionExpandida(
+    estado: ActividadUiState,
+    onSiguiente: () -> Unit,
+    onVolver: () -> Unit,
+    onAdjuntarPantallazo: () -> Unit,
+    onGuardarResumen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val actividad = estado.actividad
+
+    if (actividad == null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
+        Scaffold(
+            topBar = {
+                EncabezadoActividad(
+                    modulo = actividad.modulo,
+                    curso = actividad.curso,
+                    nombre = actividad.nombre
+                )
+            },
+            containerColor = RosaFondo,
+            modifier = modifier.fillMaxSize()
+        ) { innerPadding ->
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(32.dp)
+            ) {
+                item{
+                    Text(
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                item{
+                    ContenedorTexto{
+                        Text(
+                            text = pregunta.enunciado,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = estado.mensajeRetroalimentacion,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+                item{
+                    Row {
+                        Spacer(modifier = Modifier.weight(2f))
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(24.dp),
+                            modifier = Modifier.weight(5f)
+                        ){
+                            if (estado.esUltimaRetroalimentacion){
+                                if (estado.pantallazoPregunta == null){
+                                    Text(text = "Adjunta un pantallazo de la pregunta que más te costó")
+                                    BotonActividad(
+                                        texto = "Adjuntar pantallazo",
+                                        onClick = onAdjuntarPantallazo,
+                                        colorFondo = Beige
+                                    )
+                                }else{
+                                    Text(text = "¡Ya subiste la imagen!")
+                                }
+                                PantallazoPregunta(uri = estado.pantallazoPregunta)
+                                if (estado.resumenGuardado) {
+                                    Text(text = "¡Ya guardaste el resumen!")
+                                }else{
+                                    BotonActividad(
+                                        texto = "Guardar resumen del intento",
+                                        onClick = onGuardarResumen,
+                                        colorFondo = Beige
+                                    )
+                                }
+                            }
+                            if (!estado.esUltimaRetroalimentacion){
+                                BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                            }else{
+                                BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                            }
+                        }
+                        Spacer(modifier = Modifier.weight(2f))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(name = "Compact", widthDp = 360, heightDp = 800)
+@Composable
+fun RetroalimentacionCompactaPreview() {
     Mpaz_real_realTheme {
-        RetroalimentacionContenido(
+        RetroalimentacionCompacta(
             estado = ActividadUiState(
                 actividad = actividadesDePrueba.first(),
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
+            ),
+            onSiguiente = {},
+            onVolver = {},
+            onAdjuntarPantallazo = {},
+            onGuardarResumen = {}
+        )
+    }
+}
+
+@Preview(name = "Medium", widthDp = 700, heightDp = 1000)
+@Composable
+fun RetroalimentacionMedianaPreview() {
+    Mpaz_real_realTheme {
+        RetroalimentacionMediana(
+            estado = ActividadUiState(
+                actividad = actividadesDePrueba.first(),
+                mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
+            ),
+            onSiguiente = {},
+            onVolver = {},
+            onAdjuntarPantallazo = {},
+            onGuardarResumen = {}
+        )
+    }
+}
+
+@Preview(name = "Expanded", widthDp = 1000, heightDp = 700)
+@Composable
+fun RetroalimentacionExpandidaPreview() {
+    val actividad = actividadesDePrueba.first()
+    Mpaz_real_realTheme {
+        RetroalimentacionExpandida(
+            estado = ActividadUiState(
+                actividad = actividad,
+                respuestas = actividad.preguntas.map { null },
+                indiceRetroalimentacion = actividad.preguntas.size - 1,
+                mensajeRetroalimentacion = "¡Muy bien! Un patio es un espacio abierto dentro de una casa."
             ),
             onSiguiente = {},
             onVolver = {},
