@@ -82,12 +82,13 @@ fun LoginScreen(
 
     if (estado.ingresoCorrecto) {
         LaunchedEffect(Unit) {
-            if (estado.tipoUsuario == "estudiante") {
-                navController.navigate(Screen.MisActividades.route) {
-                    popUpTo(Screen.Perfil.route)
-                }
-            } else {
-                snackbarHostState.showSnackbar(message = "Ingreso correcto")
+            val destino = when (estado.tipoUsuario) {
+                "estudiante" -> Screen.MisActividades.route
+                "docente" -> Screen.Catalogo.route
+                else -> Screen.Construccion.route
+            }
+            navController.navigate(destino) {
+                popUpTo(Screen.Perfil.route)
             }
         }
     }

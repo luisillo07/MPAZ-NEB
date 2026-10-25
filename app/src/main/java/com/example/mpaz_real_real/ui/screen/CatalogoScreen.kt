@@ -55,7 +55,10 @@ fun CatalogoScreen(
                             Text("Administración pedagógica", style = MaterialTheme.typography.bodySmall)
                             Text("Catálogo de actividades", style = MaterialTheme.typography.titleLarge)
                         }
-                        BotonCatalogo("Salir sesión", { navController.popBackStack() })
+                        BotonCatalogo("Salir sesión", {
+                            viewModel.reiniciarFiltros()
+                            navController.popBackStack()
+                        })
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = GrisBarra)
