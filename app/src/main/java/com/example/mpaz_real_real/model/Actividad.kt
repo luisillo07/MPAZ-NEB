@@ -1,11 +1,21 @@
 package com.example.mpaz_real_real.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "actividades")
 data class Actividad(
-    val id: Int,
+    @PrimaryKey
+    val id: String,
     val nombre: String,
     val modulo: String,
     val curso: String,
     val contenido: String,
+    val objetivo: String,
     val dificultad: String,
-    val estado: String
+    val instrucciones: String,
+    val cantidadPreguntas: Int?,
+    val intentosPermitidos: Int?,
+    val estado: String,
+    val fecha: String
 )
