@@ -6,7 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.mpaz_real_real.data.local.AppDatabase
 import com.example.mpaz_real_real.data.local.actividadesIniciales
+import com.example.mpaz_real_real.data.local.asignacionesIniciales
 import com.example.mpaz_real_real.data.local.preguntasIniciales
+import com.example.mpaz_real_real.data.local.estudiantesIniciales
+import com.example.mpaz_real_real.data.local.respuestasIniciales
+import com.example.mpaz_real_real.model.Asignacion
+import com.example.mpaz_real_real.model.AsignarFormErrores
+import com.example.mpaz_real_real.model.AsignarFormUiState
+import com.example.mpaz_real_real.model.AsistenteUiState
 import com.example.mpaz_real_real.model.Actividad
 import com.example.mpaz_real_real.model.CatalogoUiState
 import com.example.mpaz_real_real.model.FormularioActividadErrores
@@ -18,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
 class CatalogoViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -25,10 +33,11 @@ class CatalogoViewModel(
     private val database = Room.databaseBuilder(
         context = application,
         klass = AppDatabase::class.java,
-        name = "mpaz_database_v2"
+        name = "mpaz_database_v3"
     ).build()
 
     private val dao = database.actividadDao
+    private val asignacionDao = database.asignacionDao
 
     private val patronLectura = Regex("^LEC-[0-9]{3}$")
     private val patronMatematica = Regex("^MAT-[0-9]{3}$")
@@ -51,6 +60,28 @@ class CatalogoViewModel(
         viewModelScope.launch {
             dao.observarPreguntas().collect { lista ->
                 _state.update { estado -> estado.copy(preguntas = lista) }
+            }
+        }
+        viewModelScope.launch {
+            if (asignacionDao.contarEstudiantes() == 0) {
+                estudiantesIniciales.forEach { asignacionDao.insertarEstudiante(it) }
+                asignacionesIniciales.forEach { asignacionDao.insertarAsignacion(it) }
+                respuestasIniciales.forEach { asignacionDao.insertarRespuesta(it) }
+            }
+        }
+        viewModelScope.launch {
+            asignacionDao.observarEstudiantes().collect { lista ->
+                actualizarAsistente { it.copy(estudiantes = lista) }
+            }
+        }
+        viewModelScope.launch {
+            asignacionDao.observarAsignaciones().collect { lista ->
+                actualizarAsistente { it.copy(asignaciones = lista) }
+            }
+        }
+        viewModelScope.launch {
+            asignacionDao.observarRespuestas().collect { lista ->
+                actualizarAsistente { it.copy(respuestas = lista) }
             }
         }
     }
@@ -295,6 +326,125 @@ class CatalogoViewModel(
         _state.update { it.copy(mensajeExito = mensaje) }
         reiniciarFiltros()
         return true
+    }
+    // ---------- Asistente: filtros de "Seleccionar actividad" ----------
+
+    fun onAsistenteModuloChange(valor: String) { actualizarAsistente { it.copy(modulo = valor) } }
+    fun onAsistenteCursoChange(valor: String) { actualizarAsistente { it.copy(curso = valor) } }
+    fun onAsistenteContenidoChange(valor: String) { actualizarAsistente { it.copy(contenido = valor) } }
+    fun onAsistenteDificultadChange(valor: String) { actualizarAsistente { it.copy(dificultad = valor) } }
+
+    fun onAsistenteFiltrarClick() {
+        actualizarAsistente {
+            it.copy(
+                moduloAplicado = it.modulo,
+                cursoAplicado = it.curso,
+                contenidoAplicado = it.contenido,
+                dificultadAplicado = it.dificultad
+            )
+        }
+    }
+
+    fun reiniciarFiltrosAsistente() {
+        actualizarAsistente {
+            it.copy(
+                modulo = "Todos",
+                curso = "Todos",
+                contenido = "Todos",
+                dificultad = "Todos",
+                moduloAplicado = "Todos",
+                cursoAplicado = "Todos",
+                contenidoAplicado = "Todos",
+                dificultadAplicado = "Todos"
+            )
+        }
+    }
+
+    fun onAsignacionClick(asignacion: Asignacion) {
+        actualizarAsistente { it.copy(codigoAsignacionRevision = asignacion.codigoTemporal) }
+    }
+
+    fun onSeleccionarActividad(actividad: Actividad) {
+        actualizarAsistente { it.copy(formulario = AsignarFormUiState(actividadCodigo = actividad.codigo)) }
+    }
+
+    fun onAsignarEstudianteChange(valor: String) {
+        actualizarAsistente {
+            it.copy(formulario = it.formulario.copy(estudiante = valor, errores = it.formulario.errores.copy(estudiante = null)))
+        }
+    }
+
+    fun onAsignarFechaChange(valor: String) {
+        actualizarAsistente {
+            it.copy(formulario = it.formulario.copy(fecha = valor, errores = it.formulario.errores.copy(fecha = null)))
+        }
+    }
+
+    fun onAsignarClick(): Boolean {
+        val asistente = _state.value.asistente
+        val formulario = asistente.formulario
+        val codigoEstudiante = formulario.estudiante.substringBefore(" · ")
+
+        val yaAsignada = asistente.asignaciones.firstOrNull {
+            it.estudianteCodigo == codigoEstudiante &&
+                    it.actividadCodigo == formulario.actividadCodigo &&
+                    it.estado != "finalizada"
+        } != null
+
+        val errorEstudiante = if (formulario.estudiante.isBlank()) {
+            "Selecciona un estudiante."
+        } else if (yaAsignada) {
+            "Este estudiante ya tiene asignada esta actividad."
+        } else {
+            null
+        }
+        val errorFecha = if (formulario.fecha.isBlank()) "Selecciona una fecha." else null
+
+        if (errorEstudiante != null || errorFecha != null) {
+            actualizarAsistente {
+                it.copy(formulario = it.formulario.copy(errores = AsignarFormErrores(estudiante = errorEstudiante, fecha = errorFecha)))
+            }
+            return false
+        }
+
+        val codigoTemporal = generarCodigoTemporal()
+        val asignacion = Asignacion(
+            codigoTemporal = codigoTemporal,
+            estudianteCodigo = codigoEstudiante,
+            actividadCodigo = formulario.actividadCodigo,
+            asistente = asistente.asistenteResponsable,
+            fecha = formulario.fecha,
+            estado = "pendiente"
+        )
+
+        viewModelScope.launch {
+            try {
+                asignacionDao.insertarAsignacion(asignacion)
+            } catch (e: Exception) {
+            }
+        }
+
+        actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal") }
+        return true
+    }
+
+    fun onCerrarMensajeAsistente() {
+        actualizarAsistente { it.copy(mensajeExito = null) }
+    }
+
+    private fun actualizarAsistente(cambio: (AsistenteUiState) -> AsistenteUiState) {
+        _state.update { it.copy(asistente = cambio(it.asistente)) }
+    }
+
+    private fun generarCodigoTemporal(): String {
+        var numero = (System.currentTimeMillis() % 900000) + 100000
+        while (_state.value.asistente.asignaciones.firstOrNull { it.codigoTemporal == numero.toString() } != null) {
+            numero = numero + 1
+            if (numero > 999999) {
+                numero = 100000
+            }
+        }
+        return numero.toString()
     }
 
     private fun actualizarFormulario(cambio: (FormularioActividadUiState) -> FormularioActividadUiState) {
