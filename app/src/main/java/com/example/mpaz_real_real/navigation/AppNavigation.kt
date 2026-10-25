@@ -5,11 +5,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mpaz_real_real.ui.screen.AsignacionesScreen
+import com.example.mpaz_real_real.ui.screen.AsignarActividadScreen
 import com.example.mpaz_real_real.ui.screen.CatalogoScreen
 import com.example.mpaz_real_real.ui.screen.EnConstruccionScreen
 import com.example.mpaz_real_real.ui.screen.FormularioActividadScreen
 import com.example.mpaz_real_real.ui.screen.InicioScreen
+import com.example.mpaz_real_real.ui.screen.ResumenAsignacionScreen
 import com.example.mpaz_real_real.ui.screen.RevisarActividadScreen
+import com.example.mpaz_real_real.ui.screen.SeleccionarActividadScreen
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
 @Composable
@@ -24,12 +28,16 @@ fun AppNavigation() {
                     catalogoViewModel.reiniciarFiltros()
                     navController.navigate("catalogo")
                 },
-                onAsistente = { navController.navigate("construccion") }
+                onAsistente = { navController.navigate("asignaciones") }
             )
         }
         composable("catalogo") { CatalogoScreen(navController, catalogoViewModel) }
         composable("construccion") { EnConstruccionScreen(navController) }
         composable("formulario") { FormularioActividadScreen(navController, catalogoViewModel) }
         composable("revisar") { RevisarActividadScreen(navController, catalogoViewModel) }
+        composable("asignaciones") { AsignacionesScreen(navController, catalogoViewModel) }
+        composable("resumen_asignacion") { ResumenAsignacionScreen(navController, catalogoViewModel) }
+        composable("seleccionar_actividad") { SeleccionarActividadScreen(navController, catalogoViewModel) }
+        composable("asignar_actividad") { AsignarActividadScreen(navController, catalogoViewModel) }
     }
 }
