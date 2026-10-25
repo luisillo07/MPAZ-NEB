@@ -6,5 +6,7 @@ data class Pregunta(
     val alternativas: List<String>,
     val correcta: Int,
     val retroalimentacion: String,
-    val procedimiento: String = ""
+    val procedimiento: String = "",
+    val datosNumericos: String = "",
+    val operacion: String = ""
 )

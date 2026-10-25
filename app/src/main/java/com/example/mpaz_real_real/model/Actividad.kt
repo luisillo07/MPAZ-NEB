@@ -13,6 +13,8 @@ data class Actividad(
     val instrucciones: String,
     val tituloTexto: String,
     val contenidoTexto: String,
+    val tipoTexto: String = "",
+    val nivelVocabulario: String = "",
     val intentosPermitidos: Int,
     val preguntas: List<Pregunta>
 ) {

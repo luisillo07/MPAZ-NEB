@@ -17,6 +17,8 @@ val actividadesDePrueba = listOf(
         instrucciones = "Lee el texto con calma y responde las preguntas. Puedes volver a leer el texto cuando quieras.",
         tituloTexto = "El perro Tito",
         contenidoTexto = "Tito es un perro café. Vive con Ana en una casa con un patio grande. Todas las tardes Tito juega con una pelota roja.",
+        tipoTexto = "Narrativo",
+        nivelVocabulario = "Básico",
         intentosPermitidos = 2,
         preguntas = listOf(
             Pregunta(
@@ -62,6 +64,8 @@ val actividadesDePrueba = listOf(
         instrucciones = "Lee el texto con calma y responde las preguntas. Puedes volver a leer el texto cuando quieras.",
         tituloTexto = "La casa de Ana",
         contenidoTexto = "Ana vive con su abuela en una casa amarilla. En la cocina hay una mesa de madera. Los domingos, Ana y su abuela preparan pan para el desayuno.",
+        tipoTexto = "Descriptivo",
+        nivelVocabulario = "Básico",
         intentosPermitidos = 2,
         preguntas = listOf(
             Pregunta(
@@ -110,36 +114,44 @@ val actividadesDePrueba = listOf(
         intentosPermitidos = 2,
         preguntas = listOf(
             Pregunta(
-                tipo = "suma",
+                tipo = "Problema",
                 enunciado = "Ana tiene 12 manzanas y compra 5 más. ¿Cuántas manzanas tiene ahora?",
                 alternativas = listOf("15", "17", "7"),
                 correcta = 1,
                 retroalimentacion = "Si juntas 12 manzanas y 5 manzanas, tienes 17.",
-                procedimiento = "12 + 5 = 17"
+                procedimiento = "12 + 5 = 17",
+                datosNumericos = "12 y 5",
+                operacion = "Adición"
             ),
             Pregunta(
-                tipo = "resta",
+                tipo = "Problema",
                 enunciado = "En la feria hay 20 globos y se venden 8. ¿Cuántos globos quedan?",
                 alternativas = listOf("12", "28", "10"),
                 correcta = 0,
                 retroalimentacion = "Si a 20 globos les quitas los 8 que se vendieron, quedan 12.",
-                procedimiento = "20 - 8 = 12"
+                procedimiento = "20 - 8 = 12",
+                datosNumericos = "20 y 8",
+                operacion = "Sustracción"
             ),
             Pregunta(
-                tipo = "suma",
-                enunciado = "Tito tiene 25 láminas y su amigo le regala 10. ¿Cuántas láminas tiene Tito?",
+                tipo = "Cálculo",
+                enunciado = "¿Cuánto es 25 + 10?",
                 alternativas = listOf("30", "15", "35"),
                 correcta = 2,
-                retroalimentacion = "Si a 25 láminas les sumas 10, llegas a 35.",
-                procedimiento = "25 + 10 = 35"
+                retroalimentacion = "Si a 25 le sumas 10, llegas a 35.",
+                procedimiento = "25 + 10 = 35",
+                datosNumericos = "25 y 10",
+                operacion = "Adición"
             ),
             Pregunta(
-                tipo = "resta",
-                enunciado = "Un bus lleva 30 niños y en la escuela se bajan 14. ¿Cuántos niños siguen en el bus?",
+                tipo = "Cálculo",
+                enunciado = "¿Cuánto es 30 - 14?",
                 alternativas = listOf("44", "16", "14"),
                 correcta = 1,
-                retroalimentacion = "Si a 30 niños les quitas los 14 que se bajan, quedan 16.",
-                procedimiento = "30 - 14 = 16"
+                retroalimentacion = "Si a 30 le quitas 14, quedan 16.",
+                procedimiento = "30 - 14 = 16",
+                datosNumericos = "30 y 14",
+                operacion = "Sustracción"
             )
         )
     )
