@@ -22,14 +22,15 @@ import com.example.mpaz_real_real.ui.theme.RojoCabecera
 fun IndicadorAvance(
     actual: Int,
     total: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    etiqueta: String = "Pregunta"
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
         Text(
-            text = "Pregunta $actual de $total",
+            text = "$etiqueta $actual de $total",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )

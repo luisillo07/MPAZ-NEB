@@ -228,6 +228,12 @@ fun RetroalimentacionMediana(
                     ContenedorTexto{
                         Text(text = pregunta.enunciado,fontWeight = FontWeight.Bold)
                         Text(text = estado.mensajeRetroalimentacion)
+                        if (pregunta.procedimiento.isNotBlank()) {
+                            Text(
+                                text = "Procedimiento: ${pregunta.procedimiento}",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
                 item{
@@ -330,6 +336,13 @@ fun RetroalimentacionExpandida(
                             text = estado.mensajeRetroalimentacion,
                             style = MaterialTheme.typography.titleMedium
                         )
+                        if (pregunta.procedimiento.isNotBlank()) {
+                            Text(
+                                text = "Procedimiento: ${pregunta.procedimiento}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
                 item{

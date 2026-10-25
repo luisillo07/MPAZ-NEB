@@ -137,19 +137,22 @@ fun PreguntaCompacta(
                 item {
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
-                        total = actividad.preguntas.size
+                        total = actividad.preguntas.size,
+                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta"
                     )
                 }
-                item {
-                    ContenedorTexto {
-                        Text(
-                            text = actividad.tituloTexto,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Text(text = actividad.contenidoTexto)
+                if (actividad.contenidoTexto.isNotBlank()) {
+                    item {
+                        ContenedorTexto {
+                            Text(
+                                text = actividad.tituloTexto,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Text(text = actividad.contenidoTexto)
+                        }
                     }
                 }
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
@@ -225,19 +228,22 @@ fun PreguntaMediana(
                 item {
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
-                        total = actividad.preguntas.size
+                        total = actividad.preguntas.size,
+                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta"
                     )
                 }
-                item {
-                    ContenedorTexto {
-                        Text(
-                            text = actividad.tituloTexto,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Text(text = actividad.contenidoTexto)
+                if (actividad.contenidoTexto.isNotBlank()){
+                    item{
+                        ContenedorTexto{
+                            Text(
+                                text = actividad.tituloTexto,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Text(text = actividad.contenidoTexto)
+                        }
                     }
                 }
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
