@@ -1,7 +1,6 @@
 package com.example.mpaz_real_real.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,6 +40,7 @@ import com.example.mpaz_real_real.ui.theme.CabeceraLogin
 
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.Alignment
@@ -127,7 +127,7 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -149,87 +149,36 @@ fun LoginScreen(
                 else -> ""
             }
 
-            Text(
-                text = nombrePerfil,
-                color = Color.Black,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(CabeceraLogin)
-                    .padding(vertical = 20.dp)
-            )
+            item {
+                Text(
+                    text = nombrePerfil,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(CabeceraLogin)
+                        .padding(vertical = 20.dp)
+                )
+            }
 
-            OutlinedTextField(
-                value = estado.usuario,
-                onValueChange = viewModel::usuarioChanged,
-                label = {
-                    Text(text = "Usuario")
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null
-                    )
-                },
-                isError = estado.errores.usuario != null,
-                supportingText = {
-                    estado.errores.usuario?.let {
-                        Text(
-                            text = it,
-                            color = TextoErrorLogin
-                        )
-                    }
-                },
-                singleLine = true,
-                colors = coloresCampos,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = estado.contrasenia,
-                onValueChange = viewModel::contraseniaChanged,
-                label = {
-                    Text(text = "Contraseña")
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = null
-                    )
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                isError = estado.errores.contrasenia != null,
-                supportingText = {
-                    estado.errores.contrasenia?.let {
-                        Text(
-                            text = it,
-                            color = TextoErrorLogin
-                        )
-                    }
-                },
-                singleLine = true,
-                colors = coloresCampos,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            if (estudiante) {
+            item {
                 OutlinedTextField(
-                    value = estado.codigoTemporal,
-                    onValueChange = viewModel::codigoTemporalChanged,
+                    value = estado.usuario,
+                    onValueChange = viewModel::usuarioChanged,
                     label = {
-                        Text(text = "Código temporal (opcional)")
+                        Text(text = "Usuario")
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Default.Info,
+                            imageVector = Icons.Default.Person,
                             contentDescription = null
                         )
                     },
-                    isError = estado.errores.codigoTemporal != null,
+                    isError = estado.errores.usuario != null,
                     supportingText = {
-                        estado.errores.codigoTemporal?.let {
+                        estado.errores.usuario?.let {
                             Text(
                                 text = it,
                                 color = TextoErrorLogin
@@ -242,47 +191,110 @@ fun LoginScreen(
                 )
             }
 
-            Button(
-                onClick = {
-                    viewModel.ingresar()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BotonLogin,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
-                Text(
-                    text = "Ingresar",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+            item {
+                OutlinedTextField(
+                    value = estado.contrasenia,
+                    onValueChange = viewModel::contraseniaChanged,
+                    label = {
+                        Text(text = "Contraseña")
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = estado.errores.contrasenia != null,
+                    supportingText = {
+                        estado.errores.contrasenia?.let {
+                            Text(
+                                text = it,
+                                color = TextoErrorLogin
+                            )
+                        }
+                    },
+                    singleLine = true,
+                    colors = coloresCampos,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            Button(
-                onClick = {
-                    navController.popBackStack()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BotonLogin,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
-                Text(
-                    text = "Volver",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            if (estudiante) {
+                item {
+                    OutlinedTextField(
+                        value = estado.codigoTemporal,
+                        onValueChange = viewModel::codigoTemporalChanged,
+                        label = {
+                            Text(text = "Código temporal (opcional)")
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null
+                            )
+                        },
+                        isError = estado.errores.codigoTemporal != null,
+                        supportingText = {
+                            estado.errores.codigoTemporal?.let {
+                                Text(
+                                    text = it,
+                                    color = TextoErrorLogin
+                                )
+                            }
+                        },
+                        singleLine = true,
+                        colors = coloresCampos,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        viewModel.ingresar()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BotonLogin,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                ) {
+                    Text(
+                        text = "Ingresar",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BotonLogin,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                ) {
+                    Text(
+                        text = "Volver",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

@@ -3,13 +3,13 @@ package com.example.mpaz_real_real.ui.screen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -64,7 +64,7 @@ fun PerfilScreen(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -77,90 +77,100 @@ fun PerfilScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_escuela),
-                contentDescription = "Logo de la Escuela Escritora Marcela Paz",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-            )
-
-            Text(
-                text = "Elige el perfil de usuario",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Button(
-                onClick = {
-                    viewModel.seleccionarTipoUsuario("docente")
-                    navController.navigate(Screen.Login.route)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BotonLogin,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
-                Text(
-                    text = "Administración pedagógica",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_escuela),
+                    contentDescription = "Logo de la Escuela Escritora Marcela Paz",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
                 )
             }
 
-            Button(
-                onClick = {
-                    viewModel.seleccionarTipoUsuario("asistente")
-                    navController.navigate(Screen.Login.route)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BotonLogin,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
+            item {
                 Text(
-                    text = "Asistente de aula",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "Elige el perfil de usuario",
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            Button(
-                onClick = {
-                    viewModel.seleccionarTipoUsuario("estudiante")
-                    navController.navigate(Screen.Login.route)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = BotonLogin,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(2.dp, Color.Black),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-            ) {
-                Text(
-                    text = "Estudiante",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+            item {
+                Button(
+                    onClick = {
+                        viewModel.seleccionarTipoUsuario("docente")
+                        navController.navigate(Screen.Login.route)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BotonLogin,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                ) {
+                    Text(
+                        text = "Administración pedagógica",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        viewModel.seleccionarTipoUsuario("asistente")
+                        navController.navigate(Screen.Login.route)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BotonLogin,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                ) {
+                    Text(
+                        text = "Asistente de aula",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        viewModel.seleccionarTipoUsuario("estudiante")
+                        navController.navigate(Screen.Login.route)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BotonLogin,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(2.dp, Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                ) {
+                    Text(
+                        text = "Estudiante",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
