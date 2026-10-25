@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
-import com.example.mpaz_real_real.repository.actividadesDePrueba
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +44,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 import androidx.compose.animation.AnimatedVisibility
+
+import com.example.mpaz_real_real.data.local.actividadesIniciales
+import com.example.mpaz_real_real.data.local.preguntasIniciales
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -110,7 +113,7 @@ fun RetroalimentacionCompacta(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
+        val pregunta = estado.preguntas[estado.indiceRetroalimentacion]
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -131,7 +134,7 @@ fun RetroalimentacionCompacta(
             ) {
                 item{
                     Text(
-                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${estado.preguntas.size}",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -206,7 +209,7 @@ fun RetroalimentacionMediana(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
+        val pregunta = estado.preguntas[estado.indiceRetroalimentacion]
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -227,7 +230,7 @@ fun RetroalimentacionMediana(
             ) {
                 item{
                     Text(
-                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${estado.preguntas.size}",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -307,7 +310,7 @@ fun RetroalimentacionExpandida(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indiceRetroalimentacion]
+        val pregunta = estado.preguntas[estado.indiceRetroalimentacion]
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -328,7 +331,7 @@ fun RetroalimentacionExpandida(
             ) {
                 item{
                     Text(
-                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${estado.preguntas.size}",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -403,7 +406,8 @@ fun RetroalimentacionCompactaPreview() {
     Mpaz_real_realTheme {
         RetroalimentacionCompacta(
             estado = ActividadUiState(
-                actividad = actividadesDePrueba.first(),
+                actividad = actividadesIniciales.first(),
+                preguntas = preguntasIniciales.filter { it.actividadCodigo == "LEC-001" },
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
             ),
             onSiguiente = {},
@@ -420,7 +424,8 @@ fun RetroalimentacionMedianaPreview() {
     Mpaz_real_realTheme {
         RetroalimentacionMediana(
             estado = ActividadUiState(
-                actividad = actividadesDePrueba.first(),
+                actividad = actividadesIniciales.first(),
+                preguntas = preguntasIniciales.filter { it.actividadCodigo == "LEC-001" },
                 mensajeRetroalimentacion = "¡Muy bien! El texto dice: «Tito es un perro café»."
             ),
             onSiguiente = {},
@@ -434,13 +439,15 @@ fun RetroalimentacionMedianaPreview() {
 @Preview(name = "Expanded", widthDp = 1000, heightDp = 700)
 @Composable
 fun RetroalimentacionExpandidaPreview() {
-    val actividad = actividadesDePrueba.first()
+    val actividad = actividadesIniciales.first()
+    val preguntas = preguntasIniciales.filter { it.actividadCodigo == actividad.codigo }
     Mpaz_real_realTheme {
         RetroalimentacionExpandida(
             estado = ActividadUiState(
                 actividad = actividad,
-                respuestas = actividad.preguntas.map { null },
-                indiceRetroalimentacion = actividad.preguntas.size - 1,
+                preguntas = preguntas,
+                respuestas = preguntas.map { null },
+                indiceRetroalimentacion = preguntas.size - 1,
                 mensajeRetroalimentacion = "¡Muy bien! Un patio es un espacio abierto dentro de una casa."
             ),
             onSiguiente = {},

@@ -29,3 +29,5 @@ val CelesteFondo = Color(0xFFDBE6F5)
 val AzulBoton = Color(0xFF94B4E2)
 
 val GrisBarra = Color(0xFF9E9E9E)
+
+val RosadoError = Color(0xFFE8CBC6)

@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 
-import com.example.mpaz_real_real.repository.actividadesDePrueba
+import com.example.mpaz_real_real.data.local.actividadesIniciales
+import com.example.mpaz_real_real.data.local.preguntasIniciales
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
 import androidx.compose.material3.Scaffold
@@ -47,7 +48,7 @@ import com.example.mpaz_real_real.ui.components.IndicadorAvance
 import com.example.mpaz_real_real.ui.components.VentanaConfirmacion
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
-
+import com.example.mpaz_real_real.model.alternativas
 @Composable
 fun PreguntaScreen(
     navController: NavController,
@@ -116,7 +117,7 @@ fun PreguntaCompacta(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indicePregunta]
+        val pregunta = estado.preguntas[estado.indicePregunta]
 
         Scaffold(
             topBar = {
@@ -139,7 +140,7 @@ fun PreguntaCompacta(
                 item {
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
-                        total = actividad.preguntas.size,
+                        total = estado.preguntas.size,
                         etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
                         colorBarra = colorCabecera(actividad.modulo)
                     )
@@ -161,9 +162,9 @@ fun PreguntaCompacta(
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        pregunta.alternativas.forEachIndexed { posicion, texto ->
+                        pregunta.alternativas().forEachIndexed { posicion, texto ->
                             AlternativaPregunta(
-                                letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
+                                letra = listOf("A", "B", "C", "D")[posicion],
                                 texto = texto,
                                 seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
                                 onClick = { onAlternativa(posicion) },
@@ -183,7 +184,7 @@ fun PreguntaCompacta(
         if (estado.mostrarConfirmacion){
             VentanaConfirmacion(
                 respondidas = estado.respondidas,
-                total = actividad.preguntas.size,
+                total = estado.preguntas.size,
                 onEnviar = onEnviar,
                 onCambiar = onCambiar
             )
@@ -209,7 +210,7 @@ fun PreguntaMediana(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indicePregunta]
+        val pregunta = estado.preguntas[estado.indicePregunta]
 
         Scaffold(
             topBar = {
@@ -232,7 +233,7 @@ fun PreguntaMediana(
                 item {
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
-                        total = actividad.preguntas.size,
+                        total = estado.preguntas.size,
                         etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
                         colorBarra = colorCabecera(actividad.modulo)
                     )
@@ -254,9 +255,9 @@ fun PreguntaMediana(
                 item {ContenedorTexto{Text(text = pregunta.enunciado)}}
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        pregunta.alternativas.forEachIndexed { posicion, texto ->
+                        pregunta.alternativas().forEachIndexed { posicion, texto ->
                             AlternativaPregunta(
-                                letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
+                                letra = listOf("A", "B", "C", "D")[posicion],
                                 texto = texto,
                                 seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
                                 onClick = { onAlternativa(posicion) },
@@ -285,7 +286,7 @@ fun PreguntaMediana(
         if (estado.mostrarConfirmacion){
             VentanaConfirmacion(
                 respondidas = estado.respondidas,
-                total = actividad.preguntas.size,
+                total = estado.preguntas.size,
                 onEnviar = onEnviar,
                 onCambiar = onCambiar
             )
@@ -311,7 +312,7 @@ fun PreguntaExpandida(
             CircularProgressIndicator()
         }
     } else {
-        val pregunta = actividad.preguntas[estado.indicePregunta]
+        val pregunta = estado.preguntas[estado.indicePregunta]
         val tieneTexto = actividad.contenidoTexto.isNotBlank()
 
         Scaffold(
@@ -334,7 +335,7 @@ fun PreguntaExpandida(
             ) {
                 IndicadorAvance(
                     actual = estado.indicePregunta + 1,
-                    total = actividad.preguntas.size,
+                    total = estado.preguntas.size,
                     etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
                     colorBarra = colorCabecera(actividad.modulo)
                 )
@@ -382,7 +383,7 @@ fun PreguntaExpandida(
                         }
                         item {
                             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                pregunta.alternativas.forEachIndexed { posicion, texto ->
+                                pregunta.alternativas().forEachIndexed { posicion, texto ->
                                     AlternativaPregunta(
                                         letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
                                         texto = texto,
@@ -406,7 +407,7 @@ fun PreguntaExpandida(
         if (estado.mostrarConfirmacion){
             VentanaConfirmacion(
                 respondidas = estado.respondidas,
-                total = actividad.preguntas.size,
+                total = estado.preguntas.size,
                 onEnviar = onEnviar,
                 onCambiar = onCambiar
             )
@@ -417,12 +418,14 @@ fun PreguntaExpandida(
 @Preview(name = "Compact", widthDp = 360, heightDp = 800)
 @Composable
 fun PreguntaCompactaPreview() {
-    val actividad = actividadesDePrueba.first()
+    val actividad = actividadesIniciales.first()
+    val preguntas = preguntasIniciales.filter { it.actividadCodigo == actividad.codigo }
     Mpaz_real_realTheme {
         PreguntaCompacta(
             estado = ActividadUiState(
                 actividad = actividad,
-                respuestas = actividad.preguntas.map {null},
+                preguntas = preguntas,
+                respuestas = preguntas.map {null},
                 errorRespuesta = "Debes elegir una alternativa para continuar."
             ),
             onAlternativa = {},
@@ -436,12 +439,14 @@ fun PreguntaCompactaPreview() {
 @Preview(name = "Medium", widthDp = 700, heightDp = 1000)
 @Composable
 fun PreguntaMedianaPreview() {
-    val actividad = actividadesDePrueba.first()
+    val actividad = actividadesIniciales.first()
+    val preguntas = preguntasIniciales.filter { it.actividadCodigo == actividad.codigo }
     Mpaz_real_realTheme {
         PreguntaMediana(
             estado = ActividadUiState(
                 actividad = actividad,
-                respuestas = actividad.preguntas.map {null}
+                preguntas = preguntas,
+                respuestas = preguntas.map {null}
             ),
             onAlternativa = {},
             onSiguiente = {},
@@ -454,12 +459,14 @@ fun PreguntaMedianaPreview() {
 @Preview(name = "Expanded", widthDp = 1000, heightDp = 700)
 @Composable
 fun PreguntaExpandidaPreview() {
-    val actividad = actividadesDePrueba.first()
+    val actividad = actividadesIniciales.first()
+    val preguntas = preguntasIniciales.filter { it.actividadCodigo == actividad.codigo }
     Mpaz_real_realTheme {
         PreguntaExpandida(
             estado = ActividadUiState(
                 actividad = actividad,
-                respuestas = actividad.preguntas.map {null}
+                preguntas = preguntas,
+                respuestas = preguntas.map {null}
             ),
             onAlternativa = {},
             onSiguiente = {},

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.model.ActividadUiState
-import com.example.mpaz_real_real.repository.actividadesDePrueba
+import com.example.mpaz_real_real.data.local.actividadesIniciales
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import androidx.navigation.NavController
 import com.example.mpaz_real_real.navigation.Screen
@@ -226,7 +226,7 @@ fun InstruccionesExpandida(
 fun InstruccionesCompactaPreview() {
     Mpaz_real_realTheme {
         InstruccionesCompacta(
-            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            estado = ActividadUiState(actividad = actividadesIniciales.first()),
             onComenzar = {}
         )
     }
@@ -237,7 +237,7 @@ fun InstruccionesCompactaPreview() {
 fun InstruccionesMedianaPreview() {
     Mpaz_real_realTheme {
         InstruccionesMediana(
-            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            estado = ActividadUiState(actividad = actividadesIniciales.first()),
             onComenzar = {}
         )
     }
@@ -248,7 +248,7 @@ fun InstruccionesMedianaPreview() {
 fun InstruccionesExpandidaPreview() {
     Mpaz_real_realTheme {
         InstruccionesExpandida(
-            estado = ActividadUiState(actividad = actividadesDePrueba.first()),
+            estado = ActividadUiState(actividad = actividadesIniciales.first()),
             onComenzar = {}
         )
     }

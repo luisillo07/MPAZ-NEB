@@ -13,9 +13,14 @@ import com.example.mpaz_real_real.ui.screen.InstruccionesScreen
 import com.example.mpaz_real_real.ui.screen.PreguntaScreen
 import com.example.mpaz_real_real.ui.screen.QuedanIntentosScreen
 import com.example.mpaz_real_real.ui.screen.RetroalimentacionScreen
+import com.example.mpaz_real_real.ui.screen.CatalogoScreen
+import com.example.mpaz_real_real.ui.screen.EnConstruccionScreen
+import com.example.mpaz_real_real.ui.screen.FormularioActividadScreen
+import com.example.mpaz_real_real.ui.screen.RevisarActividadScreen
 import com.example.mpaz_real_real.viewmodel.CargaViewModel
 import com.example.mpaz_real_real.viewmodel.LoginViewModel
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
+import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
 @Composable
 fun AppNavigation() {
@@ -23,6 +28,7 @@ fun AppNavigation() {
     val cargaViewModel: CargaViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
     val actividadViewModel: ActividadViewModel = viewModel()
+    val catalogoViewModel: CatalogoViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -51,6 +57,18 @@ fun AppNavigation() {
         }
         composable(Screen.Retroalimentacion.route) {
             RetroalimentacionScreen(navController = navController, viewModel = actividadViewModel)
+        }
+        composable(Screen.Catalogo.route) {
+            CatalogoScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.Construccion.route) {
+            EnConstruccionScreen(navController = navController)
+        }
+        composable(Screen.Formulario.route) {
+            FormularioActividadScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.Revisar.route) {
+            RevisarActividadScreen(navController = navController, viewModel = catalogoViewModel)
         }
     }
 }

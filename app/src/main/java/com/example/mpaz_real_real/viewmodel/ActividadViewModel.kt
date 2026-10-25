@@ -1,7 +1,6 @@
 package com.example.mpaz_real_real.viewmodel
 
 import com.example.mpaz_real_real.model.ActividadUiState
-import com.example.mpaz_real_real.repository.actividadesDePrueba
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +30,7 @@ class ActividadViewModel(
         name = "mpazneb_database"
     ).fallbackToDestructiveMigration(true).build()
     private val resultadoDao = database.resultadoDao
+    private val actividadDao = database.actividadDao
     private val contentResolver = application.contentResolver
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
@@ -39,16 +39,25 @@ class ActividadViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
+    val actividades = actividadDao.observarDisponibles().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
     fun cargarActividad(codigo: String) {
-        val actividad = actividadesDePrueba.find { it.codigo == codigo } ?: return
         _estado.value = ActividadUiState()
         viewModelScope.launch {
+            val actividad = actividadDao.buscar(codigo)
+            val preguntas = actividadDao.obtenerPreguntas(codigo)
             val usados = resultadoDao.contarIntentos(codigo)
-            _estado.value = ActividadUiState(
-                actividad = actividad,
-                respuestas = actividad.preguntas.map { null },
-                intentosUsados = usados
-            )
+            if (actividad != null) {
+                _estado.value = ActividadUiState(
+                    actividad = actividad,
+                    preguntas = preguntas,
+                    respuestas = preguntas.map { null },
+                    intentosUsados = usados
+                )
+            }
         }
     }
 
@@ -173,13 +182,12 @@ class ActividadViewModel(
 
 
     private fun esCorrecta(estado: ActividadUiState, indice: Int): Boolean {
-        return estado.respuestas[indice] == estado.actividad?.preguntas?.get(indice)?.correcta
+        return estado.respuestas[indice] == estado.preguntas[indice].correcta
     }
 
     private fun armarMensaje(estado: ActividadUiState, indice: Int): String {
-        val pregunta = estado.actividad?.preguntas?.get(indice) ?: return ""
+        val pregunta = estado.preguntas[indice]
         val inicio = if (esCorrecta(estado, indice)) "¡Muy bien!" else "¡Casi! Revisemos juntos."
         return "$inicio ${pregunta.retroalimentacion}"
     }
 }
-

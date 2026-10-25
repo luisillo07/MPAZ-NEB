@@ -3,6 +3,7 @@ import android.net.Uri
 
 data class ActividadUiState(
     val actividad: Actividad? = null,
+    val preguntas: List<Pregunta> = emptyList(),
     val indicePregunta: Int = 0,
     val respuestas: List<Int?> = emptyList(),
     val errorRespuesta: String? = null,

@@ -9,4 +9,8 @@ sealed class Screen(val route: String) {
     data object Pregunta : Screen("pregunta_page")
     data object QuedanIntentos : Screen("quedan_intentos_page")
     data object Retroalimentacion : Screen("retroalimentacion_page")
+    data object Catalogo : Screen("catalogo_page")
+    data object Construccion : Screen("construccion_page")
+    data object Formulario : Screen("formulario_page")
+    data object Revisar : Screen("revisar_page")
 }

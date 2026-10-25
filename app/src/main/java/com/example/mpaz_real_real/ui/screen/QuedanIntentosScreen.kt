@@ -17,15 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mpaz_real_real.model.ActividadUiState
 import com.example.mpaz_real_real.navigation.Screen
-import com.example.mpaz_real_real.repository.actividadesDePrueba
+
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
-
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.utils.colorBoton
 import com.example.mpaz_real_real.ui.utils.colorFondo
-
 import com.example.mpaz_real_real.ui.components.BotonActividad
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +34,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
+import com.example.mpaz_real_real.data.local.actividadesIniciales
+
 @Composable
 fun QuedanIntentosScreen(
     navController: NavController,
@@ -89,7 +89,7 @@ fun QuedanIntentosCompacta(
             CircularProgressIndicator()
         }
     } else {
-        val restantes = actividad.intentosPermitidos - estado.intentosUsados
+        val restantes = (actividad.intentosPermitidos ?: 0) - estado.intentosUsados
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -145,7 +145,7 @@ fun QuedanIntentosMediana(
             CircularProgressIndicator()
         }
     } else {
-        val restantes = actividad.intentosPermitidos - estado.intentosUsados
+        val restantes = (actividad.intentosPermitidos ?: 0) - estado.intentosUsados
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -210,7 +210,7 @@ fun QuedanIntentosExpandida(
             CircularProgressIndicator()
         }
     } else {
-        val restantes = actividad.intentosPermitidos - estado.intentosUsados
+        val restantes = (actividad.intentosPermitidos ?: 0) - estado.intentosUsados
         Scaffold(
             topBar = {
                 EncabezadoActividad(
@@ -266,7 +266,7 @@ fun QuedanIntentosCompactaPreview() {
     Mpaz_real_realTheme {
         QuedanIntentosCompacta(
             estado = ActividadUiState(
-                actividad = actividadesDePrueba.first(),
+                actividad = actividadesIniciales.first(),
                 intentosUsados = 1
             ),
             onReintentar = {},
@@ -281,7 +281,7 @@ fun QuedanIntentosMedianaPreview() {
     Mpaz_real_realTheme {
         QuedanIntentosMediana(
             estado = ActividadUiState(
-                actividad = actividadesDePrueba.first(),
+                actividad = actividadesIniciales.first(),
                 intentosUsados = 1
             ),
             onReintentar = {},
@@ -296,7 +296,7 @@ fun QuedanIntentosExpandidaPreview() {
     Mpaz_real_realTheme {
         QuedanIntentosExpandida(
             estado = ActividadUiState(
-                actividad = actividadesDePrueba.first(),
+                actividad = actividadesIniciales.first(),
                 intentosUsados = 1
             ),
             onReintentar = {},

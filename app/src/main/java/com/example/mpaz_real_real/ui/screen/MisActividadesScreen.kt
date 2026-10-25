@@ -26,7 +26,7 @@ import androidx.navigation.NavController
 import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
 import com.example.mpaz_real_real.model.Actividad
 import com.example.mpaz_real_real.navigation.Screen
-import com.example.mpaz_real_real.repository.actividadesDePrueba
+import com.example.mpaz_real_real.data.local.actividadesIniciales
 import com.example.mpaz_real_real.ui.components.BotonActividad
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
@@ -42,6 +42,7 @@ fun MisActividadesScreen(
     navController: NavController,
     viewModel: ActividadViewModel
 ) {
+    val actividades by viewModel.actividades.collectAsState()
     val resultados by viewModel.resultados.collectAsState()
     val windowSizeClass = obtenerWindowSizeClass()
     val onEntrar: (String) -> Unit = { codigo ->
@@ -53,19 +54,19 @@ fun MisActividadesScreen(
     }
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> MisActividadesCompacta(
-            actividades = actividadesDePrueba,
+            actividades = actividades,
             resultados = resultados,
             onEntrar = onEntrar,
             onSalir = onSalir
         )
         WindowWidthSizeClass.Medium -> MisActividadesMediana(
-            actividades = actividadesDePrueba,
+            actividades = actividades,
             resultados = resultados,
             onEntrar = onEntrar,
             onSalir = onSalir
         )
         WindowWidthSizeClass.Expanded -> MisActividadesExpandida(
-            actividades = actividadesDePrueba,
+            actividades = actividades,
             resultados = resultados,
             onEntrar = onEntrar,
             onSalir = onSalir
@@ -106,6 +107,7 @@ fun MisActividadesCompacta(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
+                val permitidos = actividad.intentosPermitidos ?: 0
                 ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Text(
                         text = actividad.nombre,
@@ -114,11 +116,11 @@ fun MisActividadesCompacta(
                     )
                     Text(text = "${actividad.modulo} · ${actividad.curso}")
                     Text(
-                        text = textoProgreso(usados, actividad.intentosPermitidos),
+                        text = textoProgreso(usados, permitidos),
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    if (usados < actividad.intentosPermitidos) {
+                    if (usados < permitidos) {
                         BotonActividad(
                             texto = if (usados == 0) "Comenzar" else "Continuar",
                             onClick = { onEntrar(actividad.codigo) },
@@ -166,6 +168,7 @@ fun MisActividadesMediana(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
+                val permitidos = actividad.intentosPermitidos ?: 0
                 ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -179,11 +182,11 @@ fun MisActividadesMediana(
                             )
                             Text(text = "${actividad.modulo} · ${actividad.curso}")
                             Text(
-                                text = textoProgreso(usados, actividad.intentosPermitidos),
+                                text = textoProgreso(usados, permitidos),
                                 fontWeight = FontWeight.Bold
                             )
                         }
-                        if (usados < actividad.intentosPermitidos) {
+                        if (usados < permitidos) {
                             BotonActividad(
                                 texto = if (usados == 0) "Comenzar" else "Continuar",
                                 onClick = { onEntrar(actividad.codigo) },
@@ -239,6 +242,7 @@ fun MisActividadesExpandida(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
+                val permitidos = actividad.intentosPermitidos ?: 0
                 ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -255,12 +259,12 @@ fun MisActividadesExpandida(
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                text = textoProgreso(usados, actividad.intentosPermitidos),
+                                text = textoProgreso(usados, permitidos),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                         }
-                        if (usados < actividad.intentosPermitidos) {
+                        if (usados < permitidos) {
                             BotonActividad(
                                 texto = if (usados == 0) "Comenzar" else "Continuar",
                                 onClick = { onEntrar(actividad.codigo) },
@@ -295,7 +299,7 @@ private fun textoProgreso(usados: Int, permitidos: Int): String {
 fun MisActividadesCompactaPreview() {
     Mpaz_real_realTheme {
         MisActividadesCompacta(
-            actividades = actividadesDePrueba,
+            actividades = actividadesIniciales,
             resultados = emptyList(),
             onEntrar = {},
             onSalir = {}
@@ -308,7 +312,7 @@ fun MisActividadesCompactaPreview() {
 fun MisActividadesMedianaPreview() {
     Mpaz_real_realTheme {
         MisActividadesMediana(
-            actividades = actividadesDePrueba,
+            actividades = actividadesIniciales,
             resultados = emptyList(),
             onEntrar = {},
             onSalir = {}
@@ -321,7 +325,7 @@ fun MisActividadesMedianaPreview() {
 fun MisActividadesExpandidaPreview() {
     Mpaz_real_realTheme {
         MisActividadesExpandida(
-            actividades = actividadesDePrueba,
+            actividades = actividadesIniciales,
             resultados = emptyList(),
             onEntrar = {},
             onSalir = {}
