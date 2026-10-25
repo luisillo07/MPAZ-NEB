@@ -38,6 +38,8 @@ import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import androidx.compose.ui.text.font.FontWeight
 import com.example.mpaz_real_real.ui.theme.Beige
 
+import androidx.compose.foundation.lazy.LazyColumn
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -94,40 +96,57 @@ fun RetroalimentacionContenido(
             containerColor = RosaFondo,
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
-            Column(
+            LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(16.dp)
             ) {
-                Text(
-                    text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                ContenedorTexto {
-                    Text(text = pregunta.enunciado, fontWeight = FontWeight.Bold)
-                    Text(text = estado.mensajeRetroalimentacion)
+                item{
+                    Text(
+                        text = "Retroalimentación ${estado.indiceRetroalimentacion + 1} de ${actividad.preguntas.size}",
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 }
-
-                if (estado.esUltimaRetroalimentacion) {
-                    if (estado.pantallazoPregunta == null) {
-                        Text(text = "Adjunta un pantallazo de la pregunta que más te costó")
-                        BotonActividad(texto = "Adjuntar pantallazo", onClick = onAdjuntarPantallazo, colorFondo = Beige)
-                    } else {
-                        Text(text = "¡Ya subiste la imagen!")
-                    }
-                    PantallazoPregunta(uri = estado.pantallazoPregunta)
-                    if (estado.resumenGuardado) {
-                        Text(text = "¡Ya guardaste el resumen!")
-                    } else {
-                        BotonActividad(texto = "Guardar resumen del intento", onClick = onGuardarResumen, colorFondo = Beige)
+                item{
+                    ContenedorTexto{
+                        Text(text = pregunta.enunciado,fontWeight = FontWeight.Bold)
+                        Text(text = estado.mensajeRetroalimentacion)
                     }
                 }
-                if (!estado.esUltimaRetroalimentacion) {
-                    BotonActividad(texto = "Siguiente", onClick = onSiguiente)
-                } else {
-                    BotonActividad(texto = "Volver a Actividades", onClick = onVolver)
+                if (estado.esUltimaRetroalimentacion){
+                    item{
+                        Column(verticalArrangement = Arrangement.spacedBy(20.dp)){
+                            if (estado.pantallazoPregunta == null){
+                                Text(text = "Adjunta un pantallazo de la pregunta que más te costó")
+                                BotonActividad(
+                                    texto = "Adjuntar pantallazo",
+                                    onClick = onAdjuntarPantallazo,
+                                    colorFondo = Beige
+                                )
+                            }else{
+                                Text(text = "¡Ya subiste la imagen!")
+                            }
+                            PantallazoPregunta(uri = estado.pantallazoPregunta)
+                            if (estado.resumenGuardado) {
+                                Text(text = "¡Ya guardaste el resumen!")
+                            }else{
+                                BotonActividad(
+                                    texto = "Guardar resumen del intento",
+                                    onClick = onGuardarResumen,
+                                    colorFondo = Beige
+                                )
+                            }
+                        }
+                    }
+                }
+                item{
+                    if (!estado.esUltimaRetroalimentacion){
+                        BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                    }else{
+                        BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                    }
                 }
             }
         }
