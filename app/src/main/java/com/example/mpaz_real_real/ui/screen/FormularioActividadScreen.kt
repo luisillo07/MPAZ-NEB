@@ -83,7 +83,8 @@ fun FormularioActividadScreen(
             SelectorFiltro(
                 "Módulo", formulario.modulo,
                 estado.opcionesModulo.filter { it != "Todos" },
-                viewModel::onFormModuloChange, Modifier.fillMaxWidth()
+                viewModel::onFormModuloChange, Modifier.fillMaxWidth(),
+                formulario.errores.modulo
             )
             SelectorFiltro(
                 "Curso", formulario.curso,

@@ -150,7 +150,9 @@ class CatalogoViewModel(
     }
 
     fun onFormNombreChange(valor: String) { actualizarFormulario { it.copy(nombre = valor) } }
-    fun onFormModuloChange(valor: String) { actualizarFormulario { it.copy(modulo = valor) } }
+    fun onFormModuloChange(valor: String) {
+        actualizarFormulario { it.copy(modulo = valor, errores = it.errores.copy(modulo = null)) }
+    }
     fun onFormCursoChange(valor: String) { actualizarFormulario { it.copy(curso = valor) } }
     fun onFormContenidoChange(valor: String) { actualizarFormulario { it.copy(contenido = valor) } }
     fun onFormObjetivoChange(valor: String) { actualizarFormulario { it.copy(objetivo = valor) } }
@@ -251,7 +253,7 @@ class CatalogoViewModel(
         val formulario = _state.value.formulario
         val errores = validarFormulario(formulario)
 
-        if (errores.codigo != null || errores.cantidadPreguntas != null || errores.intentosPermitidos != null) {
+        if (errores.codigo != null || errores.modulo != null || errores.cantidadPreguntas != null || errores.intentosPermitidos != null) {
             _state.update { it.copy(formulario = it.formulario.copy(errores = errores)) }
             return false
         }
@@ -318,6 +320,7 @@ class CatalogoViewModel(
 
         return FormularioActividadErrores(
             codigo = errorCodigo(formulario),
+            modulo = errorModulo(formulario),
             cantidadPreguntas = errorCantidad,
             intentosPermitidos = errorNumero(formulario.intentosPermitidos)
         )
@@ -337,6 +340,18 @@ class CatalogoViewModel(
             "Para Lectura usa LEC-### y para Matemática usa MAT-###."
         } else if (_state.value.actividades.firstOrNull { it.codigo.uppercase() == codigo.uppercase() } != null) {
             "Este identificador ya existe."
+        } else {
+            null
+        }
+    }
+
+    private fun errorModulo(formulario: FormularioActividadUiState): String? {
+        if (formulario.esNuevo) return null
+        val codigo = formulario.codigo.trim()
+        return if (patronLectura.matches(codigo) && formulario.modulo == "Matemática") {
+            "El identificador $codigo corresponde a Lectura. No puedes cambiar el módulo a Matemática."
+        } else if (patronMatematica.matches(codigo) && formulario.modulo == "Lectura") {
+            "El identificador $codigo corresponde a Matemática. No puedes cambiar el módulo a Lectura."
         } else {
             null
         }

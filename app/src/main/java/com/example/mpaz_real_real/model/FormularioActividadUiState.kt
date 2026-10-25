@@ -29,6 +29,7 @@ data class FormularioActividadUiState(
 
 data class FormularioActividadErrores(
     val codigo: String? = null,
+    val modulo: String? = null,
     val cantidadPreguntas: String? = null,
     val intentosPermitidos: String? = null,
     val nuevaPregunta: String? = null
