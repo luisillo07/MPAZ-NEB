@@ -40,7 +40,7 @@ fun TarjetaActividad(
                     )
                     Card(border = BorderStroke(1.dp, Color.Black)) {
                         Text(
-                            text = if (actividad.disponible) "disponible" else "borrador",
+                            text = actividad.estado,
                             style = MaterialTheme.typography.labelLarge,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
@@ -58,7 +58,7 @@ fun TarjetaActividad(
             BotonCatalogo("Revisar", onRevisar, Modifier.weight(1f))
             BotonCatalogo("Editar", onEditar, Modifier.weight(1f))
             BotonCatalogo(
-                texto = if (actividad.disponible) "Desactivar" else "Activar",
+                texto = if (actividad.estado == "disponible") "Desactivar" else "Activar",
                 onClick = onCambiarEstado,
                 modifier = Modifier.weight(1f)
             )
