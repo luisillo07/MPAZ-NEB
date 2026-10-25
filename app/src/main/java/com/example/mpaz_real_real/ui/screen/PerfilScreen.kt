@@ -78,7 +78,7 @@ fun PerfilScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo_escuela),
                 contentDescription = "Logo de la Escuela Escritora Marcela Paz",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -88,7 +88,7 @@ fun PerfilScreen(
 
             Text(
                 text = "Elige el perfil de usuario",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

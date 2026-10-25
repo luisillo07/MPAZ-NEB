@@ -32,7 +32,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import com.example.mpaz_real_real.ui.theme.FondoLogin
 import com.example.mpaz_real_real.ui.theme.BotonLogin
 import com.example.mpaz_real_real.ui.theme.CampoLogin
@@ -48,6 +47,11 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.Alignment
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 import androidx.navigation.NavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -95,7 +99,11 @@ fun LoginScreen(
         errorLabelColor = TextoErrorLogin,
 
         cursorColor = Color.Black,
-        errorCursorColor = TextoErrorLogin
+        errorCursorColor = TextoErrorLogin,
+
+        focusedLeadingIconColor = Color.Black,
+        unfocusedLeadingIconColor = Color.Black,
+        errorLeadingIconColor = TextoErrorLogin
     )
 
     Scaffold(
@@ -147,6 +155,12 @@ fun LoginScreen(
                 label = {
                     Text(text = "Usuario")
                 },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null
+                    )
+                },
                 isError = estado.errores.usuario != null,
                 supportingText = {
                     estado.errores.usuario?.let {
@@ -158,7 +172,6 @@ fun LoginScreen(
                 },
                 singleLine = true,
                 colors = coloresCampos,
-                shape = RectangleShape,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -167,6 +180,12 @@ fun LoginScreen(
                 onValueChange = viewModel::contraseniaChanged,
                 label = {
                     Text(text = "Contraseña")
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null
+                    )
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = estado.errores.contrasenia != null,
@@ -180,7 +199,6 @@ fun LoginScreen(
                 },
                 singleLine = true,
                 colors = coloresCampos,
-                shape = RectangleShape,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -190,6 +208,12 @@ fun LoginScreen(
                     onValueChange = viewModel::codigoTemporalChanged,
                     label = {
                         Text(text = "Código temporal (opcional)")
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null
+                        )
                     },
                     isError = estado.errores.codigoTemporal != null,
                     supportingText = {
@@ -202,7 +226,6 @@ fun LoginScreen(
                     },
                     singleLine = true,
                     colors = coloresCampos,
-                    shape = RectangleShape,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
