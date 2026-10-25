@@ -18,6 +18,8 @@ import android.net.Uri
 import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 
 class ActividadViewModel(
     application: Application
@@ -32,6 +34,11 @@ class ActividadViewModel(
     private val contentResolver = application.contentResolver
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
+    val resultados = resultadoDao.obtenerResultados().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
     fun cargarActividad(codigo: String) {
         val actividad = actividadesDePrueba.find { it.codigo == codigo } ?: return
         viewModelScope.launch {

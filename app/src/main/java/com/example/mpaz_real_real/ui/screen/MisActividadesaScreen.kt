@@ -11,11 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
 import com.example.mpaz_real_real.model.Actividad
 import com.example.mpaz_real_real.navigation.Screen
 import com.example.mpaz_real_real.repository.actividadesDePrueba
@@ -31,8 +34,10 @@ fun MisActividadesScreen(
     navController: NavController,
     viewModel: ActividadViewModel
 ) {
+    val resultados by viewModel.resultados.collectAsState()
     MisActividadesContenido(
         actividades = actividadesDePrueba,
+        resultados = resultados,
         onEntrar = { codigo ->
             viewModel.cargarActividad(codigo)
             navController.navigate(Screen.Instrucciones.route)
@@ -43,6 +48,7 @@ fun MisActividadesScreen(
 @Composable
 fun MisActividadesContenido(
     actividades: List<Actividad>,
+    resultados: List<ResultadoEntity>,
     onEntrar: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,6 +74,12 @@ fun MisActividadesContenido(
                 Text(text = "Estas son tus actividades.")
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
+                val usados = resultados.count { it.codigoActividad == actividad.codigo }
+                val progreso = when {
+                    usados == 0 -> "Pendiente"
+                    usados < actividad.intentosPermitidos -> "En desarrollo"
+                    else -> "Finalizada"
+                }
                 ContenedorTexto {
                     Text(
                         text = actividad.nombre,
@@ -75,8 +87,19 @@ fun MisActividadesContenido(
                         fontWeight = FontWeight.Bold
                     )
                     Text(text = "${actividad.modulo} · ${actividad.curso}")
+                    Text(
+                        text = "$progreso · Intentos: $usados de ${actividad.intentosPermitidos}",
+                        fontWeight = FontWeight.Bold
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
-                    BotonActividad(texto = "Comenzar", onClick = { onEntrar(actividad.codigo) })
+                    if (usados < actividad.intentosPermitidos) {
+                        BotonActividad(
+                            texto = if (usados == 0) "Comenzar" else "Continuar",
+                            onClick = { onEntrar(actividad.codigo) }
+                        )
+                    } else {
+                        Text(text = "Ya usaste todos los intentos.")
+                    }
                 }
             }
         }
@@ -89,6 +112,7 @@ fun MisActividadesContenidoPreview() {
     Mpaz_real_realTheme {
         MisActividadesContenido(
             actividades = actividadesDePrueba,
+            resultados = emptyList(),
             onEntrar = {}
         )
     }
