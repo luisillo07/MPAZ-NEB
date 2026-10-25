@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.repository.actividadesDePrueba
 
-import androidx.compose.material3.OutlinedButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
 
@@ -37,6 +36,7 @@ import com.example.mpaz_real_real.ui.components.BotonActividad
 
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import androidx.compose.ui.text.font.FontWeight
+import com.example.mpaz_real_real.ui.theme.Beige
 
 @Composable
 fun RetroalimentacionScreen(
@@ -112,9 +112,8 @@ fun RetroalimentacionContenido(
 
                 if (estado.esUltimaRetroalimentacion) {
                     if (estado.pantallazoPregunta == null) {
-                        OutlinedButton(onClick = onAdjuntarPantallazo) {
-                            Text(text = "Adjuntar pantallazo de la pregunta que más te costó")
-                        }
+                        Text(text = "Adjunta un pantallazo de la pregunta que más te costó")
+                        BotonActividad(texto = "Adjuntar pantallazo", onClick = onAdjuntarPantallazo, colorFondo = Beige)
                     } else {
                         Text(text = "¡Ya subiste la imagen!")
                     }
@@ -122,9 +121,7 @@ fun RetroalimentacionContenido(
                     if (estado.resumenGuardado) {
                         Text(text = "¡Ya guardaste el resumen!")
                     } else {
-                        OutlinedButton(onClick = onGuardarResumen) {
-                            Text(text = "Guardar resumen del intento")
-                        }
+                        BotonActividad(texto = "Guardar resumen del intento", onClick = onGuardarResumen, colorFondo = Beige)
                     }
                 }
                 if (!estado.esUltimaRetroalimentacion) {
