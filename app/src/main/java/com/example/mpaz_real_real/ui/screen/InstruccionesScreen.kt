@@ -22,7 +22,8 @@ import androidx.navigation.NavController
 import com.example.mpaz_real_real.navigation.Screen
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
-import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.utils.colorBoton
+import com.example.mpaz_real_real.ui.utils.colorFondo
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
@@ -81,7 +82,7 @@ fun InstruccionesCompacta(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -95,7 +96,7 @@ fun InstruccionesCompacta(
                     Text(text = actividad.instrucciones)
                 }
                 if (estado.quedanIntentos) {
-                    BotonActividad(texto = "Comenzar", onClick = onComenzar)
+                    BotonActividad(texto = "Comenzar", onClick = onComenzar, colorFondo = colorBoton(actividad.modulo))
                 } else {
                     Text(text = "Ya usaste todos los intentos de esta actividad")
                 }
@@ -127,7 +128,7 @@ fun InstruccionesMediana(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -146,6 +147,7 @@ fun InstruccionesMediana(
                         BotonActividad(
                             texto = "Comenzar",
                             onClick = onComenzar,
+                            colorFondo = colorBoton(actividad.modulo),
                             modifier = Modifier.weight(3f)
                         )
                         Spacer(modifier = Modifier.weight(1f))
@@ -181,7 +183,7 @@ fun InstruccionesExpandida(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -203,6 +205,7 @@ fun InstruccionesExpandida(
                         BotonActividad(
                             texto = "Comenzar",
                             onClick = onComenzar,
+                            colorFondo = colorBoton(actividad.modulo),
                             modifier = Modifier.weight(5f)
                         )
                         Spacer(modifier = Modifier.weight(2f))

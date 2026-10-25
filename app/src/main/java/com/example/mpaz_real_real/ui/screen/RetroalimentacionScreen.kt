@@ -30,7 +30,8 @@ import com.example.mpaz_real_real.ui.components.PantallazoPregunta
 
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
-import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.utils.colorBoton
+import com.example.mpaz_real_real.ui.utils.colorFondo
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
@@ -118,7 +119,7 @@ fun RetroalimentacionCompacta(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             LazyColumn(
@@ -138,6 +139,12 @@ fun RetroalimentacionCompacta(
                     ContenedorTexto{
                         Text(text = pregunta.enunciado,fontWeight = FontWeight.Bold)
                         Text(text = estado.mensajeRetroalimentacion)
+                        if (pregunta.procedimiento.isNotBlank()) {
+                            Text(
+                                text = "Procedimiento: ${pregunta.procedimiento}",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
                 if (estado.esUltimaRetroalimentacion){
@@ -170,9 +177,9 @@ fun RetroalimentacionCompacta(
                 }
                 item{
                     if (!estado.esUltimaRetroalimentacion){
-                        BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                        BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                     }else{
-                        BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                        BotonActividad(texto = "Volver a Actividades", onClick = onVolver, colorFondo = colorBoton(actividad.modulo))
                     }
                 }
             }
@@ -208,7 +215,7 @@ fun RetroalimentacionMediana(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             LazyColumn(
@@ -268,9 +275,9 @@ fun RetroalimentacionMediana(
                                 }
                             }
                             if (!estado.esUltimaRetroalimentacion){
-                                BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                                BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                             }else{
-                                BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                                BotonActividad(texto = "Volver a Actividades", onClick = onVolver, colorFondo = colorBoton(actividad.modulo))
                             }
                         }
                         Spacer(modifier = Modifier.weight(1f))
@@ -309,7 +316,7 @@ fun RetroalimentacionExpandida(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             LazyColumn(
@@ -377,9 +384,9 @@ fun RetroalimentacionExpandida(
                                 }
                             }
                             if (!estado.esUltimaRetroalimentacion){
-                                BotonActividad(texto = "Siguiente",onClick = onSiguiente)
+                                BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                             }else{
-                                BotonActividad(texto = "Volver a Actividades",onClick = onVolver)
+                                BotonActividad(texto = "Volver a Actividades", onClick = onVolver, colorFondo = colorBoton(actividad.modulo))
                             }
                         }
                         Spacer(modifier = Modifier.weight(2f))

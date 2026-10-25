@@ -23,7 +23,8 @@ import com.example.mpaz_real_real.viewmodel.ActividadViewModel
 
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
-import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.utils.colorBoton
+import com.example.mpaz_real_real.ui.utils.colorFondo
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
@@ -97,7 +98,7 @@ fun QuedanIntentosCompacta(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -121,8 +122,8 @@ fun QuedanIntentosCompacta(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                BotonActividad(texto = "Reintentar", onClick = onReintentar)
-                BotonActividad(texto = "Siguiente", onClick = onSiguiente)
+                BotonActividad(texto = "Reintentar", onClick = onReintentar, colorFondo = colorBoton(actividad.modulo))
+                BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
             }
         }
     }
@@ -153,7 +154,7 @@ fun QuedanIntentosMediana(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -183,8 +184,8 @@ fun QuedanIntentosMediana(
                         verticalArrangement = Arrangement.spacedBy(20.dp),
                         modifier = Modifier.weight(3f)
                     ) {
-                        BotonActividad(texto = "Reintentar", onClick = onReintentar)
-                        BotonActividad(texto = "Siguiente", onClick = onSiguiente)
+                        BotonActividad(texto = "Reintentar", onClick = onReintentar, colorFondo = colorBoton(actividad.modulo))
+                        BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                     }
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -218,7 +219,7 @@ fun QuedanIntentosExpandida(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -249,8 +250,8 @@ fun QuedanIntentosExpandida(
                         verticalArrangement = Arrangement.spacedBy(24.dp),
                         modifier = Modifier.weight(5f)
                     ) {
-                        BotonActividad(texto = "Reintentar", onClick = onReintentar)
-                        BotonActividad(texto = "Siguiente", onClick = onSiguiente)
+                        BotonActividad(texto = "Reintentar", onClick = onReintentar, colorFondo = colorBoton(actividad.modulo))
+                        BotonActividad(texto = "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                     }
                     Spacer(modifier = Modifier.weight(2f))
                 }

@@ -33,10 +33,11 @@ fun AlternativaPregunta(
     texto: String,
     seleccionada: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorMarcada: Color = SalmonBoton
 ) {
     val colorAnimado by animateColorAsState(
-        targetValue = if (seleccionada) SalmonBoton else Color.White,
+        targetValue = if (seleccionada) colorMarcada else Color.White,
         animationSpec = tween(durationMillis = 500),
         label = ""
     )

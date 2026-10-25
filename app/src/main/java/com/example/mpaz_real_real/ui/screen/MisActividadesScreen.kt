@@ -31,7 +31,9 @@ import com.example.mpaz_real_real.ui.components.BotonActividad
 import com.example.mpaz_real_real.ui.components.ContenedorTexto
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
-import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.utils.colorBoton
+import com.example.mpaz_real_real.ui.utils.colorFondo
+import androidx.compose.ui.graphics.Color
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
 
@@ -81,7 +83,7 @@ fun MisActividadesCompacta(
                 mostrarSalir = true
             )
         },
-        containerColor = RosaFondo,
+        containerColor = Color.White,
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         LazyColumn(
@@ -96,7 +98,7 @@ fun MisActividadesCompacta(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
-                ContenedorTexto {
+                ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Text(
                         text = actividad.nombre,
                         style = MaterialTheme.typography.titleMedium,
@@ -111,7 +113,8 @@ fun MisActividadesCompacta(
                     if (usados < actividad.intentosPermitidos) {
                         BotonActividad(
                             texto = if (usados == 0) "Comenzar" else "Continuar",
-                            onClick = { onEntrar(actividad.codigo) }
+                            onClick = { onEntrar(actividad.codigo) },
+                            colorFondo = colorBoton(actividad.modulo)
                         )
                     } else {
                         Text(text = "Ya usaste todos los intentos.")
@@ -138,7 +141,7 @@ fun MisActividadesMediana(
                 mostrarSalir = true
             )
         },
-        containerColor = RosaFondo,
+        containerColor = Color.White,
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         LazyColumn(
@@ -153,7 +156,7 @@ fun MisActividadesMediana(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
-                ContenedorTexto {
+                ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -174,6 +177,7 @@ fun MisActividadesMediana(
                             BotonActividad(
                                 texto = if (usados == 0) "Comenzar" else "Continuar",
                                 onClick = { onEntrar(actividad.codigo) },
+                                colorFondo = colorBoton(actividad.modulo),
                                 modifier = Modifier.weight(1f)
                             )
                         } else {
@@ -205,7 +209,7 @@ fun MisActividadesExpandida(
                 mostrarSalir = true
             )
         },
-        containerColor = RosaFondo,
+        containerColor = Color.White,
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         LazyColumn(
@@ -223,7 +227,7 @@ fun MisActividadesExpandida(
             }
             items(items = actividades, key = { actividad -> actividad.codigo }) { actividad ->
                 val usados = resultados.count { it.codigoActividad == actividad.codigo }
-                ContenedorTexto {
+                ContenedorTexto(colorFondo = colorFondo(actividad.modulo)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
@@ -248,6 +252,7 @@ fun MisActividadesExpandida(
                             BotonActividad(
                                 texto = if (usados == 0) "Comenzar" else "Continuar",
                                 onClick = { onEntrar(actividad.codigo) },
+                                colorFondo = colorBoton(actividad.modulo),
                                 modifier = Modifier.weight(1f)
                             )
                         } else {

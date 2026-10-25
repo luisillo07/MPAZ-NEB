@@ -25,7 +25,9 @@ import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 
 import androidx.compose.material3.Scaffold
 import com.example.mpaz_real_real.ui.components.EncabezadoActividad
-import com.example.mpaz_real_real.ui.theme.RosaFondo
+import com.example.mpaz_real_real.ui.utils.colorBoton
+import com.example.mpaz_real_real.ui.utils.colorFondo
+import com.example.mpaz_real_real.ui.utils.colorCabecera
 
 import com.example.mpaz_real_real.ui.components.BotonActividad
 
@@ -124,7 +126,7 @@ fun PreguntaCompacta(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             LazyColumn(
@@ -138,7 +140,8 @@ fun PreguntaCompacta(
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
                         total = actividad.preguntas.size,
-                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta"
+                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
+                        colorBarra = colorCabecera(actividad.modulo)
                     )
                 }
                 if (actividad.contenidoTexto.isNotBlank()) {
@@ -163,7 +166,8 @@ fun PreguntaCompacta(
                                 letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
                                 texto = texto,
                                 seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
-                                onClick = { onAlternativa(posicion) }
+                                onClick = { onAlternativa(posicion) },
+                                colorMarcada = colorBoton(actividad.modulo)
                             )
                         }
                     }
@@ -172,7 +176,7 @@ fun PreguntaCompacta(
                     item {AvisoError(mensaje = mensaje)}
                 }
                 item {
-                    BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente)
+                    BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                 }
             }
         }
@@ -215,7 +219,7 @@ fun PreguntaMediana(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             LazyColumn(
@@ -229,7 +233,8 @@ fun PreguntaMediana(
                     IndicadorAvance(
                         actual = estado.indicePregunta + 1,
                         total = actividad.preguntas.size,
-                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta"
+                        etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
+                        colorBarra = colorCabecera(actividad.modulo)
                     )
                 }
                 if (actividad.contenidoTexto.isNotBlank()){
@@ -254,7 +259,8 @@ fun PreguntaMediana(
                                 letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
                                 texto = texto,
                                 seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
-                                onClick = { onAlternativa(posicion) }
+                                onClick = { onAlternativa(posicion) },
+                                colorMarcada = colorBoton(actividad.modulo)
                             )
                         }
                     }
@@ -268,6 +274,7 @@ fun PreguntaMediana(
                         BotonActividad(
                             texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente",
                             onClick = onSiguiente,
+                            colorFondo = colorBoton(actividad.modulo),
                             modifier = Modifier.weight(3f)
                         )
                         Spacer(modifier = Modifier.weight(1f))
@@ -314,7 +321,7 @@ fun PreguntaExpandida(
                     nombre = actividad.nombre
                 )
             },
-            containerColor = RosaFondo,
+            containerColor = colorFondo(actividad.modulo),
             modifier = modifier.fillMaxSize()
         ) { innerPadding ->
             Column(
@@ -326,7 +333,9 @@ fun PreguntaExpandida(
             ) {
                 IndicadorAvance(
                     actual = estado.indicePregunta + 1,
-                    total = actividad.preguntas.size
+                    total = actividad.preguntas.size,
+                    etiqueta = if (actividad.modulo == "Matemática") "Ejercicio" else "Pregunta",
+                    colorBarra = colorCabecera(actividad.modulo)
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
@@ -368,7 +377,8 @@ fun PreguntaExpandida(
                                         letra = listOf("A", "B", "C", "D")[posicion], // hasta 4 alternativas
                                         texto = texto,
                                         seleccionada = estado.respuestas[estado.indicePregunta] == posicion,
-                                        onClick = { onAlternativa(posicion) }
+                                        onClick = { onAlternativa(posicion) },
+                                        colorMarcada = colorBoton(actividad.modulo)
                                     )
                                 }
                             }
@@ -377,7 +387,7 @@ fun PreguntaExpandida(
                             item {AvisoError(mensaje = mensaje)}
                         }
                         item {
-                            BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente)
+                            BotonActividad(texto = if (estado.esUltimaPregunta) "Enviar" else "Siguiente", onClick = onSiguiente, colorFondo = colorBoton(actividad.modulo))
                         }
                     }
                 }

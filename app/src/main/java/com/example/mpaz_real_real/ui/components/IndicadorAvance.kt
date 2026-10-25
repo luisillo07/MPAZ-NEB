@@ -23,7 +23,8 @@ fun IndicadorAvance(
     actual: Int,
     total: Int,
     modifier: Modifier = Modifier,
-    etiqueta: String = "Pregunta"
+    etiqueta: String = "Pregunta",
+    colorBarra: Color = RojoCabecera
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -36,7 +37,7 @@ fun IndicadorAvance(
         )
         LinearProgressIndicator(
             progress = { actual.toFloat() / total },
-            color = RojoCabecera,
+            color = colorBarra,
             trackColor = Color.White,
             modifier = Modifier
                 .fillMaxWidth()

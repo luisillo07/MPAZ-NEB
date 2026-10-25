@@ -18,12 +18,13 @@ import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 fun ContenedorTexto(
     modifier: Modifier = Modifier,
     colorBorde: Color = Color.Black,
+    colorFondo: Color = Color.White,
     content: @Composable () -> Unit
 ){
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White,MaterialTheme.shapes.medium)
+            .background(colorFondo,MaterialTheme.shapes.medium)
             .border(2.dp, colorBorde, MaterialTheme.shapes.medium)
             .padding(16.dp)
     ){

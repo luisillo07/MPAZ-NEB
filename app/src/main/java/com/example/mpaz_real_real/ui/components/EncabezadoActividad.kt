@@ -17,8 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
-import com.example.mpaz_real_real.ui.theme.RojoCabecera
-import com.example.mpaz_real_real.ui.theme.SalmonBoton
+import com.example.mpaz_real_real.ui.utils.colorCabecera
+import com.example.mpaz_real_real.ui.theme.Beige
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
 
@@ -48,7 +48,7 @@ fun EncabezadoActividad(
             if (mostrarSalir){
                 Button(
                     onClick = {}, // TEMPORAL: se conecta al login de Luis al unir las ramas
-                    colors = ButtonDefaults.buttonColors(containerColor = SalmonBoton, contentColor = Color.Black),
+                    colors = ButtonDefaults.buttonColors(containerColor = Beige, contentColor = Color.Black),
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier.height(48.dp).border(2.dp, Color.Black, MaterialTheme.shapes.medium)
                 ) {
@@ -57,7 +57,7 @@ fun EncabezadoActividad(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = RojoCabecera,
+            containerColor = colorCabecera(modulo),
             titleContentColor = Color.Black
         )
     )

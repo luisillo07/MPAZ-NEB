@@ -16,3 +16,9 @@ val RosaFondo = Color(0xFFF5DFDB)
 val RojoAviso = Color(0xFF904136)
 
 val Beige = Color(0xFFF8E3B9)
+
+val AzulCabecera = Color(0xFF4D7FCE)
+val CelesteFondo = Color(0xFFDBE6F5)
+val AzulBoton = Color(0xFF94B4E2)
+
+val GrisBarra = Color(0xFF9E9E9E)
