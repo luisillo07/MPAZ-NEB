@@ -51,6 +51,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import com.example.mpaz_real_real.navigation.Screen
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -81,7 +82,13 @@ fun LoginScreen(
 
     if (estado.ingresoCorrecto) {
         LaunchedEffect(Unit) {
-            snackbarHostState.showSnackbar(message = "Ingreso correcto")
+            if (estado.tipoUsuario == "estudiante") {
+                navController.navigate(Screen.MisActividades.route) {
+                    popUpTo(Screen.Perfil.route)
+                }
+            } else {
+                snackbarHostState.showSnackbar(message = "Ingreso correcto")
+            }
         }
     }
 
