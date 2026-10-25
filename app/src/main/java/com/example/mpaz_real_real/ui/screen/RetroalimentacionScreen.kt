@@ -56,8 +56,8 @@ fun RetroalimentacionScreen(
         estado = estado,
         onSiguiente = viewModel::onSiguienteRetroalimentacion,
         onVolver = {
-            navController.navigate(Screen.Instrucciones.route) {
-                popUpTo(Screen.Instrucciones.route) { inclusive = true }
+            navController.navigate(Screen.MisActividades.route) {
+                popUpTo(Screen.MisActividades.route) { inclusive = true }
             }
         },
         onAdjuntarPantallazo = {lanzadorGaleria.launch("image/*")},
