@@ -43,7 +43,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import com.example.mpaz_real_real.ui.utils.obtenerWindowSizeClass
-
+import androidx.compose.animation.AnimatedVisibility
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -150,13 +150,15 @@ fun RetroalimentacionCompacta(
                                     onClick = onAdjuntarPantallazo,
                                     colorFondo = Beige
                                 )
-                            }else{
+                            }
+                            AnimatedVisibility(visible = estado.pantallazoPregunta != null) {
                                 Text(text = "¡Ya subiste la imagen!")
                             }
                             PantallazoPregunta(uri = estado.pantallazoPregunta)
-                            if (estado.resumenGuardado) {
+                            AnimatedVisibility(visible = estado.resumenGuardado) {
                                 Text(text = "¡Ya guardaste el resumen!")
-                            }else{
+                            }
+                            if (!estado.resumenGuardado){
                                 BotonActividad(
                                     texto = "Guardar resumen del intento",
                                     onClick = onGuardarResumen,
@@ -343,13 +345,15 @@ fun RetroalimentacionExpandida(
                                         onClick = onAdjuntarPantallazo,
                                         colorFondo = Beige
                                     )
-                                }else{
+                                }
+                                AnimatedVisibility(visible = estado.pantallazoPregunta != null) {
                                     Text(text = "¡Ya subiste la imagen!")
                                 }
                                 PantallazoPregunta(uri = estado.pantallazoPregunta)
-                                if (estado.resumenGuardado) {
+                                AnimatedVisibility(visible = estado.resumenGuardado) {
                                     Text(text = "¡Ya guardaste el resumen!")
-                                }else{
+                                }
+                                if (!estado.resumenGuardado){
                                     BotonActividad(
                                         texto = "Guardar resumen del intento",
                                         onClick = onGuardarResumen,

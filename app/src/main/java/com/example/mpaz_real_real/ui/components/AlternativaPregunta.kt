@@ -22,6 +22,11 @@ import androidx.compose.ui.unit.dp
 import com.example.mpaz_real_real.ui.theme.Mpaz_real_realTheme
 import com.example.mpaz_real_real.ui.theme.SalmonBoton
 
+
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+
 @Composable
 fun AlternativaPregunta(
     letra: String,
@@ -30,13 +35,18 @@ fun AlternativaPregunta(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colorAnimado by animateColorAsState(
+        targetValue = if (seleccionada) SalmonBoton else Color.White,
+        animationSpec = tween(durationMillis = 500),
+        label = ""
+    )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
-            .background(if (seleccionada) SalmonBoton else Color.White)
+            .background(colorAnimado)
             .border(2.dp, Color.Black, MaterialTheme.shapes.medium)
             .clickable(onClick = onClick)
             .padding(16.dp)
