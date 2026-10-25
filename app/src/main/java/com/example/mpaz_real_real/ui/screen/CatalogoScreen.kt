@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,10 +21,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mpaz_real_real.ui.components.BotonCatalogo
+import com.example.mpaz_real_real.ui.components.DialogoMensaje
 import com.example.mpaz_real_real.ui.components.SelectorFiltro
 import com.example.mpaz_real_real.ui.components.TarjetaActividad
 import com.example.mpaz_real_real.ui.theme.GrisBarra
@@ -39,7 +38,9 @@ fun CatalogoScreen(
 ) {
     val estado by viewModel.state.collectAsState()
     val irAConstruccion: () -> Unit = { navController.navigate("construccion") }
-    val mensaje = estado.mensajeError
+    val mensajeError = estado.mensajeError
+    val mensajeExito = estado.mensajeExito
+    val visibles = estado.actividadesVisibles
 
     Scaffold(
         topBar = {
@@ -92,12 +93,15 @@ fun CatalogoScreen(
                     }
                 }
 
-                if (estado.actividadesVisibles.isNotEmpty()) {
-                    items(estado.actividadesVisibles) { actividad ->
+                if (visibles.isNotEmpty()) {
+                    items(visibles) { actividad ->
                         TarjetaActividad(
                             actividad = actividad,
                             onRevisar = irAConstruccion,
-                            onEditar = irAConstruccion,
+                            onEditar = {
+                                viewModel.onEditarClick(actividad)
+                                navController.navigate("formulario")
+                            },
                             onCambiarEstado = { viewModel.onCambiarEstado(actividad.id) }
                         )
                     }
@@ -109,32 +113,21 @@ fun CatalogoScreen(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            BotonCatalogo("Agregar", irAConstruccion, Modifier.fillMaxWidth())
+            BotonCatalogo(
+                texto = "Agregar",
+                onClick = {
+                    viewModel.onAgregarClick()
+                    navController.navigate("formulario")
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 
-    if (mensaje != null) {
-        AlertDialog(
-            onDismissRequest = viewModel::onCerrarMensaje,
-            confirmButton = {},
-            title = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Error")
-                }
-            },
-            text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(mensaje, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    BotonCatalogo("OK", viewModel::onCerrarMensaje)
-                }
-            }
-        )
+    if (mensajeError != null) {
+        DialogoMensaje("Error", mensajeError, viewModel::onCerrarMensaje)
+    }
+    if (mensajeExito != null) {
+        DialogoMensaje("Listo", mensajeExito, viewModel::onCerrarMensajeExito)
     }
 }
