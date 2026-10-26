@@ -17,6 +17,10 @@ import com.example.mpaz_real_real.ui.screen.CatalogoScreen
 import com.example.mpaz_real_real.ui.screen.EnConstruccionScreen
 import com.example.mpaz_real_real.ui.screen.FormularioActividadScreen
 import com.example.mpaz_real_real.ui.screen.RevisarActividadScreen
+import com.example.mpaz_real_real.ui.screen.AsignacionesScreen
+import com.example.mpaz_real_real.ui.screen.ResumenAsignacionScreen
+import com.example.mpaz_real_real.ui.screen.SeleccionarActividadScreen
+import com.example.mpaz_real_real.ui.screen.AsignarActividadScreen
 import com.example.mpaz_real_real.viewmodel.CargaViewModel
 import com.example.mpaz_real_real.viewmodel.LoginViewModel
 import com.example.mpaz_real_real.viewmodel.ActividadViewModel
@@ -69,6 +73,18 @@ fun AppNavigation() {
         }
         composable(Screen.Revisar.route) {
             RevisarActividadScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.Asignaciones.route) {
+            AsignacionesScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.ResumenAsignacion.route) {
+            ResumenAsignacionScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.SeleccionarActividad.route) {
+            SeleccionarActividadScreen(navController = navController, viewModel = catalogoViewModel)
+        }
+        composable(Screen.AsignarActividad.route) {
+            AsignarActividadScreen(navController = navController, viewModel = catalogoViewModel)
         }
     }
 }
