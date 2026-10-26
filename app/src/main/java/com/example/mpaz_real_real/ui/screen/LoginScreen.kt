@@ -85,7 +85,7 @@ fun LoginScreen(
             val destino = when (estado.tipoUsuario) {
                 "estudiante" -> Screen.MisActividades.route
                 "docente" -> Screen.Catalogo.route
-                else -> Screen.Construccion.route
+                else -> Screen.Asignaciones.route
             }
             navController.navigate(destino) {
                 popUpTo(Screen.Perfil.route)

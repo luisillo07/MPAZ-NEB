@@ -14,7 +14,6 @@ import com.example.mpaz_real_real.ui.screen.PreguntaScreen
 import com.example.mpaz_real_real.ui.screen.QuedanIntentosScreen
 import com.example.mpaz_real_real.ui.screen.RetroalimentacionScreen
 import com.example.mpaz_real_real.ui.screen.CatalogoScreen
-import com.example.mpaz_real_real.ui.screen.EnConstruccionScreen
 import com.example.mpaz_real_real.ui.screen.FormularioActividadScreen
 import com.example.mpaz_real_real.ui.screen.RevisarActividadScreen
 import com.example.mpaz_real_real.ui.screen.AsignacionesScreen
@@ -64,9 +63,6 @@ fun AppNavigation() {
         }
         composable(Screen.Catalogo.route) {
             CatalogoScreen(navController = navController, viewModel = catalogoViewModel)
-        }
-        composable(Screen.Construccion.route) {
-            EnConstruccionScreen(navController = navController)
         }
         composable(Screen.Formulario.route) {
             FormularioActividadScreen(navController = navController, viewModel = catalogoViewModel)
