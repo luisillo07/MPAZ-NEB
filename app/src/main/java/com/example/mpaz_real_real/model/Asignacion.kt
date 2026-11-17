@@ -11,5 +11,9 @@ data class Asignacion(
     val actividadCodigo: String,
     val asistente: String,
     val fecha: String,
-    val estado: String
+    val estado: String,
+    val fechaLimite: Long,
+    val minutosDuracion: Int,
+    val inicio: Long?,
+    val intentoAbierto: Boolean
 )

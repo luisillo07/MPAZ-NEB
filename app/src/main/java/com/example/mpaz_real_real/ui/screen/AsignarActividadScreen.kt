@@ -26,6 +26,7 @@ import com.example.mpaz_real_real.ui.theme.GrisBarra
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
 import com.example.mpaz_real_real.navigation.Screen
+import com.example.mpaz_real_real.ui.components.CampoFormulario
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,11 +70,20 @@ fun AsignarActividadScreen(
                 viewModel::onAsignarEstudianteChange, Modifier.fillMaxWidth(),
                 formulario.errores.estudiante
             )
-            SelectorFiltro(
-                "Fecha", formulario.fecha,
-                estado.opcionesFecha,
-                viewModel::onAsignarFechaChange, Modifier.fillMaxWidth(),
-                formulario.errores.fecha
+            CampoFormulario(
+                etiqueta = "Hora límite (dd/MM/yyyy HH:mm)",
+                valor = formulario.fecha,
+                onValorChange = viewModel::onAsignarFechaChange,
+                modifier = Modifier.fillMaxWidth(),
+                error = formulario.errores.fecha
+            )
+            CampoFormulario(
+                etiqueta = "Minutos de duración",
+                valor = formulario.minutos,
+                onValorChange = viewModel::onAsignarMinutosChange,
+                modifier = Modifier.fillMaxWidth(),
+                error = formulario.errores.minutos,
+                numerico = true
             )
             BotonCatalogo(
                 texto = "Asignar",

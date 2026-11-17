@@ -4,7 +4,8 @@ import com.example.mpaz_real_real.data.local.entity.UsuarioEntity
 
 val usuariosDePrueba = listOf(
     UsuarioEntity(usuario = "docente", contrasenia = "1234", tipoUsuario = "docente"),
-    UsuarioEntity(usuario = "asistente", contrasenia = "1234", tipoUsuario = "asistente"),
+    UsuarioEntity(usuario = "asistente1", contrasenia = "1234.1", tipoUsuario = "asistente"),
+    UsuarioEntity(usuario = "asistente2", contrasenia = "1234.2", tipoUsuario = "asistente"),
     UsuarioEntity(usuario = "estudiante1", contrasenia = "1234.1", tipoUsuario = "estudiante"),
     UsuarioEntity(usuario = "estudiante2", contrasenia = "1234.2", tipoUsuario = "estudiante"),
     UsuarioEntity(usuario = "estudiante3", contrasenia = "1234.3", tipoUsuario = "estudiante"),

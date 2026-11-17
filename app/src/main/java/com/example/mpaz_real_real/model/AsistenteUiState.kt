@@ -28,10 +28,12 @@ data class AsignarFormUiState(
     val actividadCodigo: String = "",
     val estudiante: String = "",
     val fecha: String = "",
+    val minutos: String = "",
     val errores: AsignarFormErrores = AsignarFormErrores()
 )
 
 data class AsignarFormErrores(
     val estudiante: String? = null,
-    val fecha: String? = null
+    val fecha: String? = null,
+    val minutos: String? = null
 )

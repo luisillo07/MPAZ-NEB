@@ -24,7 +24,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class CatalogoViewModel(
     application: Application
@@ -381,6 +382,12 @@ class CatalogoViewModel(
         }
     }
 
+    fun onAsignarMinutosChange(valor: String) {
+        actualizarAsistente {
+            it.copy(formulario = it.formulario.copy(minutos = valor, errores = it.formulario.errores.copy(minutos = null)))
+        }
+    }
+
     fun onAsignarClick(): Boolean {
         val asistente = _state.value.asistente
         val formulario = asistente.formulario
@@ -399,11 +406,22 @@ class CatalogoViewModel(
         } else {
             null
         }
-        val errorFecha = if (formulario.fecha.isBlank()) "Selecciona una fecha." else null
+        val fechaLimite = leerHoraLimite(formulario.fecha.trim())
+        val errorFecha = if (formulario.fecha.isBlank()) {
+            "Escribe la hora límite de la actividad"
+        } else if (fechaLimite == null) {
+            "La fecha está mal escrita o no existe. Escríbela como dd/mm/yyyy hh:mm"
+        } else if (fechaLimite <= System.currentTimeMillis()) {
+            "La hora límite ya pasó"
+        } else {
+            null
+        }
+        val minutosDuracion = formulario.minutos.toIntOrNull() ?: 0
+        val errorMinutos = if (minutosDuracion < 1) "Ingresa los minutos que durará la actividad." else null
 
-        if (errorEstudiante != null || errorFecha != null) {
+        if (errorEstudiante != null || errorFecha != null || errorMinutos != null || fechaLimite == null) {
             actualizarAsistente {
-                it.copy(formulario = it.formulario.copy(errores = AsignarFormErrores(estudiante = errorEstudiante, fecha = errorFecha)))
+                it.copy(formulario = it.formulario.copy(errores = AsignarFormErrores(estudiante = errorEstudiante, fecha = errorFecha, minutos = errorMinutos)))
             }
             return false
         }
@@ -414,8 +432,12 @@ class CatalogoViewModel(
             estudianteCodigo = codigoEstudiante,
             actividadCodigo = formulario.actividadCodigo,
             asistente = asistente.asistenteResponsable,
-            fecha = formulario.fecha,
-            estado = "pendiente"
+            fecha = formulario.fecha.trim(),
+            estado = "pendiente",
+            fechaLimite = fechaLimite,
+            minutosDuracion = minutosDuracion,
+            inicio = null,
+            intentoAbierto = false
         )
 
         viewModelScope.launch {
@@ -436,7 +458,20 @@ class CatalogoViewModel(
     private fun actualizarAsistente(cambio: (AsistenteUiState) -> AsistenteUiState) {
         _state.update { it.copy(asistente = cambio(it.asistente)) }
     }
+    private val patronHoraLimite = Regex("^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$")
 
+    private fun leerHoraLimite(texto: String): Long? {
+        if (!patronHoraLimite.matches(texto)) {
+            return null
+        }
+        val formato = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        formato.isLenient = false
+        return try {
+            formato.parse(texto)?.time
+        } catch (e: Exception) {
+            null
+        }
+    }
     private fun generarCodigoTemporal(): String {
         var numero = (System.currentTimeMillis() % 900000) + 100000
         while (_state.value.asistente.asignaciones.firstOrNull { it.codigoTemporal == numero.toString() } != null) {
