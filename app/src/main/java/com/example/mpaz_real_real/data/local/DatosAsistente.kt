@@ -5,12 +5,12 @@ import com.example.mpaz_real_real.model.Estudiante
 import com.example.mpaz_real_real.model.RespuestaEntregada
 
 val estudiantesIniciales = listOf(
-    Estudiante("EST-001", "Estudiante ficticio 1"),
-    Estudiante("EST-002", "Estudiante ficticio 2"),
-    Estudiante("EST-003", "Estudiante ficticio 3"),
-    Estudiante("EST-004", "Estudiante ficticio 4"),
-    Estudiante("EST-005", "Estudiante ficticio 5"),
-    Estudiante("EST-006", "Estudiante ficticio 6")
+    Estudiante("EST-001", "Estudiante ficticio 1", "estudiante1"),
+    Estudiante("EST-002", "Estudiante ficticio 2", "estudiante2"),
+    Estudiante("EST-003", "Estudiante ficticio 3", "estudiante3"),
+    Estudiante("EST-004", "Estudiante ficticio 4", "estudiante4"),
+    Estudiante("EST-005", "Estudiante ficticio 5", "estudiante5"),
+    Estudiante("EST-006", "Estudiante ficticio 6", "estudiante6")
 )
 
 val asignacionesIniciales = listOf(

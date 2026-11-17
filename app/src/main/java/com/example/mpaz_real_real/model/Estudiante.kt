@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Estudiante(
     @PrimaryKey
     val codigo: String,
-    val nombre: String
+    val nombre: String,
+    val usuario: String
 )

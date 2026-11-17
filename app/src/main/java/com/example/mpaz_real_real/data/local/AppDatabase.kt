@@ -16,7 +16,7 @@ import com.example.mpaz_real_real.model.RespuestaEntregada
 
 @Database(
     entities = [ResultadoEntity::class, UsuarioEntity::class, Actividad::class, Pregunta::class, Estudiante::class, Asignacion::class, RespuestaEntregada::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
