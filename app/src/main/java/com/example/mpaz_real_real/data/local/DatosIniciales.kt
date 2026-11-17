@@ -20,7 +20,8 @@ val actividadesIniciales = listOf(
         tituloTexto = "El perro Tito",
         tipoTexto = "Narrativo",
         contenidoTexto = "Tito es un perro café. Vive con Ana en una casa con un patio grande. Todas las tardes Tito juega con una pelota roja.",
-        nivelVocabulario = "Básico"
+        nivelVocabulario = "Básico",
+        docente = "docente"
     ),
     Actividad(
         codigo = "LEC-002",
@@ -38,7 +39,8 @@ val actividadesIniciales = listOf(
         tituloTexto = "La casa de Ana",
         tipoTexto = "Descriptivo",
         contenidoTexto = "Ana vive con su abuela en una casa amarilla. En la cocina hay una mesa de madera. Los domingos, Ana y su abuela preparan pan para el desayuno.",
-        nivelVocabulario = "Básico"
+        nivelVocabulario = "Básico",
+        docente = "docente"
     ),
     Actividad(
         codigo = "MAT-001",
@@ -56,7 +58,8 @@ val actividadesIniciales = listOf(
         tituloTexto = "",
         tipoTexto = "",
         contenidoTexto = "",
-        nivelVocabulario = ""
+        nivelVocabulario = "",
+        docente = "docente"
     ),
     Actividad(
         codigo = "LEC-003",
@@ -74,7 +77,8 @@ val actividadesIniciales = listOf(
         tituloTexto = "",
         tipoTexto = "",
         contenidoTexto = "",
-        nivelVocabulario = ""
+        nivelVocabulario = "",
+        docente = "docente"
     )
 )
 

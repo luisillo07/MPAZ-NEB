@@ -305,7 +305,8 @@ class CatalogoViewModel(
             tituloTexto = formulario.tituloTexto,
             tipoTexto = formulario.tipoTexto,
             contenidoTexto = formulario.contenidoTexto,
-            nivelVocabulario = formulario.nivelVocabulario
+            nivelVocabulario = formulario.nivelVocabulario,
+            docente = "docente"
         )
 
         val esBorrador = datosFaltantes(actividadBase).isNotEmpty() || formulario.estado.isBlank()

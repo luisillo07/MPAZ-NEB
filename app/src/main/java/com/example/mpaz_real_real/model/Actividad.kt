@@ -21,5 +21,6 @@ data class Actividad(
     val tituloTexto: String,
     val tipoTexto: String,
     val contenidoTexto: String,
-    val nivelVocabulario: String
+    val nivelVocabulario: String,
+    val docente: String
 )
