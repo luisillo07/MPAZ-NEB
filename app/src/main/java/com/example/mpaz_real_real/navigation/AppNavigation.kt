@@ -80,7 +80,7 @@ fun AppNavigation() {
             SeleccionarActividadScreen(navController = navController, viewModel = catalogoViewModel)
         }
         composable(Screen.AsignarActividad.route) {
-            AsignarActividadScreen(navController = navController, viewModel = catalogoViewModel)
+            AsignarActividadScreen(navController = navController, viewModel = catalogoViewModel, loginViewModel = loginViewModel)
         }
     }
 }

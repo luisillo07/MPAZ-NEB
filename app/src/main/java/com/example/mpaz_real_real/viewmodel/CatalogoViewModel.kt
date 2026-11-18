@@ -388,7 +388,12 @@ class CatalogoViewModel(
         }
     }
 
-    fun onAsignarClick(): Boolean {
+    fun onAsignarClick(usuarioAsistente: String): Boolean {
+        val usuario = usuarioAsistente.trim()
+        if (usuario.isBlank()) {
+            actualizarAsistente { it.copy(mensajeError = "Vuelve a iniciar sesión.") }
+            return false
+        }
         val asistente = _state.value.asistente
         val formulario = asistente.formulario
         val codigoEstudiante = formulario.estudiante.substringBefore(" · ")
@@ -432,7 +437,7 @@ class CatalogoViewModel(
                 codigoTemporal = codigoTemporal,
                 estudianteCodigo = codigoEstudiante,
                 actividadCodigo = formulario.actividadCodigo,
-                asistente = asistente.asistenteResponsable,
+                asistente = usuario,
                 fecha = formulario.fecha.trim(),
                 estado = "pendiente",
                 fechaLimite = fechaLimite,

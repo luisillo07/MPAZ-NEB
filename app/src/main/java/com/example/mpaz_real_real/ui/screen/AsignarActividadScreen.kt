@@ -28,13 +28,18 @@ import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 import com.example.mpaz_real_real.navigation.Screen
 import com.example.mpaz_real_real.ui.components.CampoFormulario
 
+import com.example.mpaz_real_real.ui.components.DialogoMensaje
+import com.example.mpaz_real_real.viewmodel.LoginViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AsignarActividadScreen(
     navController: NavController,
-    viewModel: CatalogoViewModel
+    viewModel: CatalogoViewModel,
+    loginViewModel: LoginViewModel
 ) {
     val estado by viewModel.state.collectAsState()
+    val estadoLogin by loginViewModel.state.collectAsState()
     val asistente = estado.asistente
     val formulario = asistente.formulario
     val actividad = estado.actividadPorCodigo(formulario.actividadCodigo)
@@ -63,7 +68,7 @@ fun AsignarActividadScreen(
         ) {
             CajaSoloLectura("Actividad asignada", actividad?.nombre ?: "")
             CajaSoloLectura("Curso/dificultad", cursoDificultad)
-            CajaSoloLectura("Asistente responsable", asistente.asistenteResponsable)
+            CajaSoloLectura("Asistente responsable", estadoLogin.usuario)
             SelectorFiltro(
                 "Estudiante ficticio", formulario.estudiante,
                 estado.opcionesEstudiante,
@@ -88,7 +93,7 @@ fun AsignarActividadScreen(
             BotonCatalogo(
                 texto = "Asignar",
                 onClick = {
-                    if (viewModel.onAsignarClick()) {
+                    if (viewModel.onAsignarClick(estadoLogin.usuario)) {
                         navController.navigate(Screen.Asignaciones.route) {
                             popUpTo(Screen.Asignaciones.route) { inclusive = true }
                         }
@@ -97,5 +102,8 @@ fun AsignarActividadScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+    if (asistente.mensajeError != null) {
+        DialogoMensaje("Error", asistente.mensajeError, viewModel::onCerrarErrorAsistente)
     }
 }

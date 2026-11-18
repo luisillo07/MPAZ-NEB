@@ -9,7 +9,6 @@ data class AsistenteUiState(
     val cursoAplicado: String = "Todos",
     val contenidoAplicado: String = "Todos",
     val dificultadAplicado: String = "Todos",
-    val asistenteResponsable: String = "ASIST-001",
     val estudiantes: List<Estudiante> = emptyList(),
     val asignaciones: List<Asignacion> = emptyList(),
     val respuestas: List<RespuestaEntregada> = emptyList(),
