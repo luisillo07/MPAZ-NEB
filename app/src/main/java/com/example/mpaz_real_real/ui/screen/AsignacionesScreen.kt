@@ -39,6 +39,7 @@ fun AsignacionesScreen(
     val estado by viewModel.state.collectAsState()
     val asistente = estado.asistente
     val mensajeExito = asistente.mensajeExito
+    val mensajeError = asistente.mensajeError
 
     Scaffold(
         topBar = {
@@ -104,5 +105,9 @@ fun AsignacionesScreen(
 
     if (mensajeExito != null) {
         DialogoMensaje("Listo", mensajeExito, viewModel::onCerrarMensajeAsistente)
+    }
+
+    if (mensajeError != null) {
+        DialogoMensaje("Error", mensajeError, viewModel::onCerrarErrorAsistente)
     }
 }

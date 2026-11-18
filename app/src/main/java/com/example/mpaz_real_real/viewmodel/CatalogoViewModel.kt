@@ -426,33 +426,37 @@ class CatalogoViewModel(
             return false
         }
 
-        val codigoTemporal = generarCodigoTemporal()
-        val asignacion = Asignacion(
-            codigoTemporal = codigoTemporal,
-            estudianteCodigo = codigoEstudiante,
-            actividadCodigo = formulario.actividadCodigo,
-            asistente = asistente.asistenteResponsable,
-            fecha = formulario.fecha.trim(),
-            estado = "pendiente",
-            fechaLimite = fechaLimite,
-            minutosDuracion = minutosDuracion,
-            inicio = null,
-            intentoAbierto = false
-        )
-
         viewModelScope.launch {
+            val codigoTemporal = generarCodigoTemporal()
+            val asignacion = Asignacion(
+                codigoTemporal = codigoTemporal,
+                estudianteCodigo = codigoEstudiante,
+                actividadCodigo = formulario.actividadCodigo,
+                asistente = asistente.asistenteResponsable,
+                fecha = formulario.fecha.trim(),
+                estado = "pendiente",
+                fechaLimite = fechaLimite,
+                minutosDuracion = minutosDuracion,
+                inicio = null,
+                intentoAbierto = false
+            )
             try {
                 asignacionDao.insertarAsignacion(asignacion)
+                actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal") }
             } catch (e: Exception) {
+                println("Error al asignar: ${e.message}")
+                actualizarAsistente { it.copy(mensajeError = "No se pudo asignar la actividad. Inténtalo de nuevo.") }
             }
         }
-
-        actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal") }
         return true
     }
 
     fun onCerrarMensajeAsistente() {
         actualizarAsistente { it.copy(mensajeExito = null) }
+    }
+
+    fun onCerrarErrorAsistente() {
+        actualizarAsistente { it.copy(mensajeError = null) }
     }
 
     private fun actualizarAsistente(cambio: (AsistenteUiState) -> AsistenteUiState) {
@@ -472,9 +476,9 @@ class CatalogoViewModel(
             null
         }
     }
-    private fun generarCodigoTemporal(): String {
+    private suspend fun generarCodigoTemporal(): String {
         var numero = (System.currentTimeMillis() % 900000) + 100000
-        while (_state.value.asistente.asignaciones.firstOrNull { it.codigoTemporal == numero.toString() } != null) {
+        while (asignacionDao.buscarAsignacion(numero.toString()) != null) {
             numero = numero + 1
             if (numero > 999999) {
                 numero = 100000

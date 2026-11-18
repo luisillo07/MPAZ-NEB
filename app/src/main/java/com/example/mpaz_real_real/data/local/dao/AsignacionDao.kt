@@ -20,6 +20,9 @@ interface AsignacionDao {
     @Query("SELECT * FROM respuestas ORDER BY codigoTemporal, numeroPregunta")
     fun observarRespuestas(): Flow<List<RespuestaEntregada>>
 
+    @Query("SELECT * FROM asignaciones WHERE codigoTemporal = :codigo")
+    suspend fun buscarAsignacion(codigo: String): Asignacion?
+
     @Query("SELECT COUNT(*) FROM estudiantes")
     suspend fun contarEstudiantes(): Int
 
