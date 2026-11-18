@@ -281,7 +281,12 @@ class CatalogoViewModel(
         actualizarFormulario { it.copy(preguntas = lista, errores = it.errores.copy(cantidadPreguntas = null)) }
     }
 
-    fun onGuardarFormulario(): Boolean {
+    fun onGuardarFormulario(usuarioDocente: String): Boolean {
+        val usuario = usuarioDocente.trim()
+        if (usuario.isBlank()) {
+            _state.update { it.copy(mensajeError = "Vuelve a iniciar sesión.")}
+            return false
+        }
         val formulario = _state.value.formulario
         val errores = validarFormulario(formulario)
 
@@ -307,7 +312,7 @@ class CatalogoViewModel(
             tipoTexto = formulario.tipoTexto,
             contenidoTexto = formulario.contenidoTexto,
             nivelVocabulario = formulario.nivelVocabulario,
-            docente = "docente"
+            docente = usuario
         )
 
         val esBorrador = datosFaltantes(actividadBase).isNotEmpty() || formulario.estado.isBlank()
@@ -573,6 +578,7 @@ class CatalogoViewModel(
                 if (esNueva) {
                     dao.insertar(actividad)
                 } else {
+                    val original = dao.buscar(actividad.codigo)
                     dao.actualizar(actividad)
                 }
                 dao.borrarPreguntasDe(actividad.codigo)

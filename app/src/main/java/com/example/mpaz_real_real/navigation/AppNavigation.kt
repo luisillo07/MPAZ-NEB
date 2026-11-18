@@ -65,7 +65,7 @@ fun AppNavigation() {
             CatalogoScreen(navController = navController, viewModel = catalogoViewModel)
         }
         composable(Screen.Formulario.route) {
-            FormularioActividadScreen(navController = navController, viewModel = catalogoViewModel)
+            FormularioActividadScreen(navController = navController, viewModel = catalogoViewModel, loginViewModel = loginViewModel)
         }
         composable(Screen.Revisar.route) {
             RevisarActividadScreen(navController = navController, viewModel = catalogoViewModel)

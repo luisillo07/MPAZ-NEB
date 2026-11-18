@@ -33,13 +33,19 @@ import com.example.mpaz_real_real.ui.components.SelectorFiltro
 import com.example.mpaz_real_real.ui.theme.GrisBarra
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
+import com.example.mpaz_real_real.viewmodel.LoginViewModel
+import com.example.mpaz_real_real.ui.components.DialogoMensaje
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioActividadScreen(
     navController: NavController,
-    viewModel: CatalogoViewModel
+    viewModel: CatalogoViewModel,
+    loginViewModel: LoginViewModel
 ) {
     val estado by viewModel.state.collectAsState()
+    val estadoLogin by loginViewModel.state.collectAsState()
+    val mensajeError = estado.mensajeError
     val formulario = estado.formulario
     val errorPregunta = formulario.errores.nuevaPregunta
 
@@ -189,12 +195,16 @@ fun FormularioActividadScreen(
             BotonCatalogo(
                 texto = if (formulario.esNuevo) "Crear" else "Guardar",
                 onClick = {
-                    if (viewModel.onGuardarFormulario()) {
+                    if (viewModel.onGuardarFormulario(estadoLogin.usuario)) {
                         navController.popBackStack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+
+    if (mensajeError != null) {
+        DialogoMensaje("Error", mensajeError, viewModel::onCerrarMensaje)
     }
 }
