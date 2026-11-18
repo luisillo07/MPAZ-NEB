@@ -20,6 +20,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
+import java.util.UUID
+
 class ActividadViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -103,10 +105,14 @@ class ActividadViewModel(
         viewModelScope.launch{
             resultadoDao.insertar(
                 ResultadoEntity(
+                    id = UUID.randomUUID().toString(),
                     codigoActividad = actividad.codigo,
                     respuestas = actual.respuestas.toString(),
                     aciertos = (0 until actual.respuestas.size).count{esCorrecta(actual,it)},
-                    totalPreguntas = actual.respuestas.size
+                    errores = (0 until actual.respuestas.size).count{actual.respuestas[it] != null && !esCorrecta(actual,it)},
+                    noRespondidas = actual.respuestas.count{it == null},
+                    totalPreguntas = actual.respuestas.size,
+                    fecha = System.currentTimeMillis()
                 )
             )
         }

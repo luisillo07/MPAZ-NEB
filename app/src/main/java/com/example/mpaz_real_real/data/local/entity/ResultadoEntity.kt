@@ -5,11 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "resultados")
 data class ResultadoEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey
+    val id: String,
     val codigoActividad: String,
     val respuestas: String,
     val aciertos: Int,
+    val errores: Int,
+    val noRespondidas: Int,
     val totalPreguntas: Int,
-    val fecha: Long = System.currentTimeMillis()
+    val fecha: Long
 )
