@@ -44,12 +44,16 @@ fun ResumenAsignacionScreen(
         val etiqueta = if (actividad?.modulo == "Matemática") "Ejercicio" else "Pregunta"
         val cursoDificultad = if (actividad != null) "${actividad.curso} · ${actividad.dificultad}" else ""
 
+        val terminada = asignacion.estado == "finalizada" || !asignacion.intentoAbierto
         var aciertos = 0
         var errores = 0
+        var noRespondidas = 0
         respuestas.forEach { respuesta ->
             val indice = respuesta.numeroPregunta - 1
             if (indice in 0..preguntas.size - 1) {
-                if (respuesta.alternativaElegida == preguntas[indice].correcta) {
+                if (respuesta.alternativaElegida == -1) {
+                    noRespondidas = noRespondidas + 1
+                } else if (respuesta.alternativaElegida == preguntas[indice].correcta) {
                     aciertos = aciertos + 1
                 } else {
                     errores = errores + 1
@@ -86,37 +90,57 @@ fun ResumenAsignacionScreen(
                 CajaSoloLectura("Código temporal", asignacion.codigoTemporal)
                 CajaSoloLectura("Estado", asignacion.estado)
 
-                if (asignacion.estado == "finalizada") {
-                    Text("Respuestas entregadas")
+                if (asignacion.estado != "pendiente") {
+                    val titulo = if (asignacion.estado == "finalizada") {
+                        "Respuestas entregadas"
+                    } else if (terminada) {
+                        "Respuestas del último intento"
+                    } else {
+                        "Respuestas hasta ahora"
+                    }
+                    Text(titulo)
+                    if (respuestas.isEmpty()) {
+                        Text("No comenzó")
+                    } else {
+                        respuestas.forEach { respuesta ->
+                            val indice = respuesta.numeroPregunta - 1
+                            if (indice in 0..preguntas.size - 1) {
+                                val pregunta = preguntas[indice]
+                                val alternativas = pregunta.alternativas()
+                                val elegida = if (respuesta.alternativaElegida in 0..2) {
+                                    alternativas[respuesta.alternativaElegida]
+                                } else if (terminada) {
+                                    "No respondida (no válida)"
+                                } else {
+                                    "Aún sin responder"
+                                }
 
-                    respuestas.forEach { respuesta ->
-                        val indice = respuesta.numeroPregunta - 1
-                        if (indice in 0..preguntas.size - 1) {
-                            val pregunta = preguntas[indice]
-                            val alternativas = pregunta.alternativas()
-                            val elegida = if (respuesta.alternativaElegida in 0..2) {
-                                alternativas[respuesta.alternativaElegida]
-                            } else {
-                                ""
-                            }
-
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                border = BorderStroke(2.dp, Color.Black)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("$etiqueta ${respuesta.numeroPregunta}", style = MaterialTheme.typography.titleMedium)
-                                    Text(pregunta.enunciado)
-                                    Text(elegida)
-                                    Text("Intentos: ${respuesta.intentos}")
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    border = BorderStroke(2.dp, Color.Black)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text("$etiqueta ${respuesta.numeroPregunta}", style = MaterialTheme.typography.titleMedium)
+                                        Text(pregunta.enunciado)
+                                        Text(elegida)
+                                        if (respuesta.cantidadIntentos > 0) {
+                                            Text("Intentos: ${respuesta.cantidadIntentos}")
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    CajaSoloLectura("Cantidad de aciertos", aciertos.toString())
-                    CajaSoloLectura("Cantidad de errores", errores.toString())
-                    CajaSoloLectura("Cantidad de intentos", actividad?.intentosPermitidos?.toString() ?: "")
+                        CajaSoloLectura("Cantidad de aciertos", aciertos.toString())
+                        if (terminada) {
+                            CajaSoloLectura("Cantidad de errores (incluye no respondidas)", (errores + noRespondidas).toString())
+                            CajaSoloLectura("No respondidas", noRespondidas.toString())
+                        } else {
+                            CajaSoloLectura("Cantidad de errores", errores.toString())
+                            CajaSoloLectura("Aún sin responder", noRespondidas.toString())
+                        }
+                        CajaSoloLectura("Cantidad de intentos", actividad?.intentosPermitidos?.toString() ?: "")
+                    }
                 }
             }
         }

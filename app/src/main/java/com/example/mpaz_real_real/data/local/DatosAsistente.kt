@@ -5,7 +5,7 @@ import com.example.mpaz_real_real.model.Estudiante
 import com.example.mpaz_real_real.model.RespuestaEntregada
 import java.text.SimpleDateFormat
 import java.util.Locale
-
+import java.util.UUID
 
 private fun aMilisegundos(fecha: String): Long {
     val formato = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
@@ -41,14 +41,28 @@ val asignacionesIniciales = listOf(
     Asignacion("100009", "EST-004", "LEC-001", "asistente1", "16/11/2026 23:59", "pendiente", aMilisegundos("16/11/2026 23:59"), 45, null, false))
 
 val respuestasIniciales = listOf(
-    // EST-005 · LEC-001 (4 aciertos)
-    RespuestaEntregada(codigoTemporal = "100005", numeroPregunta = 1, alternativaElegida = 1, intentos = 1),
-    RespuestaEntregada(codigoTemporal = "100005", numeroPregunta = 2, alternativaElegida = 1, intentos = 2),
-    RespuestaEntregada(codigoTemporal = "100005", numeroPregunta = 3, alternativaElegida = 1, intentos = 1),
-    RespuestaEntregada(codigoTemporal = "100005", numeroPregunta = 4, alternativaElegida = 0, intentos = 1),
-    // EST-006 · MAT-001 (3 aciertos, 1 error)
-    RespuestaEntregada(codigoTemporal = "100006", numeroPregunta = 1, alternativaElegida = 1, intentos = 1),
-    RespuestaEntregada(codigoTemporal = "100006", numeroPregunta = 2, alternativaElegida = 0, intentos = 1),
-    RespuestaEntregada(codigoTemporal = "100006", numeroPregunta = 3, alternativaElegida = 0, intentos = 2),
-    RespuestaEntregada(codigoTemporal = "100006", numeroPregunta = 4, alternativaElegida = 1, intentos = 2)
-)
+    // 100003 · LEC-001 (intento abierto, 2 marcadas)
+    RespuestaEntregada(UUID.randomUUID().toString(), "100003", 1, 1, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100003", 2, 0, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100003", 3, -1, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100003", 4, -1, 0),
+    // 100004 · MAT-001 (intento abierto, 1 marcada)
+    RespuestaEntregada(UUID.randomUUID().toString(), "100004", 1, 1, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100004", 2, -1, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100004", 3, -1, 0),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100004", 4, -1, 0),
+    // 100005 · LEC-001 (finalizada: 4 aciertos)
+    RespuestaEntregada(UUID.randomUUID().toString(), "100005", 1, 1, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100005", 2, 1, 2),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100005", 3, 1, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100005", 4, 0, 1),
+    // 100006 · MAT-001 (finalizada: 3 aciertos, 1 error)
+    RespuestaEntregada(UUID.randomUUID().toString(), "100006", 1, 1, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100006", 2, 0, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100006", 3, 0, 2),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100006", 4, 1, 2),
+    // 100008 · MAT-001 (envió el intento 1)
+    RespuestaEntregada(UUID.randomUUID().toString(), "100008", 1, 1, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100008", 2, 0, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100008", 3, 2, 1),
+    RespuestaEntregada(UUID.randomUUID().toString(), "100008", 4, 0, 0))

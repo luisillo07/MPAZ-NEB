@@ -17,7 +17,7 @@ interface AsignacionDao {
     @Query("SELECT * FROM asignaciones ORDER BY rowid")
     fun observarAsignaciones(): Flow<List<Asignacion>>
 
-    @Query("SELECT * FROM respuestas ORDER BY id")
+    @Query("SELECT * FROM respuestas ORDER BY codigoTemporal, numeroPregunta")
     fun observarRespuestas(): Flow<List<RespuestaEntregada>>
 
     @Query("SELECT COUNT(*) FROM estudiantes")

@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "respuestas")
 data class RespuestaEntregada(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val codigoTemporal: String = "",
-    val numeroPregunta: Int = 0,
-    val alternativaElegida: Int = -1,
-    val intentos: Int = 0
+    @PrimaryKey
+    val id: String,
+    val codigoTemporal: String,
+    val numeroPregunta: Int,
+    val alternativaElegida: Int,
+    val cantidadIntentos: Int
 )
