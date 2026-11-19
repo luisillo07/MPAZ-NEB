@@ -14,7 +14,6 @@ data class CatalogoUiState(
     val opcionesContenido: List<String> = listOf("Todos", "Comprensión lectora", "Adición y sustracción hasta 100"),
     val opcionesDificultad: List<String> = listOf("Todos", "Fácil", "Medio", "Difícil"),
     val opcionesEstado: List<String> = listOf("Disponible", "Desactivada"),
-    val opcionesFecha: List<String> = listOf("[FECHA1]", "[FECHA2]"),
     val actividades: List<Actividad> = emptyList(),
     val preguntas: List<Pregunta> = emptyList(),
     val codigoRevision: String = "",

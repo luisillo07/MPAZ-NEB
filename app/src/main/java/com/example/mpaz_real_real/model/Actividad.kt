@@ -17,7 +17,6 @@ data class Actividad(
     val cantidadPreguntas: Int?,
     val intentosPermitidos: Int?,
     val estado: String,
-    val fecha: String,
     val tituloTexto: String,
     val tipoTexto: String,
     val contenidoTexto: String,

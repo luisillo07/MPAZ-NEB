@@ -137,10 +137,6 @@ fun FormularioActividadScreen(
                 "Estado", formulario.estado, estado.opcionesEstado,
                 viewModel::onFormEstadoChange, Modifier.fillMaxWidth()
             )
-            SelectorFiltro(
-                "Fecha", formulario.fecha, estado.opcionesFecha,
-                viewModel::onFormFechaChange, Modifier.fillMaxWidth()
-            )
 
             Text("Preguntas", style = MaterialTheme.typography.titleLarge)
 

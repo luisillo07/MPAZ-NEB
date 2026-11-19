@@ -166,7 +166,6 @@ class CatalogoViewModel(
                     cantidadPreguntas = actividad.cantidadPreguntas?.toString() ?: "",
                     intentosPermitidos = actividad.intentosPermitidos?.toString() ?: "",
                     estado = nombreEstadoFormulario(actividad.estado),
-                    fecha = actividad.fecha,
                     tituloTexto = actividad.tituloTexto,
                     tipoTexto = actividad.tipoTexto,
                     contenidoTexto = actividad.contenidoTexto,
@@ -200,7 +199,6 @@ class CatalogoViewModel(
     }
 
     fun onFormEstadoChange(valor: String) { actualizarFormulario { it.copy(estado = valor) } }
-    fun onFormFechaChange(valor: String) { actualizarFormulario { it.copy(fecha = valor) } }
 
     fun onNuevaPreguntaChange(valor: String) {
         actualizarFormulario { it.copy(nuevaPregunta = valor, errores = it.errores.copy(nuevaPregunta = null)) }
@@ -307,7 +305,6 @@ class CatalogoViewModel(
             cantidadPreguntas = formulario.cantidadPreguntas.toIntOrNull(),
             intentosPermitidos = formulario.intentosPermitidos.toIntOrNull(),
             estado = "borrador",
-            fecha = formulario.fecha,
             tituloTexto = formulario.tituloTexto,
             tipoTexto = formulario.tipoTexto,
             contenidoTexto = formulario.contenidoTexto,
@@ -578,7 +575,6 @@ class CatalogoViewModel(
                 if (esNueva) {
                     dao.insertar(actividad)
                 } else {
-                    val original = dao.buscar(actividad.codigo)
                     dao.actualizar(actividad)
                 }
                 dao.borrarPreguntasDe(actividad.codigo)
@@ -599,7 +595,6 @@ class CatalogoViewModel(
         if (actividad.instrucciones.isBlank()) faltantes.add("las instrucciones")
         if (actividad.cantidadPreguntas == null) faltantes.add("la cantidad de preguntas")
         if (actividad.intentosPermitidos == null) faltantes.add("los intentos permitidos")
-        if (actividad.fecha.isBlank()) faltantes.add("la fecha")
         return faltantes
     }
 
