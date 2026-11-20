@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mpaz_real_real.data.local.entity.ResultadoEntity
 import com.example.mpaz_real_real.model.Actividad
 import com.example.mpaz_real_real.navigation.Screen
@@ -49,8 +50,15 @@ fun MisActividadesScreen(
         viewModel.cargarActividad(codigo)
         navController.navigate(Screen.Instrucciones.route)
     }
+    // Pantalla en la que estamos ahora mismo según el NavController (cap. 39 del profe).
+    val entradaActual by navController.currentBackStackEntryAsState()
     val onSalir: () -> Unit = {
-        navController.popBackStack()
+        // Solo se vuelve si todavía estamos en Mis actividades. Si ya se volvió al login, un
+        // segundo toque muy rápido no hace nada (si no, sacaría también el login y la
+        // pantalla quedaría en blanco).
+        if (entradaActual?.destination?.route == Screen.MisActividades.route) {
+            navController.popBackStack()
+        }
     }
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> MisActividadesCompacta(

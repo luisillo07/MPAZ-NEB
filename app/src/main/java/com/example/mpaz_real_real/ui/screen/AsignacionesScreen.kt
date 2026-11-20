@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mpaz_real_real.ui.components.BotonCatalogo
 import com.example.mpaz_real_real.ui.components.DialogoMensaje
 import com.example.mpaz_real_real.ui.components.TarjetaAsignacion
@@ -40,6 +41,10 @@ fun AsignacionesScreen(
     val asistente = estado.asistente
     val mensajeExito = asistente.mensajeExito
 
+    // Pantalla en la que estamos ahora mismo según el NavController (cap. 39 del profe).
+    // Sirve para que "Salir sesión" vuelva atrás UNA sola vez aunque se pulse dos veces muy rápido.
+    val entradaActual by navController.currentBackStackEntryAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,7 +58,14 @@ fun AsignacionesScreen(
                             Text("Asistente de aula", style = MaterialTheme.typography.bodySmall)
                             Text("Asignaciones", style = MaterialTheme.typography.titleLarge)
                         }
-                        BotonCatalogo("Salir sesión", { navController.popBackStack() })
+                        BotonCatalogo("Salir sesión", {
+                            // Solo se vuelve si todavía estamos en Asignaciones. Si ya se volvió al
+                            // login, un segundo toque no hace nada (si no, sacaría también el
+                            // login y la pantalla quedaría en blanco).
+                            if (entradaActual?.destination?.route == Screen.Asignaciones.route) {
+                                navController.popBackStack()
+                            }
+                        })
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = GrisBarra)
