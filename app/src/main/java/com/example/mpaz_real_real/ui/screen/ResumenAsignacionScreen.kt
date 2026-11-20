@@ -27,6 +27,13 @@ import com.example.mpaz_real_real.ui.components.CajaSoloLectura
 import com.example.mpaz_real_real.ui.theme.GrisBarra
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 
+
+import com.example.mpaz_real_real.ui.components.BotonCatalogo
+import com.example.mpaz_real_real.ui.components.CampoFormulario
+import com.example.mpaz_real_real.ui.components.DialogoMensaje
+
+import com.example.mpaz_real_real.navigation.Screen
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResumenAsignacionScreen(
@@ -131,18 +138,30 @@ fun ResumenAsignacionScreen(
                             }
                         }
 
-                        CajaSoloLectura("Cantidad de aciertos", aciertos.toString())
-                        if (terminada) {
-                            CajaSoloLectura("Cantidad de errores (incluye no respondidas)", (errores + noRespondidas).toString())
-                            CajaSoloLectura("No respondidas", noRespondidas.toString())
-                        } else {
-                            CajaSoloLectura("Cantidad de errores", errores.toString())
-                            CajaSoloLectura("Aún sin responder", noRespondidas.toString())
-                        }
                         CajaSoloLectura("Cantidad de intentos", actividad?.intentosPermitidos?.toString() ?: "")
                     }
                 }
+
+                Text("Observación pedagógica", style = MaterialTheme.typography.titleMedium)
+                CampoFormulario(
+                    etiqueta = "Observación",
+                    valor = asistente.observacion,
+                    onValorChange = viewModel::onObservacionChange,
+                    error = asistente.errorObservacion,
+                    lineasMinimas = 3
+                )
+                BotonCatalogo("Guardar observación", viewModel::onGuardarObservacion, Modifier.fillMaxWidth())
             }
+        }
+
+        if (asistente.mensajeExito != null) {
+            DialogoMensaje("Listo", asistente.mensajeExito) {
+                viewModel.onCerrarMensajeAsistente()
+                navController.popBackStack(Screen.Asignaciones.route, false)
+            }
+        }
+        if (asistente.mensajeError != null) {
+            DialogoMensaje("Error", asistente.mensajeError, viewModel::onCerrarErrorAsistente)
         }
     }
 }

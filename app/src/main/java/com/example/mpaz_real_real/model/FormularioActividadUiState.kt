@@ -13,7 +13,6 @@ data class FormularioActividadUiState(
     val cantidadPreguntas: String = "",
     val intentosPermitidos: String = "",
     val estado: String = "",
-    val fecha: String = "",
     val tituloTexto: String = "",
     val tipoTexto: String = "",
     val contenidoTexto: String = "",

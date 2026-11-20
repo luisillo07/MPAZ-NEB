@@ -365,7 +365,40 @@ class CatalogoViewModel(
     }
 
     fun onAsignacionClick(asignacion: Asignacion) {
-        actualizarAsistente { it.copy(codigoAsignacionRevision = asignacion.codigoTemporal) }
+        actualizarAsistente {
+            it.copy(
+                codigoAsignacionRevision = asignacion.codigoTemporal,
+                observacion = asignacion.observacion,
+                errorObservacion = null
+            )
+        }
+    }
+
+    fun onObservacionChange(valor: String) {
+        actualizarAsistente { it.copy(observacion = valor, errorObservacion = null) }
+    }
+
+    fun onGuardarObservacion() {
+        val asistente = _state.value.asistente
+        val texto = asistente.observacion.trim()
+        if (texto.isBlank()) {
+            actualizarAsistente { it.copy(errorObservacion = "Escribe la observación.") }
+            return
+        }
+        viewModelScope.launch {
+            try {
+                val asignacion = asignacionDao.buscarAsignacion(asistente.codigoAsignacionRevision)
+                if (asignacion != null) {
+                    asignacionDao.actualizarAsignacion(asignacion.copy(observacion = texto))
+                    actualizarAsistente { it.copy(mensajeExito = "Observación guardada.") }
+                } else {
+                    actualizarAsistente { it.copy(mensajeError = "No se encontró la asignación.") }
+                }
+            } catch (e: Exception) {
+                println("Error al guardar la observación: ${e.localizedMessage}")
+                actualizarAsistente { it.copy(mensajeError = "No se pudo guardar la observación. Inténtalo de nuevo.") }
+            }
+        }
     }
 
     fun onSeleccionarActividad(actividad: Actividad) {
@@ -445,7 +478,8 @@ class CatalogoViewModel(
                 fechaLimite = fechaLimite,
                 minutosDuracion = minutosDuracion,
                 inicio = null,
-                intentoAbierto = false
+                intentoAbierto = false,
+                observacion = ""
             )
             try {
                 asignacionDao.insertarAsignacion(asignacion)

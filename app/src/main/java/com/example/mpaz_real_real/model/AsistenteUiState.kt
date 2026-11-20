@@ -15,7 +15,9 @@ data class AsistenteUiState(
     val codigoAsignacionRevision: String = "",
     val formulario: AsignarFormUiState = AsignarFormUiState(),
     val mensajeExito: String? = null,
-    val mensajeError: String? = null
+    val mensajeError: String? = null,
+    val observacion: String = "",
+    val errorObservacion: String? = null
 ) {
     fun nombreEstudiante(codigo: String): String =
         estudiantes.firstOrNull { it.codigo == codigo }?.nombre ?: codigo

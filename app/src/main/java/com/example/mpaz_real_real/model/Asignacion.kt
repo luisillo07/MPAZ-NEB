@@ -15,5 +15,6 @@ data class Asignacion(
     val fechaLimite: Long,
     val minutosDuracion: Int,
     val inicio: Long?,
-    val intentoAbierto: Boolean
+    val intentoAbierto: Boolean,
+    val observacion: String
 )

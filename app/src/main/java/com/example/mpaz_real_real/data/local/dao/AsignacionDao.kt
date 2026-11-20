@@ -8,6 +8,7 @@ import com.example.mpaz_real_real.model.Estudiante
 import com.example.mpaz_real_real.model.RespuestaEntregada
 import kotlinx.coroutines.flow.Flow
 
+import androidx.room.Update
 @Dao
 interface AsignacionDao {
 
@@ -34,4 +35,7 @@ interface AsignacionDao {
 
     @Insert
     suspend fun insertarRespuesta(respuesta: RespuestaEntregada)
+
+    @Update
+    suspend fun actualizarAsignacion(asignacion: Asignacion)
 }
