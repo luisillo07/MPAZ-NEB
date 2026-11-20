@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mpaz_real_real.ui.components.BotonCatalogo
 import com.example.mpaz_real_real.ui.components.DialogoMensaje
 import com.example.mpaz_real_real.ui.components.SelectorFiltro
@@ -42,6 +43,10 @@ fun CatalogoScreen(
     val mensajeExito = estado.mensajeExito
     val visibles = estado.actividadesVisibles
 
+    // Pantalla en la que estamos ahora mismo según el NavController (cap. 39 del profe).
+    // Sirve para que "Salir sesión" vuelva atrás UNA sola vez aunque se pulse dos veces muy rápido.
+    val entradaActual by navController.currentBackStackEntryAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,8 +61,13 @@ fun CatalogoScreen(
                             Text("Catálogo de actividades", style = MaterialTheme.typography.titleLarge)
                         }
                         BotonCatalogo("Salir sesión", {
-                            viewModel.reiniciarFiltros()
-                            navController.popBackStack()
+                            // Solo se vuelve si todavía estamos en el Catálogo. Si ya se volvió al
+                            // login, un segundo toque no hace nada (si no, sacaría también el
+                            // login y la pantalla quedaría en blanco).
+                            if (entradaActual?.destination?.route == Screen.Catalogo.route) {
+                                viewModel.reiniciarFiltros()
+                                navController.popBackStack()
+                            }
                         })
                     }
                 },
