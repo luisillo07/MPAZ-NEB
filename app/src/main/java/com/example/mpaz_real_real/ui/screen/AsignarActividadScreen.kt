@@ -68,7 +68,7 @@ fun AsignarActividadScreen(
         ) {
             CajaSoloLectura("Actividad asignada", actividad?.nombre ?: "")
             CajaSoloLectura("Curso/dificultad", cursoDificultad)
-            CajaSoloLectura("Asistente responsable", estadoLogin.usuario)
+            CajaSoloLectura("Asistente responsable", estadoLogin.usuarioSesion)
             SelectorFiltro(
                 "Estudiante ficticio", formulario.estudiante,
                 estado.opcionesEstudiante,
@@ -93,7 +93,7 @@ fun AsignarActividadScreen(
             BotonCatalogo(
                 texto = "Asignar",
                 onClick = {
-                    if (viewModel.onAsignarClick(estadoLogin.usuario)) {
+                    if (viewModel.onAsignarClick(estadoLogin.usuarioSesion)) {
                         navController.navigate(Screen.Asignaciones.route) {
                             popUpTo(Screen.Asignaciones.route) { inclusive = true }
                         }

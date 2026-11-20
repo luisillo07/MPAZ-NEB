@@ -105,24 +105,17 @@ class LoginViewModel(
                 _state.update {
                     it.copy(
                         tipoUsuario = usuarioEncontrado.tipoUsuario,
+                        usuarioSesion = usuarioEncontrado.usuario,
                         ingresoCorrecto = true
                     )
                 }
 
-                // La pantalla ya navega sola al ver ingresoCorrecto = true. Aquí se espera
-                // a que termine la animación de cambio de pantalla y recién entonces se
-                // vacía el login: así, al cerrar sesión y volver, los campos aparecen
-                // limpios, y no se ve cómo se borran mientras la pantalla se va.
                 delay(1500)
-                _state.value = LoginUiState()
+                _state.value = LoginUiState(usuarioSesion = usuarioEncontrado.usuario)
             }
         }
     }
 
-    // La pantalla llama a esto justo después de navegar. Baja la marca "ingresoCorrecto" al
-    // instante: si no, al volver al login (por ejemplo con "Salir sesión") antes de que
-    // termine la espera de arriba, la pantalla vería la marca todavía en true y volvería a
-    // navegar sola, y habría que pulsar "Salir sesión" dos veces.
     fun ingresoProcesado() {
         _state.update { it.copy(ingresoCorrecto = false) }
     }

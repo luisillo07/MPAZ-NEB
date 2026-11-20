@@ -191,7 +191,7 @@ fun FormularioActividadScreen(
             BotonCatalogo(
                 texto = if (formulario.esNuevo) "Crear" else "Guardar",
                 onClick = {
-                    if (viewModel.onGuardarFormulario(estadoLogin.usuario)) {
+                    if (viewModel.onGuardarFormulario(estadoLogin.usuarioSesion)) {
                         navController.popBackStack()
                     }
                 },
