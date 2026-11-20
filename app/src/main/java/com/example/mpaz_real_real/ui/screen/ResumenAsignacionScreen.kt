@@ -138,8 +138,6 @@ fun ResumenAsignacionScreen(
                             }
                         }
 
-                    }
-
                     CajaSoloLectura("Cantidad de aciertos", aciertos.toString())
                     if (terminada) {
                         CajaSoloLectura("Cantidad de errores (incluye no respondidas)", (errores + noRespondidas).toString())
@@ -174,3 +172,4 @@ fun ResumenAsignacionScreen(
             DialogoMensaje("Error", asistente.mensajeError, viewModel::onCerrarErrorAsistente)
         }
     }
+}
