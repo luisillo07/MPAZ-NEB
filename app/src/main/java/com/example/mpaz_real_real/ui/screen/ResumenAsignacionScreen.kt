@@ -138,7 +138,17 @@ fun ResumenAsignacionScreen(
                             }
                         }
 
-                        CajaSoloLectura("Cantidad de intentos", actividad?.intentosPermitidos?.toString() ?: "")
+                    }
+
+                    CajaSoloLectura("Cantidad de aciertos", aciertos.toString())
+                    if (terminada) {
+                        CajaSoloLectura("Cantidad de errores (incluye no respondidas)", (errores + noRespondidas).toString())
+                        CajaSoloLectura("No respondidas", noRespondidas.toString())
+                    } else {
+                        CajaSoloLectura("Cantidad de errores", errores.toString())
+                        CajaSoloLectura("Aún sin responder", noRespondidas.toString())
+                    }
+                    CajaSoloLectura("Cantidad de intentos", actividad?.intentosPermitidos?.toString() ?: "")
                     }
                 }
 
@@ -164,4 +174,3 @@ fun ResumenAsignacionScreen(
             DialogoMensaje("Error", asistente.mensajeError, viewModel::onCerrarErrorAsistente)
         }
     }
-}
