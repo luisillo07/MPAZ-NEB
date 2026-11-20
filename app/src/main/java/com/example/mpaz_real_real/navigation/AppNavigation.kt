@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mpaz_real_real.ui.screen.CargaScreen
 import com.example.mpaz_real_real.ui.screen.LoginScreen
-import com.example.mpaz_real_real.ui.screen.PerfilScreen
 import com.example.mpaz_real_real.ui.screen.MisActividadesScreen
 import com.example.mpaz_real_real.ui.screen.InstruccionesScreen
 import com.example.mpaz_real_real.ui.screen.PreguntaScreen
@@ -39,9 +38,6 @@ fun AppNavigation() {
     ) {
         composable(Screen.Carga.route) {
             CargaScreen(navController = navController, viewModel = cargaViewModel)
-        }
-        composable(Screen.Perfil.route) {
-            PerfilScreen(navController = navController, viewModel = loginViewModel)
         }
         composable(Screen.Login.route) {
             LoginScreen(navController = navController, viewModel = loginViewModel)

@@ -11,6 +11,6 @@ interface UsuarioDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertar(usuario: UsuarioEntity)
-    @Query("SELECT * FROM usuarios WHERE usuario = :usuario AND contrasenia = :contrasenia AND tipoUsuario = :tipoUsuario")
-    suspend fun buscar(usuario: String, contrasenia: String, tipoUsuario: String): UsuarioEntity?
+    @Query("SELECT * FROM usuarios WHERE usuario = :usuario AND contrasenia = :contrasenia")
+    suspend fun buscar(usuario: String, contrasenia: String): UsuarioEntity?
 }
