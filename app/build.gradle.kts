@@ -60,4 +60,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.material3.window.size.class1.android)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 }
