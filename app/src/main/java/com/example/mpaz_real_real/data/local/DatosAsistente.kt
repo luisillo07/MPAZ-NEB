@@ -14,12 +14,12 @@ val estudiantesIniciales = listOf(
 )
 
 val asignacionesIniciales = listOf(
-    Asignacion("100001", "EST-001", "LEC-001", "ASIST-001", "[FECHA1]", "pendiente"),
-    Asignacion("100002", "EST-002", "MAT-001", "ASIST-001", "[FECHA2]", "pendiente"),
-    Asignacion("100003", "EST-003", "LEC-001", "ASIST-001", "[FECHA1]", "en desarrollo"),
-    Asignacion("100004", "EST-004", "MAT-001", "ASIST-001", "[FECHA2]", "en desarrollo"),
-    Asignacion("100005", "EST-005", "LEC-001", "ASIST-001", "[FECHA1]", "finalizada"),
-    Asignacion("100006", "EST-006", "MAT-001", "ASIST-001", "[FECHA2]", "finalizada")
+    Asignacion("100001", "EST-001", "LEC-001", "asistente", "23-11-2026", "pendiente"),
+    Asignacion("100002", "EST-002", "MAT-001", "asistente", "24-11-2026", "pendiente"),
+    Asignacion("100003", "EST-003", "LEC-001", "asistente", "23-11-2026", "en desarrollo"),
+    Asignacion("100004", "EST-004", "MAT-001", "asistente", "24-11-2026", "en desarrollo"),
+    Asignacion("100005", "EST-005", "LEC-001", "asistente", "23-11-2026", "finalizada"),
+    Asignacion("100006", "EST-006", "MAT-001", "asistente", "24-11-2026", "finalizada")
 )
 
 val respuestasIniciales = listOf(

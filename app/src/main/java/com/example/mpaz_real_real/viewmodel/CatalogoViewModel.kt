@@ -329,19 +329,35 @@ class CatalogoViewModel(
     }
     // ---------- Asistente: filtros de "Seleccionar actividad" ----------
 
-    fun onAsistenteModuloChange(valor: String) { actualizarAsistente { it.copy(modulo = valor) } }
-    fun onAsistenteCursoChange(valor: String) { actualizarAsistente { it.copy(curso = valor) } }
-    fun onAsistenteContenidoChange(valor: String) { actualizarAsistente { it.copy(contenido = valor) } }
-    fun onAsistenteDificultadChange(valor: String) { actualizarAsistente { it.copy(dificultad = valor) } }
+    // Los filtros se aplican al instante: al elegir una opción se guarda tanto lo elegido como lo
+    // aplicado, así la lista cambia sin necesidad de un botón "Filtrar".
+    fun onAsistenteModuloChange(valor: String) {
+        actualizarAsistente { it.copy(modulo = valor, moduloAplicado = valor) }
+    }
 
-    fun onAsistenteFiltrarClick() {
+    fun onAsistenteCursoChange(valor: String) {
+        actualizarAsistente { it.copy(curso = valor, cursoAplicado = valor) }
+    }
+
+    fun onAsistenteContenidoChange(valor: String) {
+        actualizarAsistente { it.copy(contenido = valor, contenidoAplicado = valor) }
+    }
+
+    fun onAsistenteDificultadChange(valor: String) {
+        actualizarAsistente { it.copy(dificultad = valor, dificultadAplicado = valor) }
+    }
+
+    // Al iniciar sesión como asistente se guarda su alias (será el "asistente responsable" de las
+    // asignaciones que cree) y se empieza con la lista de asignaciones sin filtrar.
+    fun onIngresoAsistente(alias: String) {
+        actualizarAsistente { it.copy(asistenteResponsable = alias, filtroEstado = "") }
+    }
+
+    // Tocar una tarjeta del resumen filtra la lista por ese estado; tocarla otra vez (o la
+    // etiqueta "Mostrando") quita el filtro.
+    fun onFiltroEstadoClick(estado: String) {
         actualizarAsistente {
-            it.copy(
-                moduloAplicado = it.modulo,
-                cursoAplicado = it.curso,
-                contenidoAplicado = it.contenido,
-                dificultadAplicado = it.dificultad
-            )
+            it.copy(filtroEstado = if (it.filtroEstado == estado) "" else estado)
         }
     }
 
@@ -380,7 +396,10 @@ class CatalogoViewModel(
         }
     }
 
-    fun onAsignarClick(): Boolean {
+    // Valida el formulario y, si está bien, guarda la asignación. `alExito` se ejecuta solo
+    // cuando el guardado terminó bien (la pantalla lo usa para volver a la lista). Si el guardado
+    // falla se muestra un aviso y NO se dice que la actividad fue asignada.
+    fun onAsignarClick(alExito: () -> Unit) {
         val asistente = _state.value.asistente
         val formulario = asistente.formulario
         val codigoEstudiante = formulario.estudiante.substringBefore(" · ")
@@ -404,7 +423,7 @@ class CatalogoViewModel(
             actualizarAsistente {
                 it.copy(formulario = it.formulario.copy(errores = AsignarFormErrores(estudiante = errorEstudiante, fecha = errorFecha)))
             }
-            return false
+            return
         }
 
         val codigoTemporal = generarCodigoTemporal()
@@ -418,18 +437,29 @@ class CatalogoViewModel(
         )
 
         viewModelScope.launch {
+            var guardada = false
             try {
                 asignacionDao.insertarAsignacion(asignacion)
+                guardada = true
             } catch (e: Exception) {
+                actualizarAsistente {
+                    it.copy(mensajeError = "No se pudo guardar la asignación. Intenta nuevamente.")
+                }
+            }
+
+            if (guardada) {
+                actualizarAsistente { it.copy(codigoAsignado = codigoTemporal) }
+                alExito()
             }
         }
-
-        actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal") }
-        return true
     }
 
     fun onCerrarMensajeAsistente() {
-        actualizarAsistente { it.copy(mensajeExito = null) }
+        actualizarAsistente { it.copy(codigoAsignado = null) }
+    }
+
+    fun onCerrarErrorAsistente() {
+        actualizarAsistente { it.copy(mensajeError = null) }
     }
 
     private fun actualizarAsistente(cambio: (AsistenteUiState) -> AsistenteUiState) {

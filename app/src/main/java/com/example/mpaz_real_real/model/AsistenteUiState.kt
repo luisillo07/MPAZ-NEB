@@ -9,14 +9,28 @@ data class AsistenteUiState(
     val cursoAplicado: String = "Todos",
     val contenidoAplicado: String = "Todos",
     val dificultadAplicado: String = "Todos",
-    val asistenteResponsable: String = "ASIST-001",
+    // Alias del usuario que inició sesión como asistente (se completa al ingresar).
+    val asistenteResponsable: String = "asistente",
     val estudiantes: List<Estudiante> = emptyList(),
     val asignaciones: List<Asignacion> = emptyList(),
     val respuestas: List<RespuestaEntregada> = emptyList(),
     val codigoAsignacionRevision: String = "",
+    // Estado por el que se filtra la lista de asignaciones ("pendiente", "en desarrollo" o
+    // "finalizada"). Vacío significa que se muestran todas.
+    val filtroEstado: String = "",
     val formulario: AsignarFormUiState = AsignarFormUiState(),
-    val mensajeExito: String? = null
+    // Código temporal de la asignación que se acaba de crear. Mientras no sea null se muestra el
+    // mensaje "Actividad asignada" con ese código.
+    val codigoAsignado: String? = null,
+    val mensajeError: String? = null
 ) {
+    val asignacionesVisibles: List<Asignacion>
+        get() = if (filtroEstado.isEmpty()) {
+            asignaciones
+        } else {
+            asignaciones.filter { it.estado == filtroEstado }
+        }
+
     fun nombreEstudiante(codigo: String): String =
         estudiantes.firstOrNull { it.codigo == codigo }?.nombre ?: codigo
 

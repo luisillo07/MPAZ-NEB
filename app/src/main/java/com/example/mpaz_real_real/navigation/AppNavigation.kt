@@ -40,7 +40,11 @@ fun AppNavigation() {
             CargaScreen(navController = navController, viewModel = cargaViewModel)
         }
         composable(Screen.Login.route) {
-            LoginScreen(navController = navController, viewModel = loginViewModel)
+            LoginScreen(
+                navController = navController,
+                viewModel = loginViewModel,
+                onIngresoAsistente = catalogoViewModel::onIngresoAsistente
+            )
         }
         composable(Screen.MisActividades.route) {
             MisActividadesScreen(navController = navController, viewModel = actividadViewModel)

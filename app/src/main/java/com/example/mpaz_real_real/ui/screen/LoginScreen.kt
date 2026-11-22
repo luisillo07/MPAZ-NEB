@@ -64,7 +64,9 @@ import com.example.mpaz_real_real.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    // Se llama con el alias del usuario cuando quien ingresa es una asistente de aula.
+    onIngresoAsistente: (String) -> Unit = {}
 ) {
     val estado by viewModel.state.collectAsState()
 
@@ -84,7 +86,10 @@ fun LoginScreen(
             val destino = when (estado.tipoUsuario) {
                 "estudiante" -> Screen.MisActividades.route
                 "docente" -> Screen.Catalogo.route
-                else -> Screen.Asignaciones.route
+                else -> {
+                    onIngresoAsistente(estado.usuario)
+                    Screen.Asignaciones.route
+                }
             }
             navController.navigate(destino)
             viewModel.ingresoProcesado()
