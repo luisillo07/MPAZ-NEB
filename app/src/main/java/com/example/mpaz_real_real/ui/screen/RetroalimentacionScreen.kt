@@ -148,6 +148,12 @@ fun RetroalimentacionCompacta(
                                 fontWeight = FontWeight.Bold
                             )
                         }
+                        if (estado.esUltimaRetroalimentacion && estado.mensajePokemon != null) {
+                            Text(
+                                text = estado.mensajePokemon,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
                 if (estado.esUltimaRetroalimentacion){
@@ -241,6 +247,12 @@ fun RetroalimentacionMediana(
                         if (pregunta.procedimiento.isNotBlank()) {
                             Text(
                                 text = "Procedimiento: ${pregunta.procedimiento}",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        if (estado.esUltimaRetroalimentacion && estado.mensajePokemon != null) {
+                            Text(
+                                text = estado.mensajePokemon,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -349,6 +361,13 @@ fun RetroalimentacionExpandida(
                         if (pregunta.procedimiento.isNotBlank()) {
                             Text(
                                 text = "Procedimiento: ${pregunta.procedimiento}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        if (estado.esUltimaRetroalimentacion && estado.mensajePokemon != null) {
+                            Text(
+                                text = estado.mensajePokemon,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )

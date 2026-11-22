@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
 import java.util.UUID
+import com.example.mpaz_real_real.repository.PokemonRepository
 
 class ActividadViewModel(
     application: Application
@@ -34,6 +35,7 @@ class ActividadViewModel(
     private val resultadoDao = database.resultadoDao
     private val actividadDao = database.actividadDao
     private val contentResolver = application.contentResolver
+    private val pokemonRepository = PokemonRepository()
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     val resultados = resultadoDao.obtenerResultados().stateIn(
@@ -124,6 +126,21 @@ class ActividadViewModel(
                 mensajeRetroalimentacion = armarMensaje(it,0)
             )
         }
+        if (!_estado.value.quedanIntentos) {
+            buscarPokemon()
+        }
+    }
+
+    fun buscarPokemon() {
+        viewModelScope.launch {
+            try {
+                val pokemon = pokemonRepository.obtenerPokemon((1..151).random())
+                _estado.update { it.copy(mensajePokemon = "Tu Pokémon de hoy: ${pokemon.name}") }
+            } catch (e: Exception) {
+                println("Error al obtener el Pokémon: ${e.localizedMessage}")
+                _estado.update { it.copy(mensajePokemon = "No pudimos traer tu Pokémon. Revisa tu conexión a internet.") }
+            }
+        }
     }
 
     fun onSiguienteRetroalimentacion() {
@@ -171,7 +188,6 @@ class ActividadViewModel(
                 }
                 _estado.update { it.copy(resumenGuardado = true) }
             } catch (e: Exception) {
-                // Si no se pudo escribir, la app no se cae
             }
         }
     }

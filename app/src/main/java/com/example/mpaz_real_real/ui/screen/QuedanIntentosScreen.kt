@@ -50,6 +50,7 @@ fun QuedanIntentosScreen(
         }
     }
     val onSiguiente: () -> Unit = {
+        viewModel.buscarPokemon()
         navController.navigate(Screen.Retroalimentacion.route) {
             popUpTo(Screen.Instrucciones.route)
         }
