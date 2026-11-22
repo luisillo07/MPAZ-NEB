@@ -13,12 +13,21 @@ data class AsistenteUiState(
     val asignaciones: List<Asignacion> = emptyList(),
     val respuestas: List<RespuestaEntregada> = emptyList(),
     val codigoAsignacionRevision: String = "",
+    val filtroEstado: String = "",
     val formulario: AsignarFormUiState = AsignarFormUiState(),
     val mensajeExito: String? = null,
+    val codigoAsignado: String? = null,
     val mensajeError: String? = null,
     val observacion: String = "",
     val errorObservacion: String? = null
 ) {
+    val asignacionesVisibles: List<Asignacion>
+        get() = if (filtroEstado.isEmpty()) {
+            asignaciones
+        } else {
+            asignaciones.filter { it.estado == filtroEstado }
+        }
+
     fun nombreEstudiante(codigo: String): String =
         estudiantes.firstOrNull { it.codigo == codigo }?.nombre ?: codigo
 

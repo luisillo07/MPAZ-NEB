@@ -398,10 +398,21 @@ class CatalogoViewModel(
         return true
     }
 
-    fun onAsistenteModuloChange(valor: String) { actualizarAsistente { it.copy(modulo = valor) } }
-    fun onAsistenteCursoChange(valor: String) { actualizarAsistente { it.copy(curso = valor) } }
-    fun onAsistenteContenidoChange(valor: String) { actualizarAsistente { it.copy(contenido = valor) } }
-    fun onAsistenteDificultadChange(valor: String) { actualizarAsistente { it.copy(dificultad = valor) } }
+    fun onAsistenteModuloChange(valor: String) {
+        actualizarAsistente { it.copy(modulo = valor, moduloAplicado = valor) }
+    }
+
+    fun onAsistenteCursoChange(valor: String) {
+        actualizarAsistente { it.copy(curso = valor, cursoAplicado = valor) }
+    }
+
+    fun onAsistenteContenidoChange(valor: String) {
+        actualizarAsistente { it.copy(contenido = valor, contenidoAplicado = valor) }
+    }
+
+    fun onAsistenteDificultadChange(valor: String) {
+        actualizarAsistente { it.copy(dificultad = valor, dificultadAplicado = valor) }
+    }
 
     fun onAsistenteFiltrarClick() {
         actualizarAsistente {
@@ -411,6 +422,12 @@ class CatalogoViewModel(
                 contenidoAplicado = it.contenido,
                 dificultadAplicado = it.dificultad
             )
+        }
+    }
+
+    fun onFiltroEstadoClick(estado: String) {
+        actualizarAsistente {
+            it.copy(filtroEstado = if (it.filtroEstado == estado) "" else estado)
         }
     }
 
@@ -548,7 +565,7 @@ class CatalogoViewModel(
             )
             try {
                 asignacionDao.insertarAsignacion(asignacion)
-                actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal") }
+                actualizarAsistente { it.copy(mensajeExito = "Actividad asignada. Código temporal: $codigoTemporal", codigoAsignado = codigoTemporal) }
             } catch (e: Exception) {
                 println("Error al asignar: ${e.message}")
                 actualizarAsistente { it.copy(mensajeError = "No se pudo asignar la actividad. Inténtalo de nuevo.") }
@@ -558,7 +575,7 @@ class CatalogoViewModel(
     }
 
     fun onCerrarMensajeAsistente() {
-        actualizarAsistente { it.copy(mensajeExito = null) }
+        actualizarAsistente { it.copy(mensajeExito = null, codigoAsignado = null) }
     }
 
     fun onCerrarErrorAsistente() {

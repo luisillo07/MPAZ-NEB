@@ -49,12 +49,36 @@ data class CatalogoUiState(
         get() = preguntas.filter { it.actividadCodigo == codigoRevision }
 
     val actividadesParaAsignar: List<Actividad>
-        get() = actividades.filter { actividad ->
-            actividad.estado == "disponible" &&
-                    (asistente.moduloAplicado == "Todos" || actividad.modulo == asistente.moduloAplicado) &&
-                    (asistente.cursoAplicado == "Todos" || actividad.curso == asistente.cursoAplicado) &&
-                    (asistente.contenidoAplicado == "Todos" || actividad.contenido == asistente.contenidoAplicado) &&
-                    (asistente.dificultadAplicado == "Todos" || actividad.dificultad == asistente.dificultadAplicado)
+        get() {
+            val filtradas = actividadesAsignables.filter { actividad ->
+                (asistente.moduloAplicado == "Todos" || actividad.modulo == asistente.moduloAplicado) &&
+                        (asistente.cursoAplicado == "Todos" || actividad.curso == asistente.cursoAplicado) &&
+                        (asistente.contenidoAplicado == "Todos" || actividad.contenido == asistente.contenidoAplicado) &&
+                        (asistente.dificultadAplicado == "Todos" || actividad.dificultad == asistente.dificultadAplicado)
+            }
+            return filtradas.filter { it.estado == "disponible" } +
+                    filtradas.filter { it.estado != "disponible" }
+        }
+
+    private val actividadesAsignables: List<Actividad>
+        get() = actividades.filter { it.estado == "disponible" || it.estado == "desactivada" }
+
+    val opcionesModuloAsistente: List<String>
+        get() = opcionesModulo.filter { opcion ->
+            opcion == "Todos" || actividadesAsignables.any { it.modulo == opcion }
+        }
+
+    val opcionesCursoAsistente: List<String>
+        get() = opcionesCurso.filter { opcion ->
+            opcion == "Todos" || actividadesAsignables.any { it.curso == opcion }
+        }
+
+    val opcionesContenidoAsistente: List<String>
+        get() = listOf("Todos") + actividadesAsignables.map { it.contenido }.distinct()
+
+    val opcionesDificultadAsistente: List<String>
+        get() = opcionesDificultad.filter { opcion ->
+            opcion == "Todos" || actividadesAsignables.any { it.dificultad == opcion }
         }
 
     val opcionesEstudiante: List<String>
