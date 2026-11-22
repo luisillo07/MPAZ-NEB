@@ -19,6 +19,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if (estudianteRepository.count() > 0) {
+            return;
+        }
         for (int i = 1; i < 7; i++) {
             Estudiante estudiante = Estudiante.builder()
                     .codigo("EST-00" + i)
