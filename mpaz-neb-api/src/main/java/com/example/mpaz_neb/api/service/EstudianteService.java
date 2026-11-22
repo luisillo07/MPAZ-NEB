@@ -4,5 +4,5 @@ import java.util.List;
 import com.example.mpaz_neb.api.dto.EstudianteResponse;
 
 public interface EstudianteService {
-    List<EstudianteResponse> obtenerEstudiantes();
+    public List<EstudianteResponse> obtenerEstudiantes();
 }
