@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.example.mpaz_real_real.data.model.ActividadResponse
+import retrofit2.HttpException
 
 class CatalogoViewModel(
     application: Application
@@ -100,6 +102,20 @@ class CatalogoViewModel(
         }
     }
 
+    fun onReintentar() {
+        if (_state.value.enviando) return
+        val codigos = _state.value.pendientes
+        _state.update { it.copy(enviando = true) }
+        viewModelScope.launch {
+            enviarAlServidor(codigos)
+            if (_state.value.pendientes.isEmpty()) {
+                _state.update { it.copy(mensajeExito = "Actividad subida al servidor.") }
+            } else {
+                _state.update { it.copy(mensajeAlerta = "No tienes conexión, intenta más tarde.") }
+            }
+        }
+    }
+
     fun onModuloChange(valor: String) { _state.update { it.copy(modulo = valor) } }
     fun onCursoChange(valor: String) { _state.update { it.copy(curso = valor) } }
     fun onContenidoChange(valor: String) { _state.update { it.copy(contenido = valor) } }
@@ -136,6 +152,7 @@ class CatalogoViewModel(
     }
 
     fun onCambiarEstado(codigo: String) {
+        if (_state.value.enviando) return
         val actividad = _state.value.actividades.firstOrNull { it.codigo == codigo } ?: return
         when (actividad.estado) {
             "disponible" -> actualizarEnBd(actividad.copy(estado = "desactivada"))
@@ -157,6 +174,10 @@ class CatalogoViewModel(
 
     fun onCerrarMensajeExito() {
         _state.update { it.copy(mensajeExito = null) }
+    }
+
+    fun onCerrarAlerta() {
+        _state.update { it.copy(mensajeAlerta = null) }
     }
 
     fun onAgregarClick() {
@@ -293,6 +314,7 @@ class CatalogoViewModel(
     }
 
     fun onGuardarFormulario(usuarioDocente: String): Boolean {
+        if (_state.value.enviando) return false
         val usuario = usuarioDocente.trim()
         if (usuario.isBlank()) {
             _state.update { it.copy(mensajeError = "Vuelve a iniciar sesión.")}
@@ -335,12 +357,11 @@ class CatalogoViewModel(
         }
         val actividad = actividadBase.copy(estado = estadoFinal)
 
-        guardarEnBd(actividad, formulario.preguntas, formulario.esNuevo)
-
         val textoBase = if (formulario.esNuevo) "Actividad creada" else "Actividad guardada"
         val mensaje = if (esBorrador) textoBase + " como borrador porque faltan datos" else textoBase
 
         _state.update { it.copy(mensajeExito = mensaje) }
+        guardarEnBd(actividad, formulario.preguntas, formulario.esNuevo)
         reiniciarFiltros()
         return true
     }
@@ -607,15 +628,18 @@ class CatalogoViewModel(
     }
 
     private fun actualizarEnBd(actividad: Actividad) {
+        _state.update { it.copy(enviando = true) }
         viewModelScope.launch {
             try {
                 dao.actualizar(actividad)
             } catch (e: Exception) {
             }
+            enviarAlServidor(listOf(actividad.codigo))
         }
     }
 
     private fun guardarEnBd(actividad: Actividad, preguntas: List<Pregunta>, esNueva: Boolean) {
+        _state.update { it.copy(enviando = true) }
         viewModelScope.launch {
             try {
                 if (esNueva) {
@@ -627,7 +651,63 @@ class CatalogoViewModel(
                 preguntas.forEach { dao.insertarPregunta(it.copy(id = 0, actividadCodigo = actividad.codigo)) }
             } catch (e: Exception) {
             }
+            enviarAlServidor(listOf(actividad.codigo))
         }
+    }
+
+    private suspend fun enviarAlServidor(codigos: List<String>) {
+        codigos.forEach { codigo ->
+            try {
+                enviarActividad(codigo)
+                quitarPendiente(codigo)
+            } catch (e: HttpException) {
+                agregarPendiente(codigo, "El servidor no aceptó $codigo (error ${e.code()}).")
+            } catch (e: Exception) {
+                println("Error al enviar $codigo: ${e.localizedMessage}")
+                agregarPendiente(codigo, "No se pudo enviar $codigo porque no hay conexión con el servidor.")
+            }
+        }
+        _state.update { it.copy(enviando = false) }
+        cargarServidor()
+    }
+
+    private suspend fun enviarActividad(codigo: String) {
+        val actividad = dao.buscar(codigo)
+        val enServidor = buscarEnServidor(codigo)
+        if (actividad != null) {
+            if (enServidor == null) {
+                actividadRepository.crearActividad(actividad)
+            } else {
+                actividadRepository.actualizarActividad(enServidor.id, actividad)
+            }
+            val preguntasServidor = actividadRepository.obtenerPreguntas(codigo)
+            preguntasServidor.forEach { actividadRepository.eliminarPregunta(it.id) }
+            val preguntas = dao.obtenerPreguntas(codigo)
+            preguntas.forEach { actividadRepository.crearPregunta(it) }
+        }
+    }
+
+    private suspend fun buscarEnServidor(codigo: String): ActividadResponse? {
+        val encontradas = actividadRepository.buscarActividades(codigo)
+        return encontradas.firstOrNull { it.codigo.uppercase() == codigo.uppercase() }
+    }
+
+    private fun agregarPendiente(codigo: String, mensaje: String) {
+        val lista = mutableListOf<String>()
+        _state.value.pendientes.forEach { if (it != codigo) lista.add(it) }
+        lista.add(codigo)
+        _state.update {
+            it.copy(
+                pendientes = lista,
+                errorServidor = mensaje,
+                mensajeExito = null,
+                mensajeAlerta = "Actividad guardada en local. Reintenta guardarla en el servidor."
+            )
+        }
+    }
+
+    private fun quitarPendiente(codigo: String) {
+        _state.update { it.copy(pendientes = it.pendientes.filter { pendiente -> pendiente != codigo }) }
     }
 
     private fun datosFaltantes(actividad: Actividad): List<String> {

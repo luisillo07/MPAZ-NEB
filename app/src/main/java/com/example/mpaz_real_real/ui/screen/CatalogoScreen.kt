@@ -32,6 +32,9 @@ import com.example.mpaz_real_real.ui.components.TarjetaActividad
 import com.example.mpaz_real_real.ui.theme.GrisBarra
 import com.example.mpaz_real_real.viewmodel.CatalogoViewModel
 import com.example.mpaz_real_real.navigation.Screen
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.window.Dialog
+import com.example.mpaz_real_real.ui.components.MensajeError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +45,7 @@ fun CatalogoScreen(
     val estado by viewModel.state.collectAsState()
     val mensajeError = estado.mensajeError
     val mensajeExito = estado.mensajeExito
+    val mensajeAlerta = estado.mensajeAlerta
     val visibles = estado.actividadesVisibles
     val entradaActual by navController.currentBackStackEntryAsState()
 
@@ -117,6 +121,10 @@ fun CatalogoScreen(
                             )
                             BotonCatalogo("Actualizar", viewModel::cargarServidor)
                         }
+                        if (estado.pendientes.isNotEmpty()) {
+                            MensajeError("${estado.errorServidor} Actividades sin enviar: ${estado.pendientes.size}.")
+                            BotonCatalogo("Reintentar", viewModel::onReintentar, Modifier.fillMaxWidth())
+                        }
                     }
                 }
 
@@ -157,7 +165,15 @@ fun CatalogoScreen(
     if (mensajeError != null) {
         DialogoMensaje("Error", mensajeError, viewModel::onCerrarMensaje)
     }
-    if (mensajeExito != null) {
+    if (mensajeExito != null && !estado.enviando) {
         DialogoMensaje("Listo", mensajeExito, viewModel::onCerrarMensajeExito)
+    }
+    if (mensajeAlerta != null && !estado.enviando) {
+        DialogoMensaje("Alerta", mensajeAlerta, viewModel::onCerrarAlerta)
+    }
+    if (estado.enviando) {
+        Dialog(onDismissRequest = {}) {
+            CircularProgressIndicator()
+        }
     }
 }

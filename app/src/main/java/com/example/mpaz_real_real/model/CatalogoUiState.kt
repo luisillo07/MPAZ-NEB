@@ -21,8 +21,12 @@ data class CatalogoUiState(
     val codigoRevision: String = "",
     val mensajeError: String? = null,
     val mensajeExito: String? = null,
+    val mensajeAlerta: String? = null,
     val actividadesServidor: List<ActividadResponse> = emptyList(),
     val servidorConectado: Boolean = false,
+    val pendientes: List<String> = emptyList(),
+    val errorServidor: String = "",
+    val enviando: Boolean = false,
     val formulario: FormularioActividadUiState = FormularioActividadUiState(),
     val asistente: AsistenteUiState = AsistenteUiState()
 ) {
