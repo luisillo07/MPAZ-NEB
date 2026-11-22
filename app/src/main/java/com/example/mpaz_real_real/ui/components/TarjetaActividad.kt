@@ -21,7 +21,8 @@ fun TarjetaActividad(
     actividad: Actividad,
     onRevisar: () -> Unit,
     onEditar: () -> Unit,
-    onCambiarEstado: () -> Unit
+    onCambiarEstado: () -> Unit,
+    onEliminar: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -57,11 +58,13 @@ fun TarjetaActividad(
         ) {
             BotonCatalogo("Revisar", onRevisar, Modifier.weight(1f))
             BotonCatalogo("Editar", onEditar, Modifier.weight(1f))
+            BotonCatalogo("Eliminar", onEliminar, Modifier.weight(1f))
             BotonCatalogo(
                 texto = if (actividad.estado == "disponible") "Desactivar" else "Activar",
                 onClick = onCambiarEstado,
                 modifier = Modifier.weight(1f)
             )
+
         }
     }
 }

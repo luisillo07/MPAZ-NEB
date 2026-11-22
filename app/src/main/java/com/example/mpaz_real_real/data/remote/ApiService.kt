@@ -24,6 +24,9 @@ interface ApiService {
     @PUT("/api/actividad/{id}")
     suspend fun actualizarActividad(@Path("id") id: Int, @Body actividad: Actividad): ActividadResponse
 
+    @DELETE("/api/actividad/{id}")
+    suspend fun eliminarActividad(@Path("id") id: Int)
+
     @GET("/api/pregunta")
     suspend fun obtenerPreguntas(@Query("actividad") codigo: String): List<Pregunta>
 

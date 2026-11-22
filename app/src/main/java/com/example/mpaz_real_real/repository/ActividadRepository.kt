@@ -22,6 +22,10 @@ class ActividadRepository {
         return RetrofitInstance.api.actualizarActividad(id, actividad)
     }
 
+    suspend fun eliminarActividad(id: Int) {
+        RetrofitInstance.api.eliminarActividad(id)
+    }
+
     suspend fun obtenerPreguntas(codigo: String): List<Pregunta> {
         return RetrofitInstance.api.obtenerPreguntas(codigo)
     }

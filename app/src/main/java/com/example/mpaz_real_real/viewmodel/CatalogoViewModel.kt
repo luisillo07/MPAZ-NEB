@@ -168,6 +168,38 @@ class CatalogoViewModel(
         }
     }
 
+    fun onEliminarClick(actividad: Actividad) {
+        if (_state.value.enviando) return
+        val asignada = _state.value.asistente.asignaciones.firstOrNull { it.actividadCodigo == actividad.codigo } != null
+        if (asignada) {
+            _state.update {
+                it.copy(mensajeError = "No se puede eliminar «${actividad.nombre}» porque está asignada a un estudiante.")
+            }
+        } else {
+            _state.update { it.copy(codigoPorEliminar = actividad.codigo) }
+        }
+    }
+
+    fun onCancelarEliminar() {
+        _state.update { it.copy(codigoPorEliminar = null) }
+    }
+
+    fun onConfirmarEliminar() {
+        val codigo = _state.value.codigoPorEliminar ?: return
+        if (_state.value.enviando) return
+        _state.update { it.copy(codigoPorEliminar = null, enviando = true) }
+        viewModelScope.launch {
+            try {
+                dao.borrarPreguntasDe(codigo)
+                dao.borrarActividad(codigo)
+                _state.update { it.copy(mensajeExito = "Actividad eliminada.") }
+            } catch (e: Exception) {
+                println("Error al eliminar $codigo: ${e.localizedMessage}")
+            }
+            enviarAlServidor(listOf(codigo))
+        }
+    }
+
     fun onCerrarMensaje() {
         _state.update { it.copy(mensajeError = null) }
     }
@@ -684,6 +716,10 @@ class CatalogoViewModel(
             preguntasServidor.forEach { actividadRepository.eliminarPregunta(it.id) }
             val preguntas = dao.obtenerPreguntas(codigo)
             preguntas.forEach { actividadRepository.crearPregunta(it) }
+        } else if (enServidor != null) {
+            val preguntasServidor = actividadRepository.obtenerPreguntas(codigo)
+            preguntasServidor.forEach { actividadRepository.eliminarPregunta(it.id) }
+            actividadRepository.eliminarActividad(enServidor.id)
         }
     }
 
@@ -692,16 +728,21 @@ class CatalogoViewModel(
         return encontradas.firstOrNull { it.codigo.uppercase() == codigo.uppercase() }
     }
 
-    private fun agregarPendiente(codigo: String, mensaje: String) {
+    private suspend fun agregarPendiente(codigo: String, mensaje: String) {
         val lista = mutableListOf<String>()
         _state.value.pendientes.forEach { if (it != codigo) lista.add(it) }
         lista.add(codigo)
+        val alerta = if (dao.buscar(codigo) != null) {
+            "Actividad guardada en local. Reintenta guardarla en el servidor."
+        } else {
+            "Actividad eliminada en local. Reintenta eliminarla en el servidor."
+        }
         _state.update {
             it.copy(
                 pendientes = lista,
                 errorServidor = mensaje,
                 mensajeExito = null,
-                mensajeAlerta = "Actividad guardada en local. Reintenta guardarla en el servidor."
+                mensajeAlerta = alerta
             )
         }
     }

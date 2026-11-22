@@ -27,6 +27,7 @@ data class CatalogoUiState(
     val pendientes: List<String> = emptyList(),
     val errorServidor: String = "",
     val enviando: Boolean = false,
+    val codigoPorEliminar: String? = null,
     val formulario: FormularioActividadUiState = FormularioActividadUiState(),
     val asistente: AsistenteUiState = AsistenteUiState()
 ) {
@@ -37,6 +38,9 @@ data class CatalogoUiState(
                     (contenidoAplicado == "Todos" || actividad.contenido == contenidoAplicado) &&
                     (dificultadAplicado == "Todos" || actividad.dificultad == dificultadAplicado)
         }
+
+    val actividadPorEliminar: Actividad?
+        get() = actividades.firstOrNull { it.codigo == codigoPorEliminar }
 
     val actividadRevisada: Actividad?
         get() = actividades.firstOrNull { it.codigo == codigoRevision }

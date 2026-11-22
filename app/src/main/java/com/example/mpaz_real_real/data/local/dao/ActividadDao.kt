@@ -40,4 +40,7 @@ interface ActividadDao {
 
     @Query("DELETE FROM preguntas WHERE actividadCodigo = :codigo")
     suspend fun borrarPreguntasDe(codigo: String)
+
+    @Query("DELETE FROM actividades WHERE codigo = :codigo")
+    suspend fun borrarActividad(codigo: String)
 }

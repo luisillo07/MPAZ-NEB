@@ -35,6 +35,7 @@ import com.example.mpaz_real_real.navigation.Screen
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.window.Dialog
 import com.example.mpaz_real_real.ui.components.MensajeError
+import com.example.mpaz_real_real.ui.components.VentanaEliminar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,7 +141,8 @@ fun CatalogoScreen(
                                 viewModel.onEditarClick(actividad)
                                 navController.navigate(Screen.Formulario.route)
                             },
-                            onCambiarEstado = { viewModel.onCambiarEstado(actividad.codigo) }
+                            onCambiarEstado = { viewModel.onCambiarEstado(actividad.codigo) },
+                            onEliminar = { viewModel.onEliminarClick(actividad) }
                         )
                     }
                 } else {
@@ -164,6 +166,14 @@ fun CatalogoScreen(
 
     if (mensajeError != null) {
         DialogoMensaje("Error", mensajeError, viewModel::onCerrarMensaje)
+    }
+    val actividadPorEliminar = estado.actividadPorEliminar
+    if (actividadPorEliminar != null) {
+        VentanaEliminar(
+            nombre = actividadPorEliminar.nombre,
+            onEliminar = viewModel::onConfirmarEliminar,
+            onCancelar = viewModel::onCancelarEliminar
+        )
     }
     if (mensajeExito != null && !estado.enviando) {
         DialogoMensaje("Listo", mensajeExito, viewModel::onCerrarMensajeExito)
