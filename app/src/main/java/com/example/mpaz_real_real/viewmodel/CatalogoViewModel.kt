@@ -19,6 +19,7 @@ import com.example.mpaz_real_real.model.CatalogoUiState
 import com.example.mpaz_real_real.model.FormularioActividadErrores
 import com.example.mpaz_real_real.model.FormularioActividadUiState
 import com.example.mpaz_real_real.model.Pregunta
+import com.example.mpaz_real_real.repository.ActividadRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,7 +40,7 @@ class CatalogoViewModel(
 
     private val dao = database.actividadDao
     private val asignacionDao = database.asignacionDao
-
+    private val actividadRepository = ActividadRepository()
     private val patronLectura = Regex("^LEC-[0-9]{3}$")
     private val patronMatematica = Regex("^MAT-[0-9]{3}$")
 
@@ -83,6 +84,18 @@ class CatalogoViewModel(
         viewModelScope.launch {
             asignacionDao.observarRespuestas().collect { lista ->
                 actualizarAsistente { it.copy(respuestas = lista) }
+            }
+        }
+    }
+
+    fun cargarServidor() {
+        viewModelScope.launch {
+            try {
+                val lista = actividadRepository.obtenerActividades()
+                _state.update { it.copy(actividadesServidor = lista, servidorConectado = true) }
+            } catch (e: Exception) {
+                println("Error al obtener datos: ${e.localizedMessage}")
+                _state.update { it.copy(servidorConectado = false) }
             }
         }
     }
@@ -331,7 +344,6 @@ class CatalogoViewModel(
         reiniciarFiltros()
         return true
     }
-    // ---------- Asistente: filtros de "Seleccionar actividad" ----------
 
     fun onAsistenteModuloChange(valor: String) { actualizarAsistente { it.copy(modulo = valor) } }
     fun onAsistenteCursoChange(valor: String) { actualizarAsistente { it.copy(curso = valor) } }

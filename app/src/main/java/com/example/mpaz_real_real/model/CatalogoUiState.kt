@@ -1,5 +1,7 @@
 package com.example.mpaz_real_real.model
 
+import com.example.mpaz_real_real.data.model.ActividadResponse
+
 data class CatalogoUiState(
     val modulo: String = "Todos",
     val curso: String = "Todos",
@@ -19,6 +21,8 @@ data class CatalogoUiState(
     val codigoRevision: String = "",
     val mensajeError: String? = null,
     val mensajeExito: String? = null,
+    val actividadesServidor: List<ActividadResponse> = emptyList(),
+    val servidorConectado: Boolean = false,
     val formulario: FormularioActividadUiState = FormularioActividadUiState(),
     val asistente: AsistenteUiState = AsistenteUiState()
 ) {

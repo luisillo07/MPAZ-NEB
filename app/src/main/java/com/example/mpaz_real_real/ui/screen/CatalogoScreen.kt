@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,10 +43,11 @@ fun CatalogoScreen(
     val mensajeError = estado.mensajeError
     val mensajeExito = estado.mensajeExito
     val visibles = estado.actividadesVisibles
-
-    // Pantalla en la que estamos ahora mismo según el NavController (cap. 39 del profe).
-    // Sirve para que "Salir sesión" vuelva atrás UNA sola vez aunque se pulse dos veces muy rápido.
     val entradaActual by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.cargarServidor()
+    }
 
     Scaffold(
         topBar = {
@@ -61,9 +63,6 @@ fun CatalogoScreen(
                             Text("Catálogo de actividades", style = MaterialTheme.typography.titleLarge)
                         }
                         BotonCatalogo("Salir sesión", {
-                            // Solo se vuelve si todavía estamos en el Catálogo. Si ya se volvió al
-                            // login, un segundo toque no hace nada (si no, sacaría también el
-                            // login y la pantalla quedaría en blanco).
                             if (entradaActual?.destination?.route == Screen.Catalogo.route) {
                                 viewModel.reiniciarFiltros()
                                 navController.popBackStack()
@@ -103,6 +102,21 @@ fun CatalogoScreen(
                             SelectorFiltro("Dificultad", estado.dificultad, estado.opcionesDificultad, viewModel::onDificultadChange, Modifier.weight(1f))
                         }
                         BotonCatalogo("Filtrar", viewModel::onFiltrarClick, Modifier.fillMaxWidth())
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = if (estado.servidorConectado) {
+                                    "Actividades en el servidor: ${estado.actividadesServidor.size}"
+                                } else {
+                                    "Sin conexión con el servidor."
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                            BotonCatalogo("Actualizar", viewModel::cargarServidor)
+                        }
                     }
                 }
 
