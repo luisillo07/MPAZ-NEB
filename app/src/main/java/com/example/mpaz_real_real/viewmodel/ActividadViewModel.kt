@@ -22,20 +22,24 @@ import kotlinx.coroutines.flow.stateIn
 
 import java.util.UUID
 import com.example.mpaz_real_real.repository.PokemonRepository
+import com.example.mpaz_real_real.data.local.dao.ActividadDao
+import com.example.mpaz_real_real.data.local.dao.ResultadoDao
 
-class ActividadViewModel(
+open class ActividadViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val database = Room.databaseBuilder(
-        context = application,
-        klass = AppDatabase::class.java,
-        name = "mpazneb_database"
-    ).fallbackToDestructiveMigration(true).build()
-    private val resultadoDao = database.resultadoDao
-    private val actividadDao = database.actividadDao
+    private val database by lazy {
+        Room.databaseBuilder(
+            context = application,
+            klass = AppDatabase::class.java,
+            name = "mpazneb_database"
+        ).fallbackToDestructiveMigration(true).build()
+    }
+    protected open val resultadoDao: ResultadoDao by lazy { database.resultadoDao }
+    protected open val actividadDao: ActividadDao by lazy { database.actividadDao }
     private val contentResolver = application.contentResolver
-    private val pokemonRepository = PokemonRepository()
+    protected open val pokemonRepository = PokemonRepository()
     private val _estado = MutableStateFlow(ActividadUiState())
     val estado: StateFlow<ActividadUiState> = _estado.asStateFlow()
     val resultados = resultadoDao.obtenerResultados().stateIn(
