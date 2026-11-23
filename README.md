@@ -120,7 +120,7 @@ Si la app ya estaba instalada con una versión anterior, conviene desinstalarla 
 
 ## APK firmado y llave:
 
-- APK firmado (release): app/release/app-release.apk
+- APK firmado con el asistente de Android Studio (release): app/release/app-release.apk. La configuración de la variante release está en app/build.gradle.kts
 - Llave: keystore/mpaz-neb.jks (las contraseñas no están en el repositorio)
 
 ![APK firmado y llave .jks](docs/capturas/apk-firmado.png)
