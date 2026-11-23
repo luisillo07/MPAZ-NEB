@@ -30,19 +30,25 @@ import java.util.Locale
 import com.example.mpaz_real_real.data.model.ActividadResponse
 import retrofit2.HttpException
 
-class CatalogoViewModel(
+import com.example.mpaz_real_real.data.local.dao.ActividadDao
+import com.example.mpaz_real_real.data.local.dao.AsignacionDao
+
+open class CatalogoViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val database = Room.databaseBuilder(
-        context = application,
-        klass = AppDatabase::class.java,
-        name = "mpazneb_database"
-    ).fallbackToDestructiveMigration(true).build()
+    private val database by lazy {
+        Room.databaseBuilder(
+            context = application,
+            klass = AppDatabase::class.java,
+            name = "mpazneb_database"
+        ).fallbackToDestructiveMigration(true).build()
+    }
 
-    private val dao = database.actividadDao
-    private val asignacionDao = database.asignacionDao
-    private val actividadRepository = ActividadRepository()
+    protected open val dao: ActividadDao by lazy { database.actividadDao }
+    protected open val asignacionDao: AsignacionDao by lazy { database.asignacionDao }
+
+    protected open val actividadRepository = ActividadRepository()
     private val patronLectura = Regex("^LEC-[0-9]{3}$")
     private val patronMatematica = Regex("^MAT-[0-9]{3}$")
 
