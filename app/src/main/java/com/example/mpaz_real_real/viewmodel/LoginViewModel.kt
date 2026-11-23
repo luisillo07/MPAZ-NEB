@@ -14,18 +14,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.example.mpaz_real_real.data.local.dao.UsuarioDao
 
-class LoginViewModel(
+open class LoginViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val database = Room.databaseBuilder(
-        context = application,
-        klass = AppDatabase::class.java,
-        name = "mpazneb_database"
-    ).fallbackToDestructiveMigration(true).build()
+    private val database by lazy {
+        Room.databaseBuilder(
+            context = application,
+            klass = AppDatabase::class.java,
+            name = "mpazneb_database"
+        ).fallbackToDestructiveMigration(true).build()
+    }
 
-    private val usuarioDao = database.usuarioDao
+    protected open val usuarioDao: UsuarioDao by lazy { database.usuarioDao }
 
     private val _state = MutableStateFlow(LoginUiState())
 
