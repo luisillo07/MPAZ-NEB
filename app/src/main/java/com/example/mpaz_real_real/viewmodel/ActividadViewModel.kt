@@ -139,10 +139,10 @@ open class ActividadViewModel(
         viewModelScope.launch {
             try {
                 val pokemon = pokemonRepository.obtenerPokemon((1..151).random())
-                _estado.update { it.copy(mensajePokemon = "Tu Pokémon de hoy: ${pokemon.name}") }
+                _estado.update { it.copy(mensajePokemon = "Tu Pokémon de hoy: ${pokemon.name}", imagenPokemon = pokemon.sprites?.front_default) }
             } catch (e: Exception) {
                 println("Error al obtener el Pokémon: ${e.localizedMessage}")
-                _estado.update { it.copy(mensajePokemon = "No pudimos traer tu Pokémon. Revisa tu conexión a internet.") }
+                _estado.update { it.copy(mensajePokemon = "No pudimos traer tu Pokémon. Revisa tu conexión a internet.", imagenPokemon = null) }
             }
         }
     }

@@ -48,6 +48,9 @@ import androidx.compose.animation.AnimatedVisibility
 import com.example.mpaz_real_real.data.local.actividadesIniciales
 import com.example.mpaz_real_real.data.local.preguntasIniciales
 
+import coil3.compose.AsyncImage
+import androidx.compose.foundation.layout.size
+
 @Composable
 fun RetroalimentacionScreen(
     navController: NavController,
@@ -255,6 +258,13 @@ fun RetroalimentacionMediana(
                                 text = estado.mensajePokemon,
                                 fontWeight = FontWeight.Bold
                             )
+                            if (estado.imagenPokemon != null) {
+                                AsyncImage(
+                                    model = estado.imagenPokemon,
+                                    contentDescription = "Imagen de tu Pokémon",
+                                    modifier = Modifier.size(120.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -371,6 +381,13 @@ fun RetroalimentacionExpandida(
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
+                            if (estado.imagenPokemon != null) {
+                                AsyncImage(
+                                    model = estado.imagenPokemon,
+                                    contentDescription = "Imagen de tu Pokémon",
+                                    modifier = Modifier.size(120.dp)
+                                )
+                            }
                         }
                     }
                 }

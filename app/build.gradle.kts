@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    implementation(libs.coil.network.okhttp)
 
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")

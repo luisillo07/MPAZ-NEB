@@ -39,6 +39,7 @@ androidx-compose-material-icons-core = { group = "androidx.compose.material", na
 androidx-material3-window-size-class1-android = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

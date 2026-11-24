@@ -13,7 +13,8 @@ data class ActividadUiState(
     val mensajeRetroalimentacion: String = "",
     val pantallazoPregunta: Uri? = null,
     val resumenGuardado: Boolean = false,
-    val mensajePokemon: String? = null
+    val mensajePokemon: String? = null,
+    val imagenPokemon: String? = null
 ) {
     val esUltimaPregunta: Boolean
         get() = indicePregunta == respuestas.size - 1
